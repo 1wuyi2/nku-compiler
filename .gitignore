@@ -29,3 +29,5 @@ prework1/part1/main_O2
 # Future Part 2 executables
 prework1/part2/llvm/main
 prework1/part2/riscv/main
+# Course-provided SysY runtime library
+prework1/part2/lib/

@@ -1,0 +1,48 @@
+const int BASE = 3;
+
+int calc(int n)
+{
+    int i;
+    int result;
+
+    i = 1;
+    result = 0;
+
+    while (i <= n)
+    {
+        if (i % 2 == 0)
+        {
+            result = result + i * i;
+        }
+        else
+        {
+            result = result - i;
+        }
+
+        i = i + 1;
+    }
+
+    return result;
+}
+
+int main()
+{
+    int n;
+    int result;
+    int quotient;
+    int remainder;
+
+    n = getint();
+
+    result = calc(n);
+
+    quotient = n / 2;
+    remainder = n % 2;
+
+    result = result + quotient + remainder + BASE;
+
+    putint(result);
+    putch(10);
+
+    return 0;
+}

@@ -1,0 +1,935 @@
+[0;1;32mTranslationUnitDecl[0m[0;33m 0x63a363435518[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a363435d48[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit[0;1;36m __int128_t[0m [0;32m'__int128'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435ae0[0m [0;32m'__int128'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a363435db8[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit[0;1;36m __uint128_t[0m [0;32m'unsigned __int128'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435b00[0m [0;32m'unsigned __int128'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634360c0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit[0;1;36m __NSConstantString[0m [0;32m'struct __NSConstantString_tag'[0m
+[0;34m| `-[0m[0;32mRecordType[0m[0;33m 0x63a363435e90[0m [0;32m'struct __NSConstantString_tag'[0m
+[0;34m|   `-[0m[0;1;32mRecord[0m[0;33m 0x63a363435e10[0m[0;1;36m '__NSConstantString_tag'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a363436168[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit[0;1;36m __builtin_ms_va_list[0m [0;32m'char *'[0m
+[0;34m| `-[0m[0;32mPointerType[0m[0;33m 0x63a363436120[0m [0;32m'char *'[0m
+[0;34m|   `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634355c0[0m [0;32m'char'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a363436460[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m implicit referenced[0;1;36m __builtin_va_list[0m [0;32m'struct __va_list_tag[1]'[0m
+[0;34m| `-[0m[0;32mConstantArrayType[0m[0;33m 0x63a363436400[0m [0;32m'struct __va_list_tag[1]'[0m 1 
+[0;34m|   `-[0m[0;32mRecordType[0m[0;33m 0x63a363436240[0m [0;32m'struct __va_list_tag'[0m
+[0;34m|     `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634361c0[0m[0;1;36m '__va_list_tag'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ab5c0[0m <[0;33m/usr/lib/llvm-18/lib/clang/18/include/__stddef_size_t.h:18:1[0m, [0;33mcol:23[0m> [0;33mcol:23[0m referenced[0;1;36m size_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ab690[0m <[0;33m/usr/lib/llvm-18/lib/clang/18/include/__stdarg___gnuc_va_list.h:12:1[0m, [0;33mcol:27[0m> [0;33mcol:27[0m referenced[0;1;36m __gnuc_va_list[0m [0;32m'__builtin_va_list':'struct __va_list_tag[1]'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634ab650[0m [0;32m'__builtin_va_list'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634ab620[0m [0;32m'__builtin_va_list'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a363436460[0m[0;1;36m '__builtin_va_list'[0m
+[0;34m|     `-[0m[0;32mConstantArrayType[0m[0;33m 0x63a363436400[0m [0;32m'struct __va_list_tag[1]'[0m 1 
+[0;34m|       `-[0m[0;32mRecordType[0m[0;33m 0x63a363436240[0m [0;32m'struct __va_list_tag'[0m
+[0;34m|         `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634361c0[0m[0;1;36m '__va_list_tag'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ab700[0m <[0;33m/usr/include/x86_64-linux-gnu/bits/types.h:31:1[0m, [0;33mcol:23[0m> [0;33mcol:23[0m[0;1;36m __u_char[0m [0;32m'unsigned char'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435680[0m [0;32m'unsigned char'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ab770[0m <[0;33mline:32:1[0m, [0;33mcol:28[0m> [0;33mcol:28[0m[0;1;36m __u_short[0m [0;32m'unsigned short'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356a0[0m [0;32m'unsigned short'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ab7e0[0m <[0;33mline:33:1[0m, [0;33mcol:22[0m> [0;33mcol:22[0m[0;1;36m __u_int[0m [0;32m'unsigned int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356c0[0m [0;32m'unsigned int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ab850[0m <[0;33mline:34:1[0m, [0;33mcol:27[0m> [0;33mcol:27[0m[0;1;36m __u_long[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ab8c0[0m <[0;33mline:37:1[0m, [0;33mcol:21[0m> [0;33mcol:21[0m referenced[0;1;36m __int8_t[0m [0;32m'signed char'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634355e0[0m [0;32m'signed char'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ab930[0m <[0;33mline:38:1[0m, [0;33mcol:23[0m> [0;33mcol:23[0m referenced[0;1;36m __uint8_t[0m [0;32m'unsigned char'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435680[0m [0;32m'unsigned char'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ab9a0[0m <[0;33mline:39:1[0m, [0;33mcol:26[0m> [0;33mcol:26[0m referenced[0;1;36m __int16_t[0m [0;32m'short'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435600[0m [0;32m'short'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634aba10[0m <[0;33mline:40:1[0m, [0;33mcol:28[0m> [0;33mcol:28[0m referenced[0;1;36m __uint16_t[0m [0;32m'unsigned short'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356a0[0m [0;32m'unsigned short'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634aba80[0m <[0;33mline:41:1[0m, [0;33mcol:20[0m> [0;33mcol:20[0m referenced[0;1;36m __int32_t[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634abaf0[0m <[0;33mline:42:1[0m, [0;33mcol:22[0m> [0;33mcol:22[0m referenced[0;1;36m __uint32_t[0m [0;32m'unsigned int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356c0[0m [0;32m'unsigned int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634abb60[0m <[0;33mline:44:1[0m, [0;33mcol:25[0m> [0;33mcol:25[0m referenced[0;1;36m __int64_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634abbd0[0m <[0;33mline:45:1[0m, [0;33mcol:27[0m> [0;33mcol:27[0m referenced[0;1;36m __uint64_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634abca0[0m <[0;33mline:52:1[0m, [0;33mcol:18[0m> [0;33mcol:18[0m[0;1;36m __int_least8_t[0m [0;32m'__int8_t':'signed char'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634abc60[0m [0;32m'__int8_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634abc30[0m [0;32m'__int8_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634ab8c0[0m[0;1;36m '__int8_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634355e0[0m [0;32m'signed char'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634abd70[0m <[0;33mline:53:1[0m, [0;33mcol:19[0m> [0;33mcol:19[0m[0;1;36m __uint_least8_t[0m [0;32m'__uint8_t':'unsigned char'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634abd30[0m [0;32m'__uint8_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634abd00[0m [0;32m'__uint8_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634ab930[0m[0;1;36m '__uint8_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435680[0m [0;32m'unsigned char'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634abe40[0m <[0;33mline:54:1[0m, [0;33mcol:19[0m> [0;33mcol:19[0m[0;1;36m __int_least16_t[0m [0;32m'__int16_t':'short'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634abe00[0m [0;32m'__int16_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634abdd0[0m [0;32m'__int16_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634ab9a0[0m[0;1;36m '__int16_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435600[0m [0;32m'short'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634abf10[0m <[0;33mline:55:1[0m, [0;33mcol:20[0m> [0;33mcol:20[0m[0;1;36m __uint_least16_t[0m [0;32m'__uint16_t':'unsigned short'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634abed0[0m [0;32m'__uint16_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634abea0[0m [0;32m'__uint16_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634aba10[0m[0;1;36m '__uint16_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356a0[0m [0;32m'unsigned short'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634abfe0[0m <[0;33mline:56:1[0m, [0;33mcol:19[0m> [0;33mcol:19[0m[0;1;36m __int_least32_t[0m [0;32m'__int32_t':'int'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634abfa0[0m [0;32m'__int32_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634abf70[0m [0;32m'__int32_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634aba80[0m[0;1;36m '__int32_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac0b0[0m <[0;33mline:57:1[0m, [0;33mcol:20[0m> [0;33mcol:20[0m[0;1;36m __uint_least32_t[0m [0;32m'__uint32_t':'unsigned int'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634ac070[0m [0;32m'__uint32_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634ac040[0m [0;32m'__uint32_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634abaf0[0m[0;1;36m '__uint32_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356c0[0m [0;32m'unsigned int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac180[0m <[0;33mline:58:1[0m, [0;33mcol:19[0m> [0;33mcol:19[0m[0;1;36m __int_least64_t[0m [0;32m'__int64_t':'long'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634ac140[0m [0;32m'__int64_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634ac110[0m [0;32m'__int64_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634abb60[0m[0;1;36m '__int64_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac250[0m <[0;33mline:59:1[0m, [0;33mcol:20[0m> [0;33mcol:20[0m[0;1;36m __uint_least64_t[0m [0;32m'__uint64_t':'unsigned long'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634ac210[0m [0;32m'__uint64_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634ac1e0[0m [0;32m'__uint64_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634abbd0[0m[0;1;36m '__uint64_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac2c0[0m <[0;33mline:63:1[0m, [0;33mcol:18[0m> [0;33mcol:18[0m[0;1;36m __quad_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac330[0m <[0;33mline:64:1[0m, [0;33mcol:27[0m> [0;33mcol:27[0m[0;1;36m __u_quad_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac3a0[0m <[0;33mline:72:1[0m, [0;33mcol:18[0m> [0;33mcol:18[0m[0;1;36m __intmax_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac410[0m <[0;33mline:73:1[0m, [0;33mcol:27[0m> [0;33mcol:27[0m[0;1;36m __uintmax_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac480[0m <[0;33mline:137:22[0m, [0;33mline:145:25[0m> [0;33mcol:25[0m[0;1;36m __dev_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac4f0[0m <[0;33mline:137:22[0m, [0;33mline:146:25[0m> [0;33mcol:25[0m[0;1;36m __uid_t[0m [0;32m'unsigned int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356c0[0m [0;32m'unsigned int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634ac560[0m <[0;33mline:137:22[0m, [0;33mline:147:25[0m> [0;33mcol:25[0m[0;1;36m __gid_t[0m [0;32m'unsigned int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356c0[0m [0;32m'unsigned int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6488[0m <[0;33mline:137:22[0m, [0;33mline:148:25[0m> [0;33mcol:25[0m[0;1;36m __ino_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b64f8[0m <[0;33mline:137:22[0m, [0;33mline:149:27[0m> [0;33mcol:27[0m[0;1;36m __ino64_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6568[0m <[0;33mline:137:22[0m, [0;33mline:150:26[0m> [0;33mcol:26[0m[0;1;36m __mode_t[0m [0;32m'unsigned int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356c0[0m [0;32m'unsigned int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b65d8[0m <[0;33mline:137:22[0m, [0;33mline:151:27[0m> [0;33mcol:27[0m[0;1;36m __nlink_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6648[0m <[0;33mline:137:22[0m, [0;33mline:152:25[0m> [0;33mcol:25[0m referenced[0;1;36m __off_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b66b8[0m <[0;33mline:137:22[0m, [0;33mline:153:27[0m> [0;33mcol:27[0m referenced[0;1;36m __off64_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6728[0m <[0;33mline:137:22[0m, [0;33mline:154:25[0m> [0;33mcol:25[0m[0;1;36m __pid_t[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b6780[0m <[0;33m/usr/include/x86_64-linux-gnu/bits/typesizes.h:73:24[0m, [0;33mcol:47[0m> [0;33mcol:24[0m struct definition
+[0;34m| `-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634b68c8[0m <[0;33mcol:33[0m, [0;33mcol:44[0m> [0;33mcol:37[0m[0;1;36m __val[0m [0;32m'int[2]'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6978[0m <[0;33m/usr/include/x86_64-linux-gnu/bits/types.h:137:22[0m, [0;33mline:155:26[0m> [0;33mcol:26[0m[0;1;36m __fsid_t[0m [0;32m'struct __fsid_t':'__fsid_t'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b6920[0m [0;32m'struct __fsid_t'[0m sugar
+[0;34m|   `-[0m[0;32mRecordType[0m[0;33m 0x63a3634b6800[0m [0;32m'__fsid_t'[0m
+[0;34m|     `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634b6780[0m[0;1;36m ''[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6a00[0m <[0;33mline:137:22[0m, [0;33mline:156:27[0m> [0;33mcol:27[0m[0;1;36m __clock_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6a70[0m <[0;33mline:137:22[0m, [0;33mline:157:26[0m> [0;33mcol:26[0m[0;1;36m __rlim_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6ae0[0m <[0;33mline:137:22[0m, [0;33mline:158:28[0m> [0;33mcol:28[0m[0;1;36m __rlim64_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6b50[0m <[0;33mline:137:22[0m, [0;33mline:159:24[0m> [0;33mcol:24[0m[0;1;36m __id_t[0m [0;32m'unsigned int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356c0[0m [0;32m'unsigned int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6bc0[0m <[0;33mline:137:22[0m, [0;33mline:160:26[0m> [0;33mcol:26[0m[0;1;36m __time_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6c30[0m <[0;33mline:137:22[0m, [0;33mline:161:30[0m> [0;33mcol:30[0m[0;1;36m __useconds_t[0m [0;32m'unsigned int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356c0[0m [0;32m'unsigned int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6ca0[0m <[0;33mline:137:22[0m, [0;33mline:162:31[0m> [0;33mcol:31[0m[0;1;36m __suseconds_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6d10[0m <[0;33mline:137:22[0m, [0;33mline:163:33[0m> [0;33mcol:33[0m[0;1;36m __suseconds64_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6d80[0m <[0;33mline:137:22[0m, [0;33mline:165:27[0m> [0;33mcol:27[0m[0;1;36m __daddr_t[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6df0[0m <[0;33mline:137:22[0m, [0;33mline:166:25[0m> [0;33mcol:25[0m[0;1;36m __key_t[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6e60[0m <[0;33mline:137:22[0m, [0;33mline:169:29[0m> [0;33mcol:29[0m[0;1;36m __clockid_t[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6ed0[0m <[0;33mline:137:22[0m, [0;33mline:172:27[0m> [0;33mcol:27[0m[0;1;36m __timer_t[0m [0;32m'void *'[0m
+[0;34m| `-[0m[0;32mPointerType[0m[0;33m 0x63a363435ca0[0m [0;32m'void *'[0m
+[0;34m|   `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435580[0m [0;32m'void'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6f40[0m <[0;33mline:137:22[0m, [0;33mline:175:29[0m> [0;33mcol:29[0m[0;1;36m __blksize_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b6fb0[0m <[0;33mline:137:22[0m, [0;33mline:180:28[0m> [0;33mcol:28[0m[0;1;36m __blkcnt_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7020[0m <[0;33mline:137:22[0m, [0;33mline:181:30[0m> [0;33mcol:30[0m[0;1;36m __blkcnt64_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7090[0m <[0;33mline:137:22[0m, [0;33mline:184:30[0m> [0;33mcol:30[0m[0;1;36m __fsblkcnt_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7100[0m <[0;33mline:137:22[0m, [0;33mline:185:32[0m> [0;33mcol:32[0m[0;1;36m __fsblkcnt64_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7170[0m <[0;33mline:137:22[0m, [0;33mline:188:30[0m> [0;33mcol:30[0m[0;1;36m __fsfilcnt_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b71e0[0m <[0;33mline:137:22[0m, [0;33mline:189:32[0m> [0;33mcol:32[0m[0;1;36m __fsfilcnt64_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7250[0m <[0;33mline:137:22[0m, [0;33mline:192:28[0m> [0;33mcol:28[0m[0;1;36m __fsword_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b72c0[0m <[0;33mline:137:22[0m, [0;33mline:194:27[0m> [0;33mcol:27[0m referenced[0;1;36m __ssize_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7330[0m <[0;33mline:137:22[0m, [0;33mline:197:33[0m> [0;33mcol:33[0m[0;1;36m __syscall_slong_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b73a0[0m <[0;33mline:137:22[0m, [0;33mline:199:33[0m> [0;33mcol:33[0m[0;1;36m __syscall_ulong_t[0m [0;32m'unsigned long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7480[0m <[0;33mline:203:1[0m, [0;33mcol:19[0m> [0;33mcol:19[0m[0;1;36m __loff_t[0m [0;32m'__off64_t':'long'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b7430[0m [0;32m'__off64_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634b7400[0m [0;32m'__off64_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634b66b8[0m[0;1;36m '__off64_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b74f0[0m <[0;33mline:204:1[0m, [0;33mcol:15[0m> [0;33mcol:15[0m[0;1;36m __caddr_t[0m [0;32m'char *'[0m
+[0;34m| `-[0m[0;32mPointerType[0m[0;33m 0x63a363436120[0m [0;32m'char *'[0m
+[0;34m|   `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634355c0[0m [0;32m'char'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7560[0m <[0;33mline:137:22[0m, [0;33mline:207:25[0m> [0;33mcol:25[0m[0;1;36m __intptr_t[0m [0;32m'long'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b75d0[0m <[0;33mline:137:22[0m, [0;33mline:210:23[0m> [0;33mcol:23[0m[0;1;36m __socklen_t[0m [0;32m'unsigned int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356c0[0m [0;32m'unsigned int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7640[0m <[0;33mline:215:1[0m, [0;33mcol:13[0m> [0;33mcol:13[0m[0;1;36m __sig_atomic_t[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b7698[0m <[0;33m/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:13:9[0m, [0;33mline:21:1[0m> [0;33mline:13:9[0m struct definition
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634b7758[0m <[0;33mline:15:3[0m, [0;33mcol:7[0m> [0;33mcol:7[0m[0;1;36m __count[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b77a8[0m <[0;33mline:16:3[0m, [0;33mline:20:3[0m> [0;33mline:16:3[0m union definition
+[0;34m| | |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634b7868[0m <[0;33m<built-in>:113:23[0m, [0;33m/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:18:19[0m> [0;33mcol:19[0m[0;1;36m __wch[0m [0;32m'unsigned int'[0m
+[0;34m| | `-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634b7960[0m <[0;33mline:19:5[0m, [0;33mcol:18[0m> [0;33mcol:10[0m[0;1;36m __wchb[0m [0;32m'char[4]'[0m
+[0;34m| `-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634b7a08[0m <[0;33mline:16:3[0m, [0;33mline:20:5[0m> [0;33mcol:5[0m[0;1;36m __value[0m [0;32m'union (unnamed union at /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:16:3)':'union __mbstate_t::(unnamed at /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:16:3)'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7ab8[0m <[0;33mline:13:1[0m, [0;33mline:21:3[0m> [0;33mcol:3[0m referenced[0;1;36m __mbstate_t[0m [0;32m'struct __mbstate_t':'__mbstate_t'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b7a60[0m [0;32m'struct __mbstate_t'[0m sugar
+[0;34m|   `-[0m[0;32mRecordType[0m[0;33m 0x63a3634b7720[0m [0;32m'__mbstate_t'[0m
+[0;34m|     `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634b7698[0m[0;1;36m ''[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b7b28[0m <[0;33m/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:10:9[0m, [0;33mline:14:1[0m> [0;33mline:10:16[0m struct[0;1;36m _G_fpos_t[0m definition
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634b7c40[0m <[0;33mline:12:3[0m, [0;33mcol:11[0m> [0;33mcol:11[0m[0;1;36m __pos[0m [0;32m'__off_t':'long'[0m
+[0;34m| `-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634b7d00[0m <[0;33mline:13:3[0m, [0;33mcol:15[0m> [0;33mcol:15[0m[0;1;36m __state[0m [0;32m'__mbstate_t'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7da8[0m <[0;33mline:10:1[0m, [0;33mline:14:3[0m> [0;33mcol:3[0m referenced[0;1;36m __fpos_t[0m [0;32m'struct _G_fpos_t'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b7d50[0m [0;32m'struct _G_fpos_t'[0m sugar
+[0;34m|   `-[0m[0;32mRecordType[0m[0;33m 0x63a3634b7bb0[0m [0;32m'struct _G_fpos_t'[0m
+[0;34m|     `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634b7b28[0m[0;1;36m '_G_fpos_t'[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b7e18[0m <[0;33m/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:10:9[0m, [0;33mline:14:1[0m> [0;33mline:10:16[0m struct[0;1;36m _G_fpos64_t[0m definition
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634b7ed0[0m <[0;33mline:12:3[0m, [0;33mcol:13[0m> [0;33mcol:13[0m[0;1;36m __pos[0m [0;32m'__off64_t':'long'[0m
+[0;34m| `-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634b7f30[0m <[0;33mline:13:3[0m, [0;33mcol:15[0m> [0;33mcol:15[0m[0;1;36m __state[0m [0;32m'__mbstate_t'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b7fd8[0m <[0;33mline:10:1[0m, [0;33mline:14:3[0m> [0;33mcol:3[0m[0;1;36m __fpos64_t[0m [0;32m'struct _G_fpos64_t'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b7f80[0m [0;32m'struct _G_fpos64_t'[0m sugar
+[0;34m|   `-[0m[0;32mRecordType[0m[0;33m 0x63a3634b7ea0[0m [0;32m'struct _G_fpos64_t'[0m
+[0;34m|     `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634b7e18[0m[0;1;36m '_G_fpos64_t'[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b8048[0m <[0;33m/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:4:1[0m, [0;33mcol:8[0m> [0;33mcol:8[0m struct[0;1;36m _IO_FILE[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b8140[0m <[0;33mline:5:1[0m, [0;33mcol:25[0m> [0;33mcol:25[0m[0;1;36m __FILE[0m [0;32m'struct _IO_FILE'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b80f0[0m [0;32m'struct _IO_FILE'[0m sugar
+[0;34m|   `-[0m[0;32mRecordType[0m[0;33m 0x63a3634b80d0[0m [0;32m'struct _IO_FILE'[0m
+[0;34m|     `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634bbe28[0m[0;1;36m '_IO_FILE'[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b8198[0m prev 0x63a3634b8048 <[0;33m/usr/include/x86_64-linux-gnu/bits/types/FILE.h:4:1[0m, [0;33mcol:8[0m> [0;33mcol:8[0m struct[0;1;36m _IO_FILE[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634b8238[0m <[0;33mline:7:1[0m, [0;33mcol:25[0m> [0;33mcol:25[0m referenced[0;1;36m FILE[0m [0;32m'struct _IO_FILE'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b80f0[0m [0;32m'struct _IO_FILE'[0m sugar
+[0;34m|   `-[0m[0;32mRecordType[0m[0;33m 0x63a3634b80d0[0m [0;32m'struct _IO_FILE'[0m
+[0;34m|     `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634bbe28[0m[0;1;36m '_IO_FILE'[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b8290[0m prev 0x63a3634b8198 <[0;33m/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:35:1[0m, [0;33mcol:8[0m> [0;33mcol:8[0m struct[0;1;36m _IO_FILE[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b8310[0m <[0;33mline:36:1[0m, [0;33mcol:8[0m> [0;33mcol:8[0m struct[0;1;36m _IO_marker[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634b83b0[0m <[0;33mline:37:1[0m, [0;33mcol:8[0m> [0;33mcol:8[0m struct[0;1;36m _IO_codecvt[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634bbd20[0m <[0;33mline:38:1[0m, [0;33mcol:8[0m> [0;33mcol:8[0m struct[0;1;36m _IO_wide_data[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634bbdd0[0m <[0;33mline:43:1[0m, [0;33mcol:14[0m> [0;33mcol:14[0m referenced[0;1;36m _IO_lock_t[0m [0;32m'void'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435580[0m [0;32m'void'[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634bbe28[0m prev 0x63a3634b8290 <[0;33mline:49:1[0m, [0;33mline:99:1[0m> [0;33mline:49:8[0m struct[0;1;36m _IO_FILE[0m definition
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bbec0[0m <[0;33mline:51:3[0m, [0;33mcol:7[0m> [0;33mcol:7[0m[0;1;36m _flags[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bbf28[0m <[0;33mline:54:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_read_ptr[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bbf90[0m <[0;33mline:55:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_read_end[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bbff8[0m <[0;33mline:56:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_read_base[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc060[0m <[0;33mline:57:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_write_base[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc0c8[0m <[0;33mline:58:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_write_ptr[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc130[0m <[0;33mline:59:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_write_end[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc198[0m <[0;33mline:60:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_buf_base[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc200[0m <[0;33mline:61:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_buf_end[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc268[0m <[0;33mline:64:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_save_base[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc2d0[0m <[0;33mline:65:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_backup_base[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc338[0m <[0;33mline:66:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _IO_save_end[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc448[0m <[0;33mline:68:3[0m, [0;33mcol:22[0m> [0;33mcol:22[0m[0;1;36m _markers[0m [0;32m'struct _IO_marker *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc528[0m <[0;33mline:70:3[0m, [0;33mcol:20[0m> [0;33mcol:20[0m[0;1;36m _chain[0m [0;32m'struct _IO_FILE *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc590[0m <[0;33mline:72:3[0m, [0;33mcol:7[0m> [0;33mcol:7[0m[0;1;36m _fileno[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc5f8[0m <[0;33mline:73:3[0m, [0;33mcol:7[0m> [0;33mcol:7[0m[0;1;36m _flags2[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc658[0m <[0;33mline:74:3[0m, [0;33mcol:11[0m> [0;33mcol:11[0m[0;1;36m _old_offset[0m [0;32m'__off_t':'long'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc6c0[0m <[0;33mline:77:3[0m, [0;33mcol:18[0m> [0;33mcol:18[0m[0;1;36m _cur_column[0m [0;32m'unsigned short'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc728[0m <[0;33mline:78:3[0m, [0;33mcol:15[0m> [0;33mcol:15[0m[0;1;36m _vtable_offset[0m [0;32m'signed char'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc820[0m <[0;33mline:79:3[0m, [0;33mcol:19[0m> [0;33mcol:8[0m[0;1;36m _shortbuf[0m [0;32m'char[1]'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc918[0m <[0;33mline:81:3[0m, [0;33mcol:15[0m> [0;33mcol:15[0m[0;1;36m _lock[0m [0;32m'_IO_lock_t *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bc978[0m <[0;33mline:89:3[0m, [0;33mcol:13[0m> [0;33mcol:13[0m[0;1;36m _offset[0m [0;32m'__off64_t':'long'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bca88[0m <[0;33mline:91:3[0m, [0;33mcol:23[0m> [0;33mcol:23[0m[0;1;36m _codecvt[0m [0;32m'struct _IO_codecvt *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bcb98[0m <[0;33mline:92:3[0m, [0;33mcol:25[0m> [0;33mcol:25[0m[0;1;36m _wide_data[0m [0;32m'struct _IO_wide_data *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bcc10[0m <[0;33mline:93:3[0m, [0;33mcol:20[0m> [0;33mcol:20[0m[0;1;36m _freeres_list[0m [0;32m'struct _IO_FILE *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bcc78[0m <[0;33mline:94:3[0m, [0;33mcol:9[0m> [0;33mcol:9[0m[0;1;36m _freeres_buf[0m [0;32m'void *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bcd70[0m <[0;33mline:95:3[0m, [0;33mcol:10[0m> [0;33mcol:10[0m[0;1;36m __pad5[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bcdd8[0m <[0;33mline:96:3[0m, [0;33mcol:7[0m> [0;33mcol:7[0m[0;1;36m _mode[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bd040[0m <[0;33mline:98:3[0m, [0;33mcol:74[0m> [0;33mcol:8[0m[0;1;36m _unused2[0m [0;32m'char[20]'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634bd340[0m <[0;33m/usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:27:1[0m, [0;33mline:28:58[0m> [0;33mline:27:19[0m referenced[0;1;36m cookie_read_function_t[0m [0;32m'__ssize_t (void *, char *, size_t)'[0m
+[0;34m| `-[0m[0;32mFunctionProtoType[0m[0;33m 0x63a3634bd2c0[0m [0;32m'__ssize_t (void *, char *, size_t)'[0m cdecl
+[0;34m|   |-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634bd0c0[0m [0;32m'__ssize_t'[0m sugar
+[0;34m|   | `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634bd090[0m [0;32m'__ssize_t'[0m sugar
+[0;34m|   |   |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634b72c0[0m[0;1;36m '__ssize_t'[0m
+[0;34m|   |   `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|   |-[0m[0;32mPointerType[0m[0;33m 0x63a363435ca0[0m [0;32m'void *'[0m
+[0;34m|   | `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435580[0m [0;32m'void'[0m
+[0;34m|   |-[0m[0;32mPointerType[0m[0;33m 0x63a363436120[0m [0;32m'char *'[0m
+[0;34m|   | `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634355c0[0m [0;32m'char'[0m
+[0;34m|   `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634bcd30[0m [0;32m'size_t'[0m sugar
+[0;34m|     `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634bccd0[0m [0;32m'size_t'[0m sugar
+[0;34m|       |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634ab5c0[0m[0;1;36m 'size_t'[0m
+[0;34m|       `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634bd5e0[0m <[0;33mline:36:1[0m, [0;33mline:37:59[0m> [0;33mline:36:19[0m referenced[0;1;36m cookie_write_function_t[0m [0;32m'__ssize_t (void *, const char *, size_t)'[0m
+[0;34m| `-[0m[0;32mFunctionProtoType[0m[0;33m 0x63a3634bd560[0m [0;32m'__ssize_t (void *, const char *, size_t)'[0m cdecl
+[0;34m|   |-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634bd0c0[0m [0;32m'__ssize_t'[0m sugar
+[0;34m|   | `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634bd090[0m [0;32m'__ssize_t'[0m sugar
+[0;34m|   |   |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634b72c0[0m[0;1;36m '__ssize_t'[0m
+[0;34m|   |   `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|   |-[0m[0;32mPointerType[0m[0;33m 0x63a363435ca0[0m [0;32m'void *'[0m
+[0;34m|   | `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435580[0m [0;32m'void'[0m
+[0;34m|   |-[0m[0;32mPointerType[0m[0;33m 0x63a363435f40[0m [0;32m'const char *'[0m
+[0;34m|   | `-[0mQualType[0;33m 0x63a3634355c1[0m [0;32m'const char'[0m const
+[0;34m|   |   `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634355c0[0m [0;32m'char'[0m
+[0;34m|   `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634bcd30[0m [0;32m'size_t'[0m sugar
+[0;34m|     `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634bccd0[0m [0;32m'size_t'[0m sugar
+[0;34m|       |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634ab5c0[0m[0;1;36m 'size_t'[0m
+[0;34m|       `-[0m[0;32mBuiltinType[0m[0;33m 0x63a3634356e0[0m [0;32m'unsigned long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634bd8f8[0m <[0;33mline:45:1[0m, [0;33mcol:78[0m> [0;33mcol:13[0m referenced[0;1;36m cookie_seek_function_t[0m [0;32m'int (void *, __off64_t *, int)'[0m
+[0;34m| `-[0m[0;32mFunctionProtoType[0m[0;33m 0x63a3634bd870[0m [0;32m'int (void *, __off64_t *, int)'[0m cdecl
+[0;34m|   |-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|   |-[0m[0;32mPointerType[0m[0;33m 0x63a363435ca0[0m [0;32m'void *'[0m
+[0;34m|   | `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435580[0m [0;32m'void'[0m
+[0;34m|   |-[0m[0;32mPointerType[0m[0;33m 0x63a3634bd6f0[0m [0;32m'__off64_t *'[0m
+[0;34m|   | `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b7430[0m [0;32m'__off64_t'[0m sugar
+[0;34m|   |   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634b7400[0m [0;32m'__off64_t'[0m sugar
+[0;34m|   |     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634b66b8[0m[0;1;36m '__off64_t'[0m
+[0;34m|   |     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|   `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634bda38[0m <[0;33mline:48:1[0m, [0;33mcol:52[0m> [0;33mcol:13[0m referenced[0;1;36m cookie_close_function_t[0m [0;32m'int (void *)'[0m
+[0;34m| `-[0m[0;32mFunctionProtoType[0m[0;33m 0x63a3634bd9d0[0m [0;32m'int (void *)'[0m cdecl
+[0;34m|   |-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435620[0m [0;32m'int'[0m
+[0;34m|   `-[0m[0;32mPointerType[0m[0;33m 0x63a363435ca0[0m [0;32m'void *'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435580[0m [0;32m'void'[0m
+[0;34m|-[0m[0;1;32mRecordDecl[0m[0;33m 0x63a3634bda90[0m <[0;33mline:55:9[0m, [0;33mline:61:1[0m> [0;33mline:55:16[0m struct[0;1;36m _IO_cookie_io_functions_t[0m definition
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634bdc08[0m <[0;33mline:57:3[0m, [0;33mcol:27[0m> [0;33mcol:27[0m[0;1;36m read[0m [0;32m'cookie_read_function_t *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634c16e8[0m <[0;33mline:58:3[0m, [0;33mcol:28[0m> [0;33mcol:28[0m[0;1;36m write[0m [0;32m'cookie_write_function_t *'[0m
+[0;34m| |-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634c1818[0m <[0;33mline:59:3[0m, [0;33mcol:27[0m> [0;33mcol:27[0m[0;1;36m seek[0m [0;32m'cookie_seek_function_t *'[0m
+[0;34m| `-[0m[0;1;32mFieldDecl[0m[0;33m 0x63a3634c1948[0m <[0;33mline:60:3[0m, [0;33mcol:28[0m> [0;33mcol:28[0m[0;1;36m close[0m [0;32m'cookie_close_function_t *'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634c19f8[0m <[0;33mline:55:1[0m, [0;33mline:61:3[0m> [0;33mcol:3[0m referenced[0;1;36m cookie_io_functions_t[0m [0;32m'struct _IO_cookie_io_functions_t'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634c19a0[0m [0;32m'struct _IO_cookie_io_functions_t'[0m sugar
+[0;34m|   `-[0m[0;32mRecordType[0m[0;33m 0x63a3634bdb10[0m [0;32m'struct _IO_cookie_io_functions_t'[0m
+[0;34m|     `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634bda90[0m[0;1;36m '_IO_cookie_io_functions_t'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634c1ae0[0m <[0;33m/usr/include/stdio.h:53:1[0m, [0;33mcol:24[0m> [0;33mcol:24[0m[0;1;36m va_list[0m [0;32m'__gnuc_va_list':'struct __va_list_tag[1]'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634c1aa0[0m [0;32m'__gnuc_va_list'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634c1a70[0m [0;32m'__gnuc_va_list'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634ab690[0m[0;1;36m '__gnuc_va_list'[0m
+[0;34m|     `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634ab650[0m [0;32m'__builtin_va_list'[0m sugar
+[0;34m|       `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634ab620[0m [0;32m'__builtin_va_list'[0m sugar
+[0;34m|         |-[0m[0;1;32mTypedef[0m[0;33m 0x63a363436460[0m[0;1;36m '__builtin_va_list'[0m
+[0;34m|         `-[0m[0;32mConstantArrayType[0m[0;33m 0x63a363436400[0m [0;32m'struct __va_list_tag[1]'[0m 1 
+[0;34m|           `-[0m[0;32mRecordType[0m[0;33m 0x63a363436240[0m [0;32m'struct __va_list_tag'[0m
+[0;34m|             `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634361c0[0m[0;1;36m '__va_list_tag'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634c1b48[0m <[0;33mline:64:1[0m, [0;33mcol:17[0m> [0;33mcol:17[0m[0;1;36m off_t[0m [0;32m'__off_t':'long'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b7c00[0m [0;32m'__off_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634b7bd0[0m [0;32m'__off_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634b6648[0m[0;1;36m '__off_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634c1bb0[0m <[0;33mline:78:1[0m, [0;33mcol:19[0m> [0;33mcol:19[0m[0;1;36m ssize_t[0m [0;32m'__ssize_t':'long'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634bd0c0[0m [0;32m'__ssize_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634bd090[0m [0;32m'__ssize_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634b72c0[0m[0;1;36m '__ssize_t'[0m
+[0;34m|     `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435640[0m [0;32m'long'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634c1c80[0m <[0;33mline:85:1[0m, [0;33mcol:18[0m> [0;33mcol:18[0m referenced[0;1;36m fpos_t[0m [0;32m'__fpos_t':'struct _G_fpos_t'[0m
+[0;34m| `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634c1c40[0m [0;32m'__fpos_t'[0m sugar
+[0;34m|   `-[0m[0;32mTypedefType[0m[0;33m 0x63a3634c1c10[0m [0;32m'__fpos_t'[0m sugar
+[0;34m|     |-[0m[0;1;32mTypedef[0m[0;33m 0x63a3634b7da8[0m[0;1;36m '__fpos_t'[0m
+[0;34m|     `-[0m[0;32mElaboratedType[0m[0;33m 0x63a3634b7d50[0m [0;32m'struct _G_fpos_t'[0m sugar
+[0;34m|       `-[0m[0;32mRecordType[0m[0;33m 0x63a3634b7bb0[0m [0;32m'struct _G_fpos_t'[0m
+[0;34m|         `-[0m[0;1;32mRecord[0m[0;33m 0x63a3634b7b28[0m[0;1;36m '_G_fpos_t'[0m
+[0;34m|-[0m[0;1;32mVarDecl[0m[0;33m 0x63a3634c1d88[0m <[0;33mline:149:1[0m, [0;33mcol:14[0m> [0;33mcol:14[0m[0;1;36m stdin[0m [0;32m'FILE *'[0m extern
+[0;34m|-[0m[0;1;32mVarDecl[0m[0;33m 0x63a3634c1e50[0m <[0;33mline:150:1[0m, [0;33mcol:14[0m> [0;33mcol:14[0m[0;1;36m stdout[0m [0;32m'FILE *'[0m extern
+[0;34m|-[0m[0;1;32mVarDecl[0m[0;33m 0x63a3634c1ed0[0m <[0;33mline:151:1[0m, [0;33mcol:14[0m> [0;33mcol:14[0m[0;1;36m stderr[0m [0;32m'FILE *'[0m extern
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c2028[0m <[0;33mline:158:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:54[0m> [0;33m/usr/include/stdio.h:158:12[0m[0;1;36m remove[0m [0;32m'int (const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c1f50[0m <[0;33mcol:20[0m, [0;33mcol:32[0m> [0;33mcol:32[0m[0;1;36m __filename[0m [0;32m'const char *'[0m
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c20d8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c22a8[0m <[0;33m/usr/include/stdio.h:160:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:54[0m> [0;33m/usr/include/stdio.h:160:12[0m[0;1;36m rename[0m [0;32m'int (const char *, const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c2148[0m <[0;33mcol:20[0m, [0;33mcol:32[0m> [0;33mcol:32[0m[0;1;36m __old[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c21c8[0m <[0;33mcol:39[0m, [0;33mcol:51[0m> [0;33mcol:51[0m[0;1;36m __new[0m [0;32m'const char *'[0m
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c2360[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c63b0[0m <[0;33m/usr/include/stdio.h:164:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:54[0m> [0;33m/usr/include/stdio.h:164:12[0m[0;1;36m renameat[0m [0;32m'int (int, const char *, int, const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c23d0[0m <[0;33mcol:22[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __oldfd[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c2450[0m <[0;33mcol:35[0m, [0;33mcol:47[0m> [0;33mcol:47[0m[0;1;36m __old[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c24d0[0m <[0;33mcol:54[0m, [0;33mcol:58[0m> [0;33mcol:58[0m[0;1;36m __newfd[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c2550[0m <[0;33mline:165:8[0m, [0;33mcol:20[0m> [0;33mcol:20[0m[0;1;36m __new[0m [0;32m'const char *'[0m
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c6478[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c6618[0m <[0;33m/usr/include/stdio.h:184:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:184:12[0m[0;1;36m fclose[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c64e8[0m <[0;33mcol:20[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634c66c8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:184:49[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c6838[0m <[0;33mline:194:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:58[0m> [0;33m/usr/include/stdio.h:194:14[0m[0;1;36m tmpfile[0m [0;32m'FILE *(void)'[0m extern
+[0;34m| `-[0m[0;1;34mRestrictAttr[0m[0;33m 0x63a3634c68e0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:47[0m> malloc
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c6ae8[0m <[0;33m/usr/include/stdio.h:211:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:54[0m> [0;33m/usr/include/stdio.h:211:14[0m[0;1;36m tmpnam[0m [0;32m'char *(char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c69d0[0m <[0;33mcol:22[0m, [0;33mcol:35[0m> [0;33mcol:26[0m [0;32m'char *'[0m
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c6b98[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c6ce8[0m <[0;33m/usr/include/stdio.h:216:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:54[0m> [0;33m/usr/include/stdio.h:216:14[0m[0;1;36m tmpnam_r[0m [0;32m'char *(char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c6c50[0m <[0;33mcol:24[0m, [0;33mcol:41[0m> [0;33mcol:29[0m[0;1;36m __s[0m [0;32m'char *'[0m
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c6d98[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c6f68[0m <[0;33m/usr/include/stdio.h:228:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:58[0m> [0;33m/usr/include/stdio.h:228:14[0m[0;1;36m tempnam[0m [0;32m'char *(const char *, const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c6e08[0m <[0;33mcol:23[0m, [0;33mcol:35[0m> [0;33mcol:35[0m[0;1;36m __dir[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c6e88[0m <[0;33mcol:42[0m, [0;33mcol:54[0m> [0;33mcol:54[0m[0;1;36m __pfx[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c7020[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mRestrictAttr[0m[0;33m 0x63a3634c7078[0m <[0;33mline:298:47[0m> malloc
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c7150[0m <[0;33m/usr/include/stdio.h:236:1[0m, [0;33mcol:34[0m> [0;33mcol:12[0m[0;1;36m fflush[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| `-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c70b8[0m <[0;33mcol:20[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c72b0[0m <[0;33mline:245:1[0m, [0;33mcol:43[0m> [0;33mcol:12[0m[0;1;36m fflush_unlocked[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| `-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c7218[0m <[0;33mcol:29[0m, [0;33mcol:35[0m> [0;33mcol:35[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c75e0[0m <[0;33mline:264:14[0m> [0;33mcol:14[0m implicit[0;1;36m fopen[0m [0;32m'FILE *(const char *, const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c76e0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c7748[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| `-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634c7688[0m <[0;33m<invalid sloc>[0m> Implicit 915
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c77c0[0m prev 0x63a3634c75e0 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:58[0m> [0;33m/usr/include/stdio.h:264:14[0m[0;1;36m fopen[0m [0;32m'FILE *(const char *, const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c73c0[0m <[0;33mcol:21[0m, [0;33mcol:44[0m> [0;33mcol:44[0m[0;1;36m __filename[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c7440[0m <[0;33mline:265:7[0m, [0;33mcol:30[0m> [0;33mcol:30[0m[0;1;36m __modes[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634c78d0[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 915
+[0;34m| `-[0m[0;1;34mRestrictAttr[0m[0;33m 0x63a3634c7878[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:47[0m> malloc
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c7b78[0m <[0;33m/usr/include/stdio.h:271:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:271:14[0m[0;1;36m freopen[0m [0;32m'FILE *(const char *restrict, const char *restrict, FILE *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c7910[0m <[0;33mcol:23[0m, [0;33mcol:46[0m> [0;33mcol:46[0m[0;1;36m __filename[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c7990[0m <[0;33mline:272:9[0m, [0;33mcol:32[0m> [0;33mcol:32[0m[0;1;36m __modes[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c7a10[0m <[0;33mline:273:9[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634c7c38[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:273:55[0m> 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c7e68[0m <[0;33mline:299:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:58[0m> [0;33m/usr/include/stdio.h:299:14[0m[0;1;36m fdopen[0m [0;32m'FILE *(int, const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c7cc0[0m <[0;33mcol:22[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __fd[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c7d40[0m <[0;33mcol:32[0m, [0;33mcol:44[0m> [0;33mcol:44[0m[0;1;36m __modes[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c7f20[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mRestrictAttr[0m[0;33m 0x63a3634c7f78[0m <[0;33mline:298:47[0m> malloc
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c8258[0m <[0;33m/usr/include/stdio.h:306:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:58[0m> [0;33m/usr/include/stdio.h:306:14[0m[0;1;36m fopencookie[0m [0;32m'FILE *(void *restrict, const char *restrict, cookie_io_functions_t)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c7fb8[0m <[0;33mcol:27[0m, [0;33mcol:44[0m> [0;33mcol:44[0m[0;1;36m __magic_cookie[0m [0;32m'void *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8038[0m <[0;33mline:307:6[0m, [0;33mcol:29[0m> [0;33mcol:29[0m[0;1;36m __modes[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8110[0m <[0;33mline:308:6[0m, [0;33mcol:28[0m> [0;33mcol:28[0m[0;1;36m __io_funcs[0m [0;32m'cookie_io_functions_t':'struct _IO_cookie_io_functions_t'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c8318[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mRestrictAttr[0m[0;33m 0x63a3634c8370[0m <[0;33mline:298:47[0m> malloc
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c8608[0m <[0;33m/usr/include/stdio.h:314:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:58[0m> [0;33m/usr/include/stdio.h:314:14[0m[0;1;36m fmemopen[0m [0;32m'FILE *(void *, size_t, const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c83d0[0m <[0;33mcol:24[0m, [0;33mcol:30[0m> [0;33mcol:30[0m[0;1;36m __s[0m [0;32m'void *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8448[0m <[0;33mcol:35[0m, [0;33mcol:42[0m> [0;33mcol:42[0m[0;1;36m __len[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c84c8[0m <[0;33mcol:49[0m, [0;33mcol:61[0m> [0;33mcol:61[0m[0;1;36m __modes[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c86c8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mRestrictAttr[0m[0;33m 0x63a3634c8720[0m <[0;33mline:298:47[0m> malloc
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c8998[0m <[0;33m/usr/include/stdio.h:320:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:58[0m> [0;33m/usr/include/stdio.h:320:14[0m[0;1;36m open_memstream[0m [0;32m'FILE *(char **, size_t *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8798[0m <[0;33mcol:30[0m, [0;33mcol:37[0m> [0;33mcol:37[0m[0;1;36m __bufloc[0m [0;32m'char **'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8878[0m <[0;33mcol:47[0m, [0;33mcol:55[0m> [0;33mcol:55[0m[0;1;36m __sizeloc[0m [0;32m'size_t *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c8a50[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mRestrictAttr[0m[0;33m 0x63a3634c8aa8[0m <[0;33mline:298:47[0m> malloc
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c8ca0[0m <[0;33m/usr/include/stdio.h:334:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:334:13[0m[0;1;36m setbuf[0m [0;32m'void (FILE *restrict, char *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8ae8[0m <[0;33mcol:21[0m, [0;33mcol:38[0m> [0;33mcol:38[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8b68[0m <[0;33mcol:48[0m, [0;33mcol:65[0m> [0;33mcol:65[0m[0;1;36m __buf[0m [0;32m'char *restrict'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c8d58[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634c8db0[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:335:16[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634c90e8[0m <[0;33mline:339:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:339:12[0m[0;1;36m setvbuf[0m [0;32m'int (FILE *restrict, char *restrict, int, size_t)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8e00[0m <[0;33mcol:21[0m, [0;33mcol:38[0m> [0;33mcol:38[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8e80[0m <[0;33mcol:48[0m, [0;33mcol:65[0m> [0;33mcol:65[0m[0;1;36m __buf[0m [0;32m'char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8f00[0m <[0;33mline:340:7[0m, [0;33mcol:11[0m> [0;33mcol:11[0m[0;1;36m __modes[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c8f78[0m <[0;33mcol:20[0m, [0;33mcol:27[0m> [0;33mcol:27[0m[0;1;36m __n[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634c91b0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634c9208[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:340:53[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a63d0[0m <[0;33mline:345:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:345:13[0m[0;1;36m setbuffer[0m [0;32m'void (FILE *restrict, char *restrict, size_t)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c9260[0m <[0;33mcol:24[0m, [0;33mcol:41[0m> [0;33mcol:41[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c92e0[0m <[0;33mcol:51[0m, [0;33mcol:68[0m> [0;33mcol:68[0m[0;1;36m __buf[0m [0;32m'char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634c9358[0m <[0;33mline:346:10[0m, [0;33mcol:17[0m> [0;33mcol:17[0m[0;1;36m __size[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634a6490[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634a64e8[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:346:46[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a6670[0m <[0;33mline:349:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:349:13[0m[0;1;36m setlinebuf[0m [0;32m'void (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a6540[0m <[0;33mcol:25[0m, [0;33mcol:31[0m> [0;33mcol:31[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634a6720[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634a6778[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:349:62[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a69f8[0m <[0;33mline:357:12[0m> [0;33mcol:12[0m implicit[0;1;36m fprintf[0m [0;32m'int (FILE *, const char *, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a6af8[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a6b60[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634a6aa0[0m <[0;33m<invalid sloc>[0m> Implicit 902
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634a6bd8[0m <[0;33mcol:12[0m> Implicit printf 2 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a6c10[0m prev 0x63a3634a69f8 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:357:12[0m[0;1;36m fprintf[0m [0;32m'int (FILE *, const char *, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a67d0[0m <[0;33mcol:21[0m, [0;33mcol:38[0m> [0;33mcol:38[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a6850[0m <[0;33mline:358:7[0m, [0;33mcol:30[0m> [0;33mcol:30[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634a6d38[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 902
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634a6d60[0m <[0;33mline:357:12[0m> Inherited printf 2 3
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634a6cc8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:358:58[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a6ed0[0m <[0;33mline:363:12[0m> [0;33mcol:12[0m implicit used[0;1;36m printf[0m [0;32m'int (const char *, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a6fd0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634a6f78[0m <[0;33m<invalid sloc>[0m> Implicit 901
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634a7040[0m <[0;33mcol:12[0m> Implicit printf 1 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a7078[0m prev 0x63a3634a6ed0 <[0;33mcol:1[0m, [0;33mcol:56[0m> [0;33mcol:12[0m used[0;1;36m printf[0m [0;32m'int (const char *, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a6db0[0m <[0;33mcol:20[0m, [0;33mcol:43[0m> [0;33mcol:43[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634a7158[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 901
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634a7180[0m <[0;33mcol:12[0m> Inherited printf 1 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a73c0[0m <[0;33mline:365:12[0m> [0;33mcol:12[0m implicit[0;1;36m sprintf[0m [0;32m'int (char *, const char *, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a74c0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a7528[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634a7468[0m <[0;33m<invalid sloc>[0m> Implicit 904
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634a75a0[0m <[0;33mcol:12[0m> Implicit printf 2 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a75d8[0m prev 0x63a3634a73c0 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:80:49[0m> [0;33m/usr/include/stdio.h:365:12[0m[0;1;36m sprintf[0m [0;32m'int (char *, const char *, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a71d0[0m <[0;33mcol:21[0m, [0;33mcol:38[0m> [0;33mcol:38[0m[0;1;36m __s[0m [0;32m'char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a7250[0m <[0;33mline:366:7[0m, [0;33mcol:30[0m> [0;33mcol:30[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634a76e8[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 904
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634a7710[0m <[0;33mline:365:12[0m> Inherited printf 2 3
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634a7690[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:80:37[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a7a78[0m <[0;33m/usr/include/stdio.h:372:12[0m> [0;33mcol:12[0m implicit[0;1;36m vfprintf[0m [0;32m'int (FILE *, const char *, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a7b78[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a7be0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a7c48[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634a7b20[0m <[0;33m<invalid sloc>[0m> Implicit 906
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634a7cc8[0m <[0;33mcol:12[0m> Implicit printf 2 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a7d00[0m prev 0x63a3634a7a78 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:372:12[0m[0;1;36m vfprintf[0m [0;32m'int (FILE *, const char *, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a7760[0m <[0;33mcol:22[0m, [0;33mcol:39[0m> [0;33mcol:39[0m[0;1;36m __s[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a77e0[0m <[0;33mcol:44[0m, [0;33mcol:67[0m> [0;33mcol:67[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a78c0[0m <[0;33mline:373:8[0m, [0;33mcol:23[0m> [0;33mcol:23[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634a7e28[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 906
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634a7e50[0m <[0;33mline:372:12[0m> Inherited printf 2 0
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634a7dc0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:373:43[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634a8038[0m <[0;33mline:378:12[0m> [0;33mcol:12[0m implicit[0;1;36m vprintf[0m [0;32m'int (const char *, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a8138[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a81a0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634a80e0[0m <[0;33m<invalid sloc>[0m> Implicit 905
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634a8218[0m <[0;33mcol:12[0m> Implicit printf 1 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634cf3d0[0m prev 0x63a3634a8038 <[0;33mcol:1[0m, [0;33mcol:74[0m> [0;33mcol:12[0m[0;1;36m vprintf[0m [0;32m'int (const char *, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a7ea0[0m <[0;33mcol:21[0m, [0;33mcol:44[0m> [0;33mcol:44[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634a7f18[0m <[0;33mcol:54[0m, [0;33mcol:69[0m> [0;33mcol:69[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634cf4b8[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 905
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634cf4e0[0m <[0;33mcol:12[0m> Inherited printf 1 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634cf768[0m <[0;33mline:380:12[0m> [0;33mcol:12[0m implicit[0;1;36m vsprintf[0m [0;32m'int (char *, const char *, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cf868[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cf8d0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cf938[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634cf810[0m <[0;33m<invalid sloc>[0m> Implicit 908
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634cf9b8[0m <[0;33mcol:12[0m> Implicit printf 2 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634cf9f0[0m prev 0x63a3634cf768 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:80:49[0m> [0;33m/usr/include/stdio.h:380:12[0m[0;1;36m vsprintf[0m [0;32m'int (char *, const char *, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cf530[0m <[0;33mcol:22[0m, [0;33mcol:39[0m> [0;33mcol:39[0m[0;1;36m __s[0m [0;32m'char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cf5b0[0m <[0;33mcol:44[0m, [0;33mcol:67[0m> [0;33mcol:67[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cf628[0m <[0;33mline:381:8[0m, [0;33mcol:23[0m> [0;33mcol:23[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634cfb08[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 908
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634cfb30[0m <[0;33mline:380:12[0m> Inherited printf 2 0
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634cfab0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:80:37[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634cfe10[0m <[0;33m/usr/include/stdio.h:385:12[0m> [0;33mcol:12[0m implicit[0;1;36m snprintf[0m [0;32m'int (char *, unsigned long, const char *, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cff10[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cff78[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cffe0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634cfeb8[0m <[0;33m<invalid sloc>[0m> Implicit 903
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d0060[0m <[0;33mcol:12[0m> Implicit printf 3 4
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d0098[0m prev 0x63a3634cfe10 <[0;33mcol:1[0m, [0;33mline:387:62[0m> [0;33mline:385:12[0m[0;1;36m snprintf[0m [0;32m'int (char *, unsigned long, const char *, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cfb80[0m <[0;33mcol:22[0m, [0;33mcol:39[0m> [0;33mcol:39[0m[0;1;36m __s[0m [0;32m'char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cfbf8[0m <[0;33mcol:44[0m, [0;33mcol:51[0m> [0;33mcol:51[0m[0;1;36m __maxlen[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634cfc78[0m <[0;33mline:386:8[0m, [0;33mcol:31[0m> [0;33mcol:31[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d01e8[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 903
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634d0158[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:80:37[0m>
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d01b0[0m <[0;33m/usr/include/stdio.h:387:32[0m, [0;33mcol:60[0m> printf 3 4
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d0588[0m <[0;33mline:389:12[0m> [0;33mcol:12[0m implicit[0;1;36m vsnprintf[0m [0;32m'int (char *, unsigned long, const char *, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d0688[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d06f0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d0758[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d07c0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d0630[0m <[0;33m<invalid sloc>[0m> Implicit 907
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d0848[0m <[0;33mcol:12[0m> Implicit printf 3 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d0880[0m prev 0x63a3634d0588 <[0;33mcol:1[0m, [0;33mline:391:62[0m> [0;33mline:389:12[0m[0;1;36m vsnprintf[0m [0;32m'int (char *, unsigned long, const char *, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d0228[0m <[0;33mcol:23[0m, [0;33mcol:40[0m> [0;33mcol:40[0m[0;1;36m __s[0m [0;32m'char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d02a0[0m <[0;33mcol:45[0m, [0;33mcol:52[0m> [0;33mcol:52[0m[0;1;36m __maxlen[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d0320[0m <[0;33mline:390:9[0m, [0;33mcol:32[0m> [0;33mcol:32[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d03e0[0m <[0;33mcol:42[0m, [0;33mcol:57[0m> [0;33mcol:57[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d09d8[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 907
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634d0948[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:80:37[0m>
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d09a0[0m <[0;33m/usr/include/stdio.h:391:32[0m, [0;33mcol:60[0m> printf 3 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d0ca8[0m <[0;33mline:397:1[0m, [0;33mline:399:62[0m> [0;33mline:397:12[0m[0;1;36m vasprintf[0m [0;32m'int (char **restrict, const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d0a18[0m <[0;33mcol:23[0m, [0;33mcol:41[0m> [0;33mcol:41[0m[0;1;36m __ptr[0m [0;32m'char **restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d0a98[0m <[0;33mcol:48[0m, [0;33mcol:71[0m> [0;33mcol:71[0m[0;1;36m __f[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d0b10[0m <[0;33mline:398:9[0m, [0;33mcol:24[0m> [0;33mcol:24[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634d0d68[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:80:37[0m>
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d0dc0[0m <[0;33m/usr/include/stdio.h:399:32[0m, [0;33mcol:60[0m> printf 2 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d1020[0m <[0;33mline:400:1[0m, [0;33mline:402:62[0m> [0;33mline:400:12[0m[0;1;36m __asprintf[0m [0;32m'int (char **restrict, const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d0e10[0m <[0;33mcol:24[0m, [0;33mcol:42[0m> [0;33mcol:42[0m[0;1;36m __ptr[0m [0;32m'char **restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d0e90[0m <[0;33mline:401:10[0m, [0;33mcol:33[0m> [0;33mcol:33[0m[0;1;36m __fmt[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634d10d8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:80:37[0m>
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d1130[0m <[0;33m/usr/include/stdio.h:402:32[0m, [0;33mcol:60[0m> printf 2 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d12f0[0m <[0;33mline:403:1[0m, [0;33mline:405:62[0m> [0;33mline:403:12[0m[0;1;36m asprintf[0m [0;32m'int (char **restrict, const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d1180[0m <[0;33mcol:22[0m, [0;33mcol:40[0m> [0;33mcol:40[0m[0;1;36m __ptr[0m [0;32m'char **restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d1200[0m <[0;33mline:404:8[0m, [0;33mcol:31[0m> [0;33mcol:31[0m[0;1;36m __fmt[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634d13a8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:80:37[0m>
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d1420[0m <[0;33m/usr/include/stdio.h:405:32[0m, [0;33mcol:60[0m> printf 2 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d16f8[0m <[0;33mline:410:1[0m, [0;33mline:412:52[0m> [0;33mline:410:12[0m[0;1;36m vdprintf[0m [0;32m'int (int, const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d1470[0m <[0;33mcol:22[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __fd[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d14f0[0m <[0;33mcol:32[0m, [0;33mcol:55[0m> [0;33mcol:55[0m[0;1;36m __fmt[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d1568[0m <[0;33mline:411:8[0m, [0;33mcol:23[0m> [0;33mcol:23[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d17b8[0m <[0;33mline:412:22[0m, [0;33mcol:50[0m> printf 2 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d1a40[0m <[0;33mline:413:1[0m, [0;33mline:414:52[0m> [0;33mline:413:12[0m[0;1;36m dprintf[0m [0;32m'int (int, const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d1838[0m <[0;33mcol:21[0m, [0;33mcol:25[0m> [0;33mcol:25[0m[0;1;36m __fd[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d18b8[0m <[0;33mcol:31[0m, [0;33mcol:54[0m> [0;33mcol:54[0m[0;1;36m __fmt[0m [0;32m'const char *restrict'[0m
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d1af8[0m <[0;33mline:414:22[0m, [0;33mcol:50[0m> printf 2 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d1d08[0m <[0;33mline:422:12[0m> [0;33mcol:12[0m implicit[0;1;36m fscanf[0m [0;32m'int (FILE *restrict, const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d1e08[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d1e70[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d1db0[0m <[0;33m<invalid sloc>[0m> Implicit 910
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d1ee8[0m <[0;33mcol:12[0m> Implicit scanf 2 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d1f20[0m prev 0x63a3634d1d08 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:422:12[0m[0;1;36m fscanf[0m [0;32m'int (FILE *restrict, const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d1b78[0m <[0;33mcol:20[0m, [0;33mcol:37[0m> [0;33mcol:37[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d1bf8[0m <[0;33mline:423:6[0m, [0;33mcol:29[0m> [0;33mcol:29[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d2048[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 910
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d2070[0m <[0;33mline:422:12[0m> Inherited scanf 2 3
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634d1fd8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:423:63[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d2158[0m <[0;33mline:428:12[0m> [0;33mcol:12[0m implicit used[0;1;36m scanf[0m [0;32m'int (const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d2258[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d2200[0m <[0;33m<invalid sloc>[0m> Implicit 909
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d22c8[0m <[0;33mcol:12[0m> Implicit scanf 1 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d2300[0m prev 0x63a3634d2158 <[0;33mcol:1[0m, [0;33mcol:55[0m> [0;33mcol:12[0m used[0;1;36m scanf[0m [0;32m'int (const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d20c0[0m <[0;33mcol:19[0m, [0;33mcol:42[0m> [0;33mcol:42[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d2400[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 909
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d2428[0m <[0;33mcol:12[0m> Inherited scanf 1 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d2630[0m <[0;33mline:430:12[0m> [0;33mcol:12[0m implicit[0;1;36m sscanf[0m [0;32m'int (const char *restrict, const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d2730[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d2798[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d26d8[0m <[0;33m<invalid sloc>[0m> Implicit 911
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d2810[0m <[0;33mcol:12[0m> Implicit scanf 2 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d2848[0m prev 0x63a3634d2630 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:54[0m> [0;33m/usr/include/stdio.h:430:12[0m[0;1;36m sscanf[0m [0;32m'int (const char *restrict, const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d2478[0m <[0;33mcol:20[0m, [0;33mcol:43[0m> [0;33mcol:43[0m[0;1;36m __s[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d24f8[0m <[0;33mline:431:6[0m, [0;33mcol:29[0m> [0;33mcol:29[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d2958[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 911
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d2980[0m <[0;33mline:430:12[0m> Inherited scanf 2 3
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634d2900[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634d29d0[0m <[0;33m/usr/include/x86_64-linux-gnu/bits/floatn-common.h:214:1[0m, [0;33mcol:15[0m> [0;33mcol:15[0m[0;1;36m _Float32[0m [0;32m'float'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435720[0m [0;32m'float'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634d2a40[0m <[0;33mline:251:1[0m, [0;33mcol:16[0m> [0;33mcol:16[0m[0;1;36m _Float64[0m [0;32m'double'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435740[0m [0;32m'double'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634d2ab0[0m <[0;33mline:268:1[0m, [0;33mcol:16[0m> [0;33mcol:16[0m[0;1;36m _Float32x[0m [0;32m'double'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435740[0m [0;32m'double'[0m
+[0;34m|-[0m[0;1;32mTypedefDecl[0m[0;33m 0x63a3634d2b20[0m <[0;33mline:285:1[0m, [0;33mcol:21[0m> [0;33mcol:21[0m[0;1;36m _Float64x[0m [0;32m'long double'[0m
+[0;34m| `-[0m[0;32mBuiltinType[0m[0;33m 0x63a363435760[0m [0;32m'long double'[0m
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d2d48[0m prev 0x63a3634d1f20 <[0;33m/usr/include/stdio.h:463:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:463:24[0m[0;1;36m fscanf[0m [0;32m'int (FILE *restrict, const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d2b90[0m <[0;33mcol:33[0m, [0;33mcol:50[0m> [0;33mcol:50[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d2c10[0m <[0;33mline:464:5[0m, [0;33mcol:28[0m> [0;33mcol:28[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d2eb8[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 910
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d2ee0[0m <[0;33mline:422:12[0m> Inherited scanf 2 3
+[0;34m| |-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634d2f18[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:423:63[0m> Inherited 1
+[0;34m| |-[0m[0;1;34mAsmLabelAttr[0m[0;33m 0x63a3634d2df0[0m <[0;33m<scratch space>:38:1[0m> "__isoc99_fscanf" IsLiteralLabel
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634d2e78[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:465:46[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d3080[0m prev 0x63a3634d2300 <[0;33mline:466:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:256:79[0m> [0;33m/usr/include/stdio.h:466:24[0m used[0;1;36m scanf[0m [0;32m'int (const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d2f70[0m <[0;33mcol:32[0m, [0;33mcol:55[0m> [0;33mcol:55[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d31a8[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 909
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d31d0[0m <[0;33mline:428:12[0m> Inherited scanf 1 2
+[0;34m| `-[0m[0;1;34mAsmLabelAttr[0m[0;33m 0x63a3634d3128[0m <[0;33m<scratch space>:40:1[0m> "__isoc99_scanf" IsLiteralLabel
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d9520[0m prev 0x63a3634d2848 <[0;33m/usr/include/stdio.h:468:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:54[0m> [0;33m/usr/include/stdio.h:468:28[0m[0;1;36m sscanf[0m [0;32m'int (const char *restrict, const char *restrict, ...)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d3220[0m <[0;33mcol:37[0m, [0;33mcol:60[0m> [0;33mcol:60[0m[0;1;36m __s[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d32a0[0m <[0;33mline:469:9[0m, [0;33mcol:32[0m> [0;33mcol:32[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d9678[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 911
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d96a0[0m <[0;33mline:430:12[0m> Inherited scanf 2 3
+[0;34m| |-[0m[0;1;34mAsmLabelAttr[0m[0;33m 0x63a3634d95c8[0m <[0;33m<scratch space>:42:1[0m> "__isoc99_sscanf" IsLiteralLabel
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634d9650[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d9948[0m <[0;33m/usr/include/stdio.h:490:12[0m> [0;33mcol:12[0m implicit[0;1;36m vfscanf[0m [0;32m'int (FILE *restrict, const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d9a48[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d9ab0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d9b18[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d99f0[0m <[0;33m<invalid sloc>[0m> Implicit 913
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d9b98[0m <[0;33mcol:12[0m> Implicit scanf 2 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d9bd0[0m prev 0x63a3634d9948 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:490:12[0m[0;1;36m vfscanf[0m [0;32m'int (FILE *restrict, const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d96f0[0m <[0;33mcol:21[0m, [0;33mcol:38[0m> [0;33mcol:38[0m[0;1;36m __s[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d9770[0m <[0;33mcol:43[0m, [0;33mcol:66[0m> [0;33mcol:66[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d97e8[0m <[0;33mline:491:7[0m, [0;33mcol:22[0m> [0;33mcol:22[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d9d38[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 913
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634d9c90[0m <[0;33mline:492:22[0m, [0;33mcol:49[0m> scanf 2 0
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634d9cf8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:492:72[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634d9f20[0m <[0;33mline:498:12[0m> [0;33mcol:12[0m implicit[0;1;36m vscanf[0m [0;32m'int (const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634da020[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634da088[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634d9fc8[0m <[0;33m<invalid sloc>[0m> Implicit 912
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634da100[0m <[0;33mcol:12[0m> Implicit scanf 1 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634da138[0m prev 0x63a3634d9f20 <[0;33mcol:1[0m, [0;33mline:499:51[0m> [0;33mline:498:12[0m[0;1;36m vscanf[0m [0;32m'int (const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d9d78[0m <[0;33mcol:20[0m, [0;33mcol:43[0m> [0;33mcol:43[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634d9df0[0m <[0;33mcol:53[0m, [0;33mcol:68[0m> [0;33mcol:68[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634da258[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 912
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634da1f0[0m <[0;33mline:499:22[0m, [0;33mcol:49[0m> scanf 1 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634da5b8[0m <[0;33mline:502:12[0m> [0;33mcol:12[0m implicit[0;1;36m vsscanf[0m [0;32m'int (const char *restrict, const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634da6b8[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634da720[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634da788[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634da660[0m <[0;33m<invalid sloc>[0m> Implicit 914
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634da808[0m <[0;33mcol:12[0m> Implicit scanf 2 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634da840[0m prev 0x63a3634da5b8 <[0;33mcol:1[0m, [0;33mline:504:59[0m> [0;33mline:502:12[0m[0;1;36m vsscanf[0m [0;32m'int (const char *restrict, const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634da298[0m <[0;33mcol:21[0m, [0;33mcol:44[0m> [0;33mcol:44[0m[0;1;36m __s[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634da318[0m <[0;33mline:503:7[0m, [0;33mcol:30[0m> [0;33mcol:30[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634da390[0m <[0;33mcol:40[0m, [0;33mcol:55[0m> [0;33mcol:55[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634da990[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 914
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634da900[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634da958[0m <[0;33m/usr/include/stdio.h:504:30[0m, [0;33mcol:57[0m> scanf 2 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dac50[0m prev 0x63a3634d9bd0 <[0;33mline:540:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:540:24[0m[0;1;36m vfscanf[0m [0;32m'int (FILE *restrict, const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634da9d0[0m <[0;33mline:541:11[0m, [0;33mcol:28[0m> [0;33mcol:28[0m[0;1;36m __s[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634daa50[0m <[0;33mline:542:4[0m, [0;33mcol:27[0m> [0;33mcol:27[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634daac8[0m <[0;33mcol:37[0m, [0;33mcol:52[0m> [0;33mcol:52[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634dadf8[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 913
+[0;34m| |-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dae20[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:492:72[0m> Inherited 1
+[0;34m| |-[0m[0;1;34mAsmLabelAttr[0m[0;33m 0x63a3634dacf8[0m <[0;33m<scratch space>:46:1[0m> "__isoc99_vfscanf" IsLiteralLabel
+[0;34m| |-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634dad88[0m <[0;33m/usr/include/stdio.h:544:22[0m, [0;33mcol:49[0m> scanf 2 0
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dadc0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:544:72[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634db008[0m prev 0x63a3634da138 <[0;33mline:545:1[0m, [0;33mline:547:51[0m> [0;33mline:545:24[0m[0;1;36m vscanf[0m [0;32m'int (const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dae70[0m <[0;33mcol:33[0m, [0;33mcol:56[0m> [0;33mcol:56[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634daee8[0m <[0;33mline:546:5[0m, [0;33mcol:20[0m> [0;33mcol:20[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634db170[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 912
+[0;34m| |-[0m[0;1;34mAsmLabelAttr[0m[0;33m 0x63a3634db0b0[0m <[0;33m<scratch space>:48:1[0m> "__isoc99_vscanf" IsLiteralLabel
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634db138[0m <[0;33m/usr/include/stdio.h:547:22[0m, [0;33mcol:49[0m> scanf 1 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634db3d0[0m prev 0x63a3634da840 <[0;33mline:548:1[0m, [0;33mline:552:51[0m> [0;33mline:548:28[0m[0;1;36m vsscanf[0m [0;32m'int (const char *restrict, const char *restrict, struct __va_list_tag *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634db1b0[0m <[0;33mline:549:8[0m, [0;33mcol:31[0m> [0;33mcol:31[0m[0;1;36m __s[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634db230[0m <[0;33mline:550:8[0m, [0;33mcol:31[0m> [0;33mcol:31[0m[0;1;36m __format[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634db2a8[0m <[0;33mline:551:8[0m, [0;33mcol:23[0m> [0;33mcol:23[0m[0;1;36m __arg[0m [0;32m'struct __va_list_tag *'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634db578[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 914
+[0;34m| |-[0m[0;1;34mAsmLabelAttr[0m[0;33m 0x63a3634db478[0m <[0;33m<scratch space>:50:1[0m> "__isoc99_vsscanf" IsLiteralLabel
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634db508[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mFormatAttr[0m[0;33m 0x63a3634db540[0m <[0;33m/usr/include/stdio.h:552:22[0m, [0;33mcol:49[0m> scanf 2 0
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634db670[0m <[0;33mline:575:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:575:12[0m[0;1;36m fgetc[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634db5b8[0m <[0;33mcol:19[0m, [0;33mcol:25[0m> [0;33mcol:25[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634db720[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:575:48[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634db858[0m <[0;33mline:576:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:576:12[0m[0;1;36m getc[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634db7a0[0m <[0;33mcol:18[0m, [0;33mcol:24[0m> [0;33mcol:24[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634db908[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:576:47[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dba48[0m <[0;33mline:582:1[0m, [0;33mcol:25[0m> [0;33mcol:12[0m[0;1;36m getchar[0m [0;32m'int (void)'[0m extern
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dbbc0[0m <[0;33mline:589:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:589:12[0m[0;1;36m getc_unlocked[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dbb08[0m <[0;33mcol:27[0m, [0;33mcol:33[0m> [0;33mcol:33[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dbc70[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:589:56[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dbd78[0m <[0;33mline:590:1[0m, [0;33mcol:34[0m> [0;33mcol:12[0m[0;1;36m getchar_unlocked[0m [0;32m'int (void)'[0m extern
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dbef0[0m <[0;33mline:600:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:600:12[0m[0;1;36m fgetc_unlocked[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dbe38[0m <[0;33mcol:28[0m, [0;33mcol:34[0m> [0;33mcol:34[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dbfa0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:600:57[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dc1e8[0m <[0;33mline:611:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:611:12[0m[0;1;36m fputc[0m [0;32m'int (int, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dc020[0m <[0;33mcol:19[0m, [0;33mcol:23[0m> [0;33mcol:23[0m[0;1;36m __c[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dc0a0[0m <[0;33mcol:28[0m, [0;33mcol:34[0m> [0;33mcol:34[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dc2a0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:611:57[0m> 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dc460[0m <[0;33mline:612:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:612:12[0m[0;1;36m putc[0m [0;32m'int (int, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dc320[0m <[0;33mcol:18[0m, [0;33mcol:22[0m> [0;33mcol:22[0m[0;1;36m __c[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dc3a0[0m <[0;33mcol:27[0m, [0;33mcol:33[0m> [0;33mcol:33[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dc550[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:612:56[0m> 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dc6a8[0m <[0;33mline:618:1[0m, [0;33mcol:28[0m> [0;33mcol:12[0m[0;1;36m putchar[0m [0;32m'int (int)'[0m extern
+[0;34m| `-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dc5d0[0m <[0;33mcol:21[0m, [0;33mcol:25[0m> [0;33mcol:25[0m[0;1;36m __c[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dc8b0[0m <[0;33mline:627:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:627:12[0m[0;1;36m fputc_unlocked[0m [0;32m'int (int, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dc770[0m <[0;33mcol:28[0m, [0;33mcol:32[0m> [0;33mcol:32[0m[0;1;36m __c[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dc7f0[0m <[0;33mcol:37[0m, [0;33mcol:43[0m> [0;33mcol:43[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dc968[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:627:66[0m> 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dcb30[0m <[0;33mline:635:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:635:12[0m[0;1;36m putc_unlocked[0m [0;32m'int (int, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dc9f0[0m <[0;33mcol:27[0m, [0;33mcol:31[0m> [0;33mcol:31[0m[0;1;36m __c[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dca70[0m <[0;33mcol:36[0m, [0;33mcol:42[0m> [0;33mcol:42[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dcbe8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:635:65[0m> 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dcd08[0m <[0;33mline:636:1[0m, [0;33mcol:37[0m> [0;33mcol:12[0m[0;1;36m putchar_unlocked[0m [0;32m'int (int)'[0m extern
+[0;34m| `-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dcc70[0m <[0;33mcol:30[0m, [0;33mcol:34[0m> [0;33mcol:34[0m[0;1;36m __c[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dce88[0m <[0;33mline:643:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:643:12[0m[0;1;36m getw[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dcdd0[0m <[0;33mcol:18[0m, [0;33mcol:24[0m> [0;33mcol:24[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dcf38[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:643:47[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dd100[0m <[0;33mline:646:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:646:12[0m[0;1;36m putw[0m [0;32m'int (int, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dcfc0[0m <[0;33mcol:18[0m, [0;33mcol:22[0m> [0;33mcol:22[0m[0;1;36m __w[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dd040[0m <[0;33mcol:27[0m, [0;33mcol:33[0m> [0;33mcol:33[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dd1b8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:646:56[0m> 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dd4a8[0m <[0;33mline:654:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:654:14[0m[0;1;36m fgets[0m [0;32m'char *(char *restrict, int, FILE *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dd240[0m <[0;33mcol:21[0m, [0;33mcol:38[0m> [0;33mcol:38[0m[0;1;36m __s[0m [0;32m'char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dd2c0[0m <[0;33mcol:43[0m, [0;33mcol:47[0m> [0;33mcol:47[0m[0;1;36m __n[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dd340[0m <[0;33mcol:52[0m, [0;33mcol:69[0m> [0;33mcol:69[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dd578[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:655:72[0m> 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dd8f0[0m <[0;33mline:694:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:694:18[0m[0;1;36m __getdelim[0m [0;32m'__ssize_t (char **restrict, size_t *restrict, int, FILE *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dd600[0m <[0;33mcol:30[0m, [0;33mcol:48[0m> [0;33mcol:48[0m[0;1;36m __lineptr[0m [0;32m'char **restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dd680[0m <[0;33mline:695:30[0m, [0;33mcol:49[0m> [0;33mcol:49[0m[0;1;36m __n[0m [0;32m'size_t *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dd700[0m <[0;33mcol:54[0m, [0;33mcol:58[0m> [0;33mcol:58[0m[0;1;36m __delimiter[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dd780[0m <[0;33mline:696:30[0m, [0;33mcol:47[0m> [0;33mcol:47[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dd9b8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:696:76[0m> 4
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634ddc88[0m <[0;33mline:697:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:697:18[0m[0;1;36m getdelim[0m [0;32m'__ssize_t (char **restrict, size_t *restrict, int, FILE *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dda40[0m <[0;33mcol:28[0m, [0;33mcol:46[0m> [0;33mcol:46[0m[0;1;36m __lineptr[0m [0;32m'char **restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634ddac0[0m <[0;33mline:698:28[0m, [0;33mcol:47[0m> [0;33mcol:47[0m[0;1;36m __n[0m [0;32m'size_t *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634ddb40[0m <[0;33mcol:52[0m, [0;33mcol:56[0m> [0;33mcol:56[0m[0;1;36m __delimiter[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634ddbc0[0m <[0;33mline:699:28[0m, [0;33mcol:45[0m> [0;33mcol:45[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634ddd50[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:699:74[0m> 4
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634de030[0m <[0;33mline:707:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:707:18[0m[0;1;36m getline[0m [0;32m'__ssize_t (char **restrict, size_t *restrict, FILE *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dddd0[0m <[0;33mcol:27[0m, [0;33mcol:45[0m> [0;33mcol:45[0m[0;1;36m __lineptr[0m [0;32m'char **restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dde50[0m <[0;33mline:708:27[0m, [0;33mcol:46[0m> [0;33mcol:46[0m[0;1;36m __n[0m [0;32m'size_t *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dded0[0m <[0;33mline:709:27[0m, [0;33mcol:44[0m> [0;33mcol:44[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634de0f0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:709:73[0m> 3
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634de338[0m <[0;33mline:717:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:717:12[0m[0;1;36m fputs[0m [0;32m'int (const char *restrict, FILE *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634de170[0m <[0;33mcol:19[0m, [0;33mcol:42[0m> [0;33mcol:42[0m[0;1;36m __s[0m [0;32m'const char *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634de1f0[0m <[0;33mcol:47[0m, [0;33mcol:64[0m> [0;33mcol:64[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634de3f0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:718:16[0m> 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634df580[0m <[0;33mline:724:1[0m, [0;33mcol:33[0m> [0;33mcol:12[0m[0;1;36m puts[0m [0;32m'int (const char *)'[0m extern
+[0;34m| `-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634de470[0m <[0;33mcol:18[0m, [0;33mcol:30[0m> [0;33mcol:30[0m[0;1;36m __s[0m [0;32m'const char *'[0m
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634df788[0m <[0;33mline:731:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:731:12[0m[0;1;36m ungetc[0m [0;32m'int (int, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634df648[0m <[0;33mcol:20[0m, [0;33mcol:24[0m> [0;33mcol:24[0m[0;1;36m __c[0m [0;32m'int'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634df6c8[0m <[0;33mcol:29[0m, [0;33mcol:35[0m> [0;33mcol:35[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634df840[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:731:58[0m> 2
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dfbf0[0m <[0;33mline:738:15[0m> [0;33mcol:15[0m implicit[0;1;36m fread[0m [0;32m'unsigned long (void *, unsigned long, unsigned long, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dfcf0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'void *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dfd58[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dfdc0[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dfe28[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634dfc98[0m <[0;33m<invalid sloc>[0m> Implicit 916
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634dfeb0[0m prev 0x63a3634dfbf0 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:738:15[0m[0;1;36m fread[0m [0;32m'unsigned long (void *, unsigned long, unsigned long, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634df8c0[0m <[0;33mcol:22[0m, [0;33mcol:39[0m> [0;33mcol:39[0m[0;1;36m __ptr[0m [0;32m'void *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634df938[0m <[0;33mcol:46[0m, [0;33mcol:53[0m> [0;33mcol:53[0m[0;1;36m __size[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634df9b0[0m <[0;33mline:739:8[0m, [0;33mcol:15[0m> [0;33mcol:15[0m[0;1;36m __n[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634dfa30[0m <[0;33mcol:20[0m, [0;33mcol:37[0m> [0;33mcol:37[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634dffe8[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 916
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634dff78[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:740:15[0m> 4
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e0380[0m <[0;33mline:745:15[0m> [0;33mcol:15[0m implicit[0;1;36m fwrite[0m [0;32m'unsigned long (const void *, unsigned long, unsigned long, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e0480[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'const void *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e04e8[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e1590[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e15f8[0m <[0;33m<invalid sloc>[0m> [0;33m<invalid sloc>[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634e0428[0m <[0;33m<invalid sloc>[0m> Implicit 917
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e1680[0m prev 0x63a3634e0380 <[0;33mcol:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:745:15[0m[0;1;36m fwrite[0m [0;32m'unsigned long (const void *, unsigned long, unsigned long, FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e0058[0m <[0;33mcol:23[0m, [0;33mcol:46[0m> [0;33mcol:46[0m[0;1;36m __ptr[0m [0;32m'const void *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e00d0[0m <[0;33mcol:53[0m, [0;33mcol:60[0m> [0;33mcol:60[0m[0;1;36m __size[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e0148[0m <[0;33mline:746:9[0m, [0;33mcol:16[0m> [0;33mcol:16[0m[0;1;36m __n[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e01c8[0m <[0;33mcol:21[0m, [0;33mcol:38[0m> [0;33mcol:38[0m[0;1;36m __s[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;34mBuiltinAttr[0m[0;33m 0x63a3634e17b8[0m <[0;33m<invalid sloc>[0m> Inherited Implicit 917
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e1748[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:746:55[0m> 4
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e1a30[0m <[0;33mline:766:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:766:15[0m[0;1;36m fread_unlocked[0m [0;32m'size_t (void *restrict, size_t, size_t, FILE *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e17f8[0m <[0;33mcol:31[0m, [0;33mcol:48[0m> [0;33mcol:48[0m[0;1;36m __ptr[0m [0;32m'void *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e1870[0m <[0;33mcol:55[0m, [0;33mcol:62[0m> [0;33mcol:62[0m[0;1;36m __size[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e18e8[0m <[0;33mline:767:10[0m, [0;33mcol:17[0m> [0;33mcol:17[0m[0;1;36m __n[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e1968[0m <[0;33mcol:22[0m, [0;33mcol:39[0m> [0;33mcol:39[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e1af8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:768:16[0m> 4
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e1db8[0m <[0;33mline:769:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:769:15[0m[0;1;36m fwrite_unlocked[0m [0;32m'size_t (const void *restrict, size_t, size_t, FILE *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e1b80[0m <[0;33mcol:32[0m, [0;33mcol:55[0m> [0;33mcol:55[0m[0;1;36m __ptr[0m [0;32m'const void *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e1bf8[0m <[0;33mcol:62[0m, [0;33mcol:69[0m> [0;33mcol:69[0m[0;1;36m __size[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e1c70[0m <[0;33mline:770:11[0m, [0;33mcol:18[0m> [0;33mcol:18[0m[0;1;36m __n[0m [0;32m'size_t':'unsigned long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e1cf0[0m <[0;33mcol:23[0m, [0;33mcol:40[0m> [0;33mcol:40[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e1e80[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:771:16[0m> 4
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e2168[0m <[0;33mline:779:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:779:12[0m[0;1;36m fseek[0m [0;32m'int (FILE *, long, int)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e1f00[0m <[0;33mcol:19[0m, [0;33mcol:25[0m> [0;33mcol:25[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e1f80[0m <[0;33mcol:35[0m, [0;33mcol:44[0m> [0;33mcol:44[0m[0;1;36m __off[0m [0;32m'long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e2000[0m <[0;33mcol:51[0m, [0;33mcol:55[0m> [0;33mcol:55[0m[0;1;36m __whence[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e2228[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:780:16[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e23e8[0m <[0;33mline:785:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:785:17[0m[0;1;36m ftell[0m [0;32m'long (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e22b0[0m <[0;33mcol:24[0m, [0;33mcol:30[0m> [0;33mcol:30[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e2498[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:785:59[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e25e8[0m <[0;33mline:790:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:790:13[0m[0;1;36m rewind[0m [0;32m'void (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e2520[0m <[0;33mcol:21[0m, [0;33mcol:27[0m> [0;33mcol:27[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e2698[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:790:50[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e2928[0m <[0;33mline:803:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:803:12[0m[0;1;36m fseeko[0m [0;32m'int (FILE *, __off_t, int)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e2720[0m <[0;33mcol:20[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e2798[0m <[0;33mcol:36[0m, [0;33mcol:44[0m> [0;33mcol:44[0m[0;1;36m __off[0m [0;32m'__off_t':'long'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e2818[0m <[0;33mcol:51[0m, [0;33mcol:55[0m> [0;33mcol:55[0m[0;1;36m __whence[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e29e8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:804:16[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e2b60[0m <[0;33mline:809:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:809:16[0m[0;1;36m ftello[0m [0;32m'__off_t (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e2a70[0m <[0;33mcol:24[0m, [0;33mcol:30[0m> [0;33mcol:30[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e2c10[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:809:59[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e2f18[0m <[0;33mline:829:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:829:12[0m[0;1;36m fgetpos[0m [0;32m'int (FILE *restrict, fpos_t *restrict)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e2c90[0m <[0;33mcol:21[0m, [0;33mcol:38[0m> [0;33mcol:38[0m[0;1;36m __stream[0m [0;32m'FILE *restrict'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e2dd8[0m <[0;33mcol:48[0m, [0;33mcol:67[0m> [0;33mcol:67[0m[0;1;36m __pos[0m [0;32m'fpos_t *restrict'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e2fd0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:830:16[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e3278[0m <[0;33mline:835:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:835:12[0m[0;1;36m fsetpos[0m [0;32m'int (FILE *, const fpos_t *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e3050[0m <[0;33mcol:21[0m, [0;33mcol:27[0m> [0;33mcol:27[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e3138[0m <[0;33mcol:37[0m, [0;33mcol:51[0m> [0;33mcol:51[0m[0;1;36m __pos[0m [0;32m'const fpos_t *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e3330[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:835:71[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e3460[0m <[0;33mline:860:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:860:13[0m[0;1;36m clearerr[0m [0;32m'void (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e33b0[0m <[0;33mcol:23[0m, [0;33mcol:29[0m> [0;33mcol:29[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e3510[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e3568[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:860:60[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e3688[0m <[0;33mline:862:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:862:12[0m[0;1;36m feof[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e35d0[0m <[0;33mcol:18[0m, [0;33mcol:24[0m> [0;33mcol:24[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e3738[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e3790[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:862:61[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e3898[0m <[0;33mline:864:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:864:12[0m[0;1;36m ferror[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e37e0[0m <[0;33mcol:20[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e3948[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e39a0[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:864:63[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e3aa0[0m <[0;33mline:868:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:868:13[0m[0;1;36m clearerr_unlocked[0m [0;32m'void (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e39f0[0m <[0;33mcol:32[0m, [0;33mcol:38[0m> [0;33mcol:38[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e3b50[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e3ba8[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:868:69[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e3cb8[0m <[0;33mline:869:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:869:12[0m[0;1;36m feof_unlocked[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e3c00[0m <[0;33mcol:27[0m, [0;33mcol:33[0m> [0;33mcol:33[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e3d68[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e3dc0[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:869:70[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e3ec8[0m <[0;33mline:870:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:870:12[0m[0;1;36m ferror_unlocked[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e3e10[0m <[0;33mcol:29[0m, [0;33mcol:35[0m> [0;33mcol:35[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e3f78[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e3fd0[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:870:72[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e40f0[0m <[0;33mline:878:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:102:43[0m> [0;33m/usr/include/stdio.h:878:13[0m[0;1;36m perror[0m [0;32m'void (const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e4020[0m <[0;33mcol:21[0m, [0;33mcol:33[0m> [0;33mcol:33[0m[0;1;36m __s[0m [0;32m'const char *'[0m
+[0;34m| `-[0m[0;1;34mColdAttr[0m[0;33m 0x63a3634e41a0[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:102:34[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e42c8[0m <[0;33m/usr/include/stdio.h:883:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:883:12[0m[0;1;36m fileno[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e4210[0m <[0;33mcol:20[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e4378[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e43d0[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:883:63[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e44d8[0m <[0;33mline:888:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:888:12[0m[0;1;36m fileno_unlocked[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e4420[0m <[0;33mcol:29[0m, [0;33mcol:35[0m> [0;33mcol:35[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e4588[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e5600[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:888:72[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e5708[0m <[0;33mline:897:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:897:12[0m[0;1;36m pclose[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e5650[0m <[0;33mcol:20[0m, [0;33mcol:26[0m> [0;33mcol:26[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e57b8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:57[0m, [0;33m/usr/include/stdio.h:897:49[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e59a8[0m <[0;33mline:903:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:58[0m> [0;33m/usr/include/stdio.h:903:14[0m[0;1;36m popen[0m [0;32m'FILE *(const char *, const char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e5840[0m <[0;33mcol:21[0m, [0;33mcol:33[0m> [0;33mcol:33[0m[0;1;36m __command[0m [0;32m'const char *'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e58c0[0m <[0;33mcol:44[0m, [0;33mcol:56[0m> [0;33mcol:56[0m[0;1;36m __modes[0m [0;32m'const char *'[0m
+[0;34m| `-[0m[0;1;34mRestrictAttr[0m[0;33m 0x63a3634e5a60[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:298:47[0m> malloc
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e5b68[0m <[0;33m/usr/include/stdio.h:911:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:54[0m> [0;33m/usr/include/stdio.h:911:14[0m[0;1;36m ctermid[0m [0;32m'char *(char *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e5ad0[0m <[0;33mcol:23[0m, [0;33mcol:29[0m> [0;33mcol:29[0m[0;1;36m __s[0m [0;32m'char *'[0m
+[0;34m| `-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e5c18[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e5d38[0m <[0;33m/usr/include/stdio.h:941:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:941:13[0m[0;1;36m flockfile[0m [0;32m'void (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e5c88[0m <[0;33mcol:24[0m, [0;33mcol:30[0m> [0;33mcol:30[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e5de8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e5e40[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:941:61[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e5f48[0m <[0;33mline:945:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:945:12[0m[0;1;36m ftrylockfile[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e5e90[0m <[0;33mcol:26[0m, [0;33mcol:32[0m> [0;33mcol:32[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e5ff8[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e6050[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:945:69[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e6150[0m <[0;33mline:948:1[0m, [0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:401:76[0m> [0;33m/usr/include/stdio.h:948:13[0m[0;1;36m funlockfile[0m [0;32m'void (FILE *)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e60a0[0m <[0;33mcol:26[0m, [0;33mcol:32[0m> [0;33mcol:32[0m[0;1;36m __stream[0m [0;32m'FILE *'[0m
+[0;34m| |-[0m[0;1;34mNoThrowAttr[0m[0;33m 0x63a3634e6200[0m <[0;33m/usr/include/x86_64-linux-gnu/sys/cdefs.h:79:35[0m>
+[0;34m| `-[0m[0;1;34mNonNullAttr[0m[0;33m 0x63a3634e6258[0m <[0;33mline:401:57[0m, [0;33m/usr/include/stdio.h:948:63[0m> 1
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e6348[0m <[0;33mline:959:1[0m, [0;33mcol:27[0m> [0;33mcol:12[0m[0;1;36m __uflow[0m [0;32m'int (FILE *)'[0m extern
+[0;34m| `-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e62b0[0m <[0;33mcol:21[0m, [0;33mcol:26[0m> [0;33mcol:27[0m [0;32m'FILE *'[0m
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e65e0[0m <[0;33mline:960:1[0m, [0;33mcol:35[0m> [0;33mcol:12[0m[0;1;36m __overflow[0m [0;32m'int (FILE *, int)'[0m extern
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e6410[0m <[0;33mcol:24[0m, [0;33mcol:29[0m> [0;33mcol:30[0m [0;32m'FILE *'[0m
+[0;34m| `-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e6490[0m <[0;33mcol:32[0m> [0;33mcol:35[0m [0;32m'int'[0m
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e6748[0m <[0;33mmain.c:5:1[0m, [0;33mline:19:1[0m> [0;33mline:5:5[0m used[0;1;36m factorial[0m [0;32m'int (int)'[0m
+[0;34m| |-[0m[0;1;32mParmVarDecl[0m[0;33m 0x63a3634e66b0[0m <[0;33mcol:15[0m, [0;33mcol:19[0m> [0;33mcol:19[0m used[0;1;36m n[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;1;35mCompoundStmt[0m[0;33m 0x63a3634e6c48[0m <[0;33mline:6:1[0m, [0;33mline:19:1[0m>
+[0;34m|   |-[0m[0;1;35mDeclStmt[0m[0;33m 0x63a3634e6878[0m <[0;33mline:7:5[0m, [0;33mcol:10[0m>
+[0;34m|   | `-[0m[0;1;32mVarDecl[0m[0;33m 0x63a3634e6810[0m <[0;33mcol:5[0m, [0;33mcol:9[0m> [0;33mcol:9[0m used[0;1;36m i[0m [0;32m'int'[0m
+[0;34m|   |-[0m[0;1;35mDeclStmt[0m[0;33m 0x63a3634e6930[0m <[0;33mline:8:5[0m, [0;33mcol:29[0m>
+[0;34m|   | `-[0m[0;1;32mVarDecl[0m[0;33m 0x63a3634e68a8[0m <[0;33mcol:5[0m, [0;33mline:3:21[0m> [0;33mline:8:9[0m used[0;1;36m result[0m [0;32m'int'[0m cinit
+[0;34m|   |   `-[0m[0;1;35mIntegerLiteral[0m[0;33m 0x63a3634e6910[0m <[0;33mline:3:21[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m[0;1;36m 1[0m
+[0;34m|   |-[0m[0;1;35mBinaryOperator[0m[0;33m 0x63a3634e6988[0m <[0;33mline:10:5[0m, [0;33mcol:9[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m '='
+[0;34m|   | |-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e6948[0m <[0;33mcol:5[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e6810[0m[0;1;36m 'i'[0m [0;32m'int'[0m
+[0;34m|   | `-[0m[0;1;35mIntegerLiteral[0m[0;33m 0x63a3634e6968[0m <[0;33mcol:9[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m[0;1;36m 2[0m
+[0;34m|   |-[0m[0;1;35mWhileStmt[0m[0;33m 0x63a3634e6be0[0m <[0;33mline:12:5[0m, [0;33mline:16:5[0m>
+[0;34m|   | |-[0m[0;1;35mBinaryOperator[0m[0;33m 0x63a3634e6a18[0m <[0;33mline:12:12[0m, [0;33mcol:17[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m '<='
+[0;34m|   | | |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e69e8[0m <[0;33mcol:12[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m|   | | | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e69a8[0m <[0;33mcol:12[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e6810[0m[0;1;36m 'i'[0m [0;32m'int'[0m
+[0;34m|   | | `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e6a00[0m <[0;33mcol:17[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m|   | |   `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e69c8[0m <[0;33mcol:17[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mParmVar[0m[0;33m 0x63a3634e66b0[0m[0;1;36m 'n'[0m [0;32m'int'[0m
+[0;34m|   | `-[0m[0;1;35mCompoundStmt[0m[0;33m 0x63a3634e6bc0[0m <[0;33mline:13:5[0m, [0;33mline:16:5[0m>
+[0;34m|   |   |-[0m[0;1;35mBinaryOperator[0m[0;33m 0x63a3634e6ae8[0m <[0;33mline:14:9[0m, [0;33mcol:27[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m '='
+[0;34m|   |   | |-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e6a38[0m <[0;33mcol:9[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e68a8[0m[0;1;36m 'result'[0m [0;32m'int'[0m
+[0;34m|   |   | `-[0m[0;1;35mBinaryOperator[0m[0;33m 0x63a3634e6ac8[0m <[0;33mcol:18[0m, [0;33mcol:27[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m '*'
+[0;34m|   |   |   |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e6a98[0m <[0;33mcol:18[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m|   |   |   | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e6a58[0m <[0;33mcol:18[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e68a8[0m[0;1;36m 'result'[0m [0;32m'int'[0m
+[0;34m|   |   |   `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e6ab0[0m <[0;33mcol:27[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m|   |   |     `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e6a78[0m <[0;33mcol:27[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e6810[0m[0;1;36m 'i'[0m [0;32m'int'[0m
+[0;34m|   |   `-[0m[0;1;35mBinaryOperator[0m[0;33m 0x63a3634e6ba0[0m <[0;33mline:15:9[0m, [0;33mcol:17[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m '='
+[0;34m|   |     |-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e6b08[0m <[0;33mcol:9[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e6810[0m[0;1;36m 'i'[0m [0;32m'int'[0m
+[0;34m|   |     `-[0m[0;1;35mBinaryOperator[0m[0;33m 0x63a3634e6b80[0m <[0;33mcol:13[0m, [0;33mcol:17[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m '+'
+[0;34m|   |       |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e6b68[0m <[0;33mcol:13[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m|   |       | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e6b28[0m <[0;33mcol:13[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e6810[0m[0;1;36m 'i'[0m [0;32m'int'[0m
+[0;34m|   |       `-[0m[0;1;35mIntegerLiteral[0m[0;33m 0x63a3634e6b48[0m <[0;33mcol:17[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m[0;1;36m 1[0m
+[0;34m|   `-[0m[0;1;35mReturnStmt[0m[0;33m 0x63a3634e6c38[0m <[0;33mline:18:5[0m, [0;33mcol:12[0m>
+[0;34m|     `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e6c20[0m <[0;33mcol:12[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m|       `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e6c00[0m <[0;33mcol:12[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e68a8[0m[0;1;36m 'result'[0m [0;32m'int'[0m
+[0;34m`-[0m[0;1;32mFunctionDecl[0m[0;33m 0x63a3634e6d20[0m <[0;33mline:21:1[0m, [0;33mline:34:1[0m> [0;33mline:21:5[0m[0;1;36m main[0m [0;32m'int (void)'[0m
+[0;34m  `-[0m[0;1;35mCompoundStmt[0m[0;33m 0x63a3634e7438[0m <[0;33mline:22:1[0m, [0;33mline:34:1[0m>
+[0;34m    |-[0m[0;1;35mDeclStmt[0m[0;33m 0x63a3634e6e48[0m <[0;33mline:23:5[0m, [0;33mcol:10[0m>
+[0;34m    | `-[0m[0;1;32mVarDecl[0m[0;33m 0x63a3634e6de0[0m <[0;33mcol:5[0m, [0;33mcol:9[0m> [0;33mcol:9[0m used[0;1;36m n[0m [0;32m'int'[0m
+[0;34m    |-[0m[0;1;35mDeclStmt[0m[0;33m 0x63a3634e6ee0[0m <[0;33mline:24:5[0m, [0;33mcol:15[0m>
+[0;34m    | `-[0m[0;1;32mVarDecl[0m[0;33m 0x63a3634e6e78[0m <[0;33mcol:5[0m, [0;33mcol:9[0m> [0;33mcol:9[0m used[0;1;36m result[0m [0;32m'int'[0m
+[0;34m    |-[0m[0;1;35mCallExpr[0m[0;33m 0x63a3634e6fe8[0m <[0;33mline:26:5[0m, [0;33mcol:23[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m
+[0;34m    | |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e6fd0[0m <[0;33mcol:5[0m> [0;32m'int (*)(const char *, ...)'[0m[0;36m[0m[0;36m[0m <[0;31mFunctionToPointerDecay[0m>
+[0;34m    | | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e6ef8[0m <[0;33mcol:5[0m> [0;32m'int (const char *, ...)'[0m[0;36m[0m[0;36m[0m [0;1;32mFunction[0m[0;33m 0x63a3634a7078[0m[0;1;36m 'printf'[0m [0;32m'int (const char *, ...)'[0m
+[0;34m    | `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e7028[0m <[0;33mcol:12[0m> [0;32m'const char *'[0m[0;36m[0m[0;36m[0m <[0;31mNoOp[0m>
+[0;34m    |   `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e7010[0m <[0;33mcol:12[0m> [0;32m'char *'[0m[0;36m[0m[0;36m[0m <[0;31mArrayToPointerDecay[0m>
+[0;34m    |     `-[0m[0;1;35mStringLiteral[0m[0;33m 0x63a3634e6f60[0m <[0;33mcol:12[0m> [0;32m'char[10]'[0m[0;36m lvalue[0m[0;36m[0m[0;1;36m "Input n: "[0m
+[0;34m    |-[0m[0;1;35mCallExpr[0m[0;33m 0x63a3634e7188[0m <[0;33mline:27:5[0m, [0;33mcol:19[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m
+[0;34m    | |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e7170[0m <[0;33mcol:5[0m> [0;32m'int (*)(const char *restrict, ...)'[0m[0;36m[0m[0;36m[0m <[0;31mFunctionToPointerDecay[0m>
+[0;34m    | | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e7040[0m <[0;33mcol:5[0m> [0;32m'int (const char *restrict, ...)'[0m[0;36m[0m[0;36m[0m [0;1;32mFunction[0m[0;33m 0x63a3634d3080[0m[0;1;36m 'scanf'[0m [0;32m'int (const char *restrict, ...)'[0m
+[0;34m    | |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e71d0[0m <[0;33mcol:11[0m> [0;32m'const char *'[0m[0;36m[0m[0;36m[0m <[0;31mNoOp[0m>
+[0;34m    | | `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e71b8[0m <[0;33mcol:11[0m> [0;32m'char *'[0m[0;36m[0m[0;36m[0m <[0;31mArrayToPointerDecay[0m>
+[0;34m    | |   `-[0m[0;1;35mStringLiteral[0m[0;33m 0x63a3634e70a0[0m <[0;33mcol:11[0m> [0;32m'char[3]'[0m[0;36m lvalue[0m[0;36m[0m[0;1;36m "%d"[0m
+[0;34m    | `-[0m[0;1;35mUnaryOperator[0m[0;33m 0x63a3634e7110[0m <[0;33mcol:17[0m, [0;33mcol:18[0m> [0;32m'int *'[0m[0;36m[0m[0;36m[0m prefix '&' cannot overflow
+[0;34m    |   `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e70c0[0m <[0;33mcol:18[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e6de0[0m[0;1;36m 'n'[0m [0;32m'int'[0m
+[0;34m    |-[0m[0;1;35mBinaryOperator[0m[0;33m 0x63a3634e72d8[0m <[0;33mline:29:5[0m, [0;33mcol:25[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m '='
+[0;34m    | |-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e71e8[0m <[0;33mcol:5[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e6e78[0m[0;1;36m 'result'[0m [0;32m'int'[0m
+[0;34m    | `-[0m[0;1;35mCallExpr[0m[0;33m 0x63a3634e7298[0m <[0;33mcol:14[0m, [0;33mcol:25[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m
+[0;34m    |   |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e7280[0m <[0;33mcol:14[0m> [0;32m'int (*)(int)'[0m[0;36m[0m[0;36m[0m <[0;31mFunctionToPointerDecay[0m>
+[0;34m    |   | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e7208[0m <[0;33mcol:14[0m> [0;32m'int (int)'[0m[0;36m[0m[0;36m[0m [0;1;32mFunction[0m[0;33m 0x63a3634e6748[0m[0;1;36m 'factorial'[0m [0;32m'int (int)'[0m
+[0;34m    |   `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e72c0[0m <[0;33mcol:24[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m    |     `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e7228[0m <[0;33mcol:24[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e6de0[0m[0;1;36m 'n'[0m [0;32m'int'[0m
+[0;34m    |-[0m[0;1;35mCallExpr[0m[0;33m 0x63a3634e7390[0m <[0;33mline:31:5[0m, [0;33mcol:38[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m
+[0;34m    | |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e7378[0m <[0;33mcol:5[0m> [0;32m'int (*)(const char *, ...)'[0m[0;36m[0m[0;36m[0m <[0;31mFunctionToPointerDecay[0m>
+[0;34m    | | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e72f8[0m <[0;33mcol:5[0m> [0;32m'int (const char *, ...)'[0m[0;36m[0m[0;36m[0m [0;1;32mFunction[0m[0;33m 0x63a3634a7078[0m[0;1;36m 'printf'[0m [0;32m'int (const char *, ...)'[0m
+[0;34m    | |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e73d8[0m <[0;33mcol:12[0m> [0;32m'const char *'[0m[0;36m[0m[0;36m[0m <[0;31mNoOp[0m>
+[0;34m    | | `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e73c0[0m <[0;33mcol:12[0m> [0;32m'char *'[0m[0;36m[0m[0;36m[0m <[0;31mArrayToPointerDecay[0m>
+[0;34m    | |   `-[0m[0;1;35mStringLiteral[0m[0;33m 0x63a3634e7318[0m <[0;33mcol:12[0m> [0;32m'char[16]'[0m[0;36m lvalue[0m[0;36m[0m[0;1;36m "factorial = %d\n"[0m
+[0;34m    | `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x63a3634e73f0[0m <[0;33mcol:32[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m    |   `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x63a3634e7340[0m <[0;33mcol:32[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x63a3634e6e78[0m[0;1;36m 'result'[0m [0;32m'int'[0m
+[0;34m    `-[0m[0;1;35mReturnStmt[0m[0;33m 0x63a3634e7428[0m <[0;33mline:33:5[0m, [0;33mcol:12[0m>
+[0;34m      `-[0m[0;1;35mIntegerLiteral[0m[0;33m 0x63a3634e7408[0m <[0;33mcol:12[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m[0;1;36m 0[0m

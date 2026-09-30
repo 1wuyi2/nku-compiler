@@ -1,0 +1,87 @@
+int 'int'	 [StartOfLine]	Loc=<main.c:5:1>
+identifier 'factorial'	 [LeadingSpace]	Loc=<main.c:5:5>
+l_paren '('		Loc=<main.c:5:14>
+int 'int'		Loc=<main.c:5:15>
+identifier 'n'	 [LeadingSpace]	Loc=<main.c:5:19>
+r_paren ')'		Loc=<main.c:5:20>
+l_brace '{'	 [StartOfLine]	Loc=<main.c:6:1>
+int 'int'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:7:5>
+identifier 'i'	 [LeadingSpace]	Loc=<main.c:7:9>
+semi ';'		Loc=<main.c:7:10>
+int 'int'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:8:5>
+identifier 'result'	 [LeadingSpace]	Loc=<main.c:8:9>
+equal '='	 [LeadingSpace]	Loc=<main.c:8:16>
+numeric_constant '1'	 [LeadingSpace]	Loc=<main.c:8:18 <Spelling=main.c:3:21>>
+semi ';'		Loc=<main.c:8:29>
+identifier 'i'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:10:5>
+equal '='	 [LeadingSpace]	Loc=<main.c:10:7>
+numeric_constant '2'	 [LeadingSpace]	Loc=<main.c:10:9>
+semi ';'		Loc=<main.c:10:10>
+while 'while'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:12:5>
+l_paren '('	 [LeadingSpace]	Loc=<main.c:12:11>
+identifier 'i'		Loc=<main.c:12:12>
+lessequal '<='	 [LeadingSpace]	Loc=<main.c:12:14>
+identifier 'n'	 [LeadingSpace]	Loc=<main.c:12:17>
+r_paren ')'		Loc=<main.c:12:18>
+l_brace '{'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:13:5>
+identifier 'result'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:14:9>
+equal '='	 [LeadingSpace]	Loc=<main.c:14:16>
+identifier 'result'	 [LeadingSpace]	Loc=<main.c:14:18>
+star '*'	 [LeadingSpace]	Loc=<main.c:14:25>
+identifier 'i'	 [LeadingSpace]	Loc=<main.c:14:27>
+semi ';'		Loc=<main.c:14:28>
+identifier 'i'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:15:9>
+equal '='	 [LeadingSpace]	Loc=<main.c:15:11>
+identifier 'i'	 [LeadingSpace]	Loc=<main.c:15:13>
+plus '+'	 [LeadingSpace]	Loc=<main.c:15:15>
+numeric_constant '1'	 [LeadingSpace]	Loc=<main.c:15:17>
+semi ';'		Loc=<main.c:15:18>
+r_brace '}'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:16:5>
+return 'return'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:18:5>
+identifier 'result'	 [LeadingSpace]	Loc=<main.c:18:12>
+semi ';'		Loc=<main.c:18:18>
+r_brace '}'	 [StartOfLine]	Loc=<main.c:19:1>
+int 'int'	 [StartOfLine]	Loc=<main.c:21:1>
+identifier 'main'	 [LeadingSpace]	Loc=<main.c:21:5>
+l_paren '('		Loc=<main.c:21:9>
+void 'void'		Loc=<main.c:21:10>
+r_paren ')'		Loc=<main.c:21:14>
+l_brace '{'	 [StartOfLine]	Loc=<main.c:22:1>
+int 'int'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:23:5>
+identifier 'n'	 [LeadingSpace]	Loc=<main.c:23:9>
+semi ';'		Loc=<main.c:23:10>
+int 'int'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:24:5>
+identifier 'result'	 [LeadingSpace]	Loc=<main.c:24:9>
+semi ';'		Loc=<main.c:24:15>
+identifier 'printf'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:26:5>
+l_paren '('		Loc=<main.c:26:11>
+string_literal '"Input n: "'		Loc=<main.c:26:12>
+r_paren ')'		Loc=<main.c:26:23>
+semi ';'		Loc=<main.c:26:24>
+identifier 'scanf'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:27:5>
+l_paren '('		Loc=<main.c:27:10>
+string_literal '"%d"'		Loc=<main.c:27:11>
+comma ','		Loc=<main.c:27:15>
+amp '&'	 [LeadingSpace]	Loc=<main.c:27:17>
+identifier 'n'		Loc=<main.c:27:18>
+r_paren ')'		Loc=<main.c:27:19>
+semi ';'		Loc=<main.c:27:20>
+identifier 'result'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:29:5>
+equal '='	 [LeadingSpace]	Loc=<main.c:29:12>
+identifier 'factorial'	 [LeadingSpace]	Loc=<main.c:29:14>
+l_paren '('		Loc=<main.c:29:23>
+identifier 'n'		Loc=<main.c:29:24>
+r_paren ')'		Loc=<main.c:29:25>
+semi ';'		Loc=<main.c:29:26>
+identifier 'printf'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:31:5>
+l_paren '('		Loc=<main.c:31:11>
+string_literal '"factorial = %d\n"'		Loc=<main.c:31:12>
+comma ','		Loc=<main.c:31:30>
+identifier 'result'	 [LeadingSpace]	Loc=<main.c:31:32>
+r_paren ')'		Loc=<main.c:31:38>
+semi ';'		Loc=<main.c:31:39>
+return 'return'	 [StartOfLine] [LeadingSpace]	Loc=<main.c:33:5>
+numeric_constant '0'	 [LeadingSpace]	Loc=<main.c:33:12>
+semi ';'		Loc=<main.c:33:13>
+r_brace '}'	 [StartOfLine]	Loc=<main.c:34:1>
+eof ''		Loc=<main.c:34:2>

@@ -430,19 +430,79 @@ n=5
 
 这种设计使程序规模保持适中，同时能够在低层实现中观察数组寻址、基本块跳转、循环、函数调用、参数传递和整数运算等关键机制。
 
-\subsection{LLVM IR 实现}
+LLVM IR 部分以同一份 SysY 测试程序为语义基准，手工完成
+\texttt{calc} 和 \texttt{main} 两个函数的中间表示实现。
+实现采用基于栈内存的直接翻译方式，局部变量通过
+\texttt{alloca} 分配空间，并使用 \texttt{load} 和
+\texttt{store} 完成读写。
 
-\noindent
-\textbf{主要负责人：王帅（2413995）}
+在 \texttt{calc} 函数中，一维数组
+\texttt{values[8]} 使用
 
-\wsplaceholder{
-建议补充约 1 页左右。首先说明 \texttt{calc} 和 \texttt{main}
-的基本块划分；再说明数组通过 \texttt{alloca} 和
-\texttt{getelementptr} 完成地址计算，条件和循环通过
-\texttt{icmp/br} 实现；最后说明 \texttt{getint}、
-\texttt{putint} 和 \texttt{putch} 的声明、运行时库链接方式及测试结果。
-正文建议放 1 张关键 LLVM IR 截图和 1 张最终测试截图，不粘贴完整 main.ll。
-}
+\begin{lstlisting}
+%values = alloca [8 x i32], align 16
+\end{lstlisting}
+
+分配空间。数组元素 \texttt{values[i]} 的地址通过
+\texttt{getelementptr} 计算：
+
+\begin{lstlisting}
+%idx64 = sext i32 %i_cur to i64
+%elem_ptr = getelementptr inbounds [8 x i32],
+            [8 x i32]* %values,
+            i64 0, i64 %idx64
+\end{lstlisting}
+
+该过程把 SysY 中的数组下标访问显式转换为基地址和元素偏移的地址计算。
+
+源程序中的循环和条件分支被划分为多个基本块。
+例如，\texttt{while (i < n)} 对应
+\texttt{loop.cond}、\texttt{loop.body} 和
+\texttt{loop.end} 等基本块，通过 \texttt{icmp} 生成
+布尔条件，再利用 \texttt{br} 指令控制基本块之间的跳转。
+奇偶判断同样通过 \texttt{srem}、\texttt{icmp} 和条件分支
+实现，并分别进入 \texttt{if.then} 与 \texttt{if.else}。
+
+整数乘法、除法和取模分别使用
+\texttt{mul}、\texttt{sdiv} 和 \texttt{srem}。
+由于 SysY 中的 \texttt{int} 为 32 位整数，因此主要数据类型
+统一使用 LLVM IR 的 \texttt{i32}。
+
+运行时输入输出通过声明课程 SysY 运行时接口实现：
+
+\begin{lstlisting}
+declare i32 @getint()
+declare void @putint(i32)
+declare void @putch(i32)
+\end{lstlisting}
+
+最终使用 Clang 将 \texttt{main.ll} 编译，并链接
+\texttt{libsysy\_x86.a}：
+
+\begin{lstlisting}
+clang main.ll -L../lib -lsysy_x86 -o main
+\end{lstlisting}
+
+随后分别使用 0、1、4、5、8、10 六组输入测试。
+程序输出依次为 3、3、21、17、111、111，
+均与 SysY 源程序的预期结果一致，说明所实现 LLVM IR
+在这些测试用例下保持了源程序的可观察语义。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]
+{images/llvm/llvm_ir.png}
+\caption{SysY 程序的 LLVM IR 关键实现}
+\label{fig:llvm-ir-handwritten}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.86\textwidth]
+{images/llvm/llvm_validation.png}
+\caption{LLVM IR 六组输入执行结果}
+\label{fig:llvm-validation}
+\end{figure}
 
 % =========================================================
 \section{RISC-V 汇编实现与验证}
@@ -642,31 +702,31 @@ riscv64-unknown-elf-gcc main.o -o main \
 \section{LLVM IR 与 RISC-V 实现结果比较}
 % =========================================================
 
-\wsplaceholder{
-王帅完成 LLVM IR 后，在此加入一个简短结果表即可。
-建议仍使用输入 0、1、4、5、8、10，
-表格包含“输入、预期结果、LLVM IR 输出、RISC-V 输出”四列。
-如果结果全部一致，再用一段话说明两种低层实现均保持了相同的 SysY 源程序语义。
-}
+为了验证两种低层实现是否保持相同的 SysY 程序语义，
+分别对 LLVM IR 和 RISC-V 汇编版本使用相同的六组输入进行测试。
+结果如表所示。
 
-% 示例：
-%
-% \begin{table}[H]
-% \centering
-% \caption{LLVM IR 与 RISC-V 执行结果比较}
-% \begin{tabular}{cccc}
-% \toprule
-% 输入 & 预期结果 & LLVM IR & RISC-V \\
-% \midrule
-% 0  & 3   & 3   & 3 \\
-% 1  & 3   & 3   & 3 \\
-% 4  & 21  & 21  & 21 \\
-% 5  & 17  & 17  & 17 \\
-% 8  & 111 & 111 & 111 \\
-% 10 & 111 & 111 & 111 \\
-% \bottomrule
-% \end{tabular}
-% \end{table}
+\begin{table}[H]
+\centering
+\caption{LLVM IR 与 RISC-V 执行结果比较}
+\begin{tabular}{cccc}
+\toprule
+输入 & 预期结果 & LLVM IR 输出 & RISC-V 输出 \\
+\midrule
+0  & 3   & 3   & 3 \\
+1  & 3   & 3   & 3 \\
+4  & 21  & 21  & 21 \\
+5  & 17  & 17  & 17 \\
+8  & 111 & 111 & 111 \\
+10 & 111 & 111 & 111 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+六组输入下，LLVM IR 与 RISC-V 汇编实现均得到与预期值相同的结果。
+其中输入 0 和 10 还分别验证了程序的下界修正和上界限制逻辑。
+因此，在本实验覆盖的测试范围内，两种低层表示均保持了
+SysY 源程序相同的可观察行为。
 
 % =========================================================
 \section{进阶探索：MLIR 与 AscendNPU IR}

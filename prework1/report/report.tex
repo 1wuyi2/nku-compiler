@@ -143,6 +143,32 @@
 编译器；LLVM IR；SysY；RISC-V；MLIR
 
 % =========================================================
+\section{引言}
+% =========================================================
+
+编译系统的作用并不仅是将高级语言源程序一次性转换为机器代码，
+而是通过预处理、词法分析、语法分析、语义分析、中间代码生成与优化、
+目标代码生成、汇编和链接等多个阶段，逐步降低程序的抽象层次，
+最终形成能够在目标平台运行的可执行程序。
+
+LLVM 将中间表示设计为相对独立于源语言和目标体系结构的 LLVM IR，
+使前端分析、通用优化与后端代码生成能够相对解耦。
+另一方面，面向 AI 加速器的编译系统还需要表达张量操作、
+专用存储层次、数据搬运以及硬件计算单元等信息，
+因此 MLIR 进一步采用多层中间表示和 Dialect 机制，
+允许程序在不同抽象层次之间逐级 lowering。
+
+本实验首先以一个简单 C 程序为例，实际观察 GCC 和 Clang/LLVM
+语言处理系统从源程序到可执行文件的完整过程，并研究不同编译阶段
+输出与源程序之间的关系。在此基础上，两位成员共同设计统一的
+SysY 测试程序和测试用例，随后分别完成 LLVM IR 与 RISC-V 汇编
+两种等价低层实现，并通过 SysY 运行时库和实际执行验证其正确性。
+
+此外，为进一步理解现代 AI 编译器中端的设计思想，本实验结合
+AscendNPU IR 官方 VecAdd 示例，对 MLIR 的多级 Dialect、
+存储空间表达和逐层 lowering 过程进行文档调研与分析。
+
+% =========================================================
 \section{实验任务与小组分工}
 % =========================================================
 
@@ -339,14 +365,107 @@ imull   %ecx, %edx
 因此，编译器优化的本质并不是简单缩短汇编文件，而是在保证程序外部可观察语义不变的前提下重新组织数据流、控制流和函数调用，从而降低访存、分支和调用等开销。
 
 % =========================================================
-\section{SysY 程序设计与两种目标表示}
+% =========================================================
+\section{SysY 测试程序设计}
 % =========================================================
 
-\subsection{SysY 测试程序设计}
+\subsection{程序功能与设计思路}
 
-第二部分需要手工完成 LLVM IR 与 RISC-V 汇编，因此测试程序既不能过于简单，也不宜包含大量重复结构。本实验设计的 SysY 程序使用 \texttt{calc(int n)} 函数作为主要计算过程，并在主函数中完成输入、边界处理和最终结果输出。
+第二部分实验需要分别手工实现 LLVM IR 和 RISC-V 汇编。
+为了使两种低层表示能够建立在同一语义基准上，本实验首先共同设计了一段规模适中、同时包含多种 SysY 语言结构的测试程序。
 
-程序首先调用 \texttt{getint()} 读取整数 $n$。为了保证数组访问安全，将 $n$ 限制在 $[1,8]$ 范围内。随后 \texttt{calc} 函数执行循环：当 $i+1$ 为偶数时，将其平方写入 \texttt{values[i]}；否则写入其相反数，并将数组元素逐项累加。
+程序由 \texttt{main} 和 \texttt{calc} 两个函数组成。
+其中，\texttt{main} 负责读取输入、执行上下界检查、调用计算函数并完成最终结果输出；
+\texttt{calc} 则负责主要循环计算过程。
+
+主函数首先通过
+
+\begin{lstlisting}
+n = getint();
+\end{lstlisting}
+
+读取一个整数。
+为了保证后续访问
+
+\begin{lstlisting}
+int values[8];
+\end{lstlisting}
+
+时不会发生数组越界，程序将输入限制在区间 $[1,8]$：
+
+\begin{lstlisting}
+if (n < 1)
+{
+    n = 1;
+}
+else
+{
+    if (n > LIMIT)
+    {
+        n = LIMIT;
+    }
+}
+\end{lstlisting}
+
+其中常量
+
+\begin{lstlisting}
+const int LIMIT = 8;
+\end{lstlisting}
+
+与数组长度保持一致。
+
+完成输入修正后，主函数调用
+
+\begin{lstlisting}
+result = calc(n);
+\end{lstlisting}
+
+得到主要计算结果，并继续执行整数除法和取模：
+
+\begin{lstlisting}
+quotient = n / 2;
+remainder = n % 2;
+\end{lstlisting}
+
+最后将 \texttt{calc} 的返回值、商、余数以及常量
+\texttt{BASE=3} 相加，并通过 \texttt{putint} 和
+\texttt{putch} 输出结果。
+
+因此，该程序既包含较典型的数值计算，又能够覆盖数组、循环、条件分支、函数调用和运行时接口等后续低层实现中需要重点处理的结构。
+
+
+\subsection{核心计算过程与语言特性覆盖}
+
+\texttt{calc} 函数是程序的核心计算部分。
+函数内部定义长度为 8 的整型数组：
+
+\begin{lstlisting}
+int values[8];
+\end{lstlisting}
+
+并使用循环依次计算数组前 $n$ 个元素：
+
+\begin{lstlisting}
+while (i < n)
+{
+    if ((i + 1) % 2 == 0)
+    {
+        values[i] = (i + 1) * (i + 1);
+    }
+    else
+    {
+        values[i] = -(i + 1);
+    }
+
+    result = result + values[i];
+    i = i + 1;
+}
+\end{lstlisting}
+
+当 $i+1$ 为偶数时，将其平方写入数组；
+当 $i+1$ 为奇数时，则将其相反数写入数组。
+每次完成数组赋值后，将当前元素累加到 \texttt{result} 中。
 
 例如，当
 
@@ -354,13 +473,13 @@ imull   %ecx, %edx
 n=5
 \]
 
-时，数组前五项为：
+时，数组前五项依次为
 
 \[
-[-1,\ 4,\ -3,\ 16,\ -5],
+[-1,\ 4,\ -3,\ 16,\ -5].
 \]
 
-因此
+因此：
 
 \[
 \texttt{calc}(5)
@@ -370,7 +489,7 @@ n=5
 11.
 \]
 
-主函数还会计算：
+主函数继续计算：
 
 \[
 5/2=2,
@@ -378,35 +497,44 @@ n=5
 5\bmod 2=1,
 \]
 
-并加入常量 \texttt{BASE=3}，因此最终结果为：
+并加入：
+
+\[
+\texttt{BASE}=3,
+\]
+
+所以最终得到：
 
 \[
 11+2+1+3=17.
 \]
 
-这一结果也可以作为后续 LLVM IR 和 RISC-V 两种实现是否保持语义一致的测试基准。
+这一计算过程既可以人工验证，也可以作为后续 LLVM IR 和 RISC-V 两种实现的语义检查基准。
 
-程序覆盖的主要语言结构如下。
+程序覆盖的主要 SysY 语言结构如表所示。
 
 \begin{table}[H]
 \centering
-\caption{SysY 测试程序覆盖的语言特性}
-\begin{tabularx}{\textwidth}{@{}p{3.2cm}X@{}}
+\caption{SysY 测试程序覆盖的主要语言特性}
+\begin{tabularx}{\textwidth}{@{}p{3.0cm}X@{}}
 \toprule
 类别 & 使用内容 \\
 \midrule
 
 数据定义 &
-常量、局部变量、一维整型数组 \\
+常量、局部整型变量、一维整型数组 \\
 
-数值运算 &
-加、减、乘、除、取模、一元负号 \\
+算术运算 &
+加法、减法、乘法、整数除法、取模和一元负号 \\
+
+关系运算 &
+小于、大于和等于比较 \\
 
 控制结构 &
-嵌套 \texttt{if/else}、\texttt{while} \\
+嵌套 \texttt{if/else} 和 \texttt{while} 循环 \\
 
-函数 &
-用户函数、参数、返回值、函数调用 \\
+函数机制 &
+函数定义、参数传递、返回值和函数调用 \\
 
 运行时接口 &
 \texttt{getint}、\texttt{putint}、\texttt{putch} \\
@@ -415,51 +543,264 @@ n=5
 \end{tabularx}
 \end{table}
 
-这种设计使程序规模保持适中，同时能够在低层实现中观察数组寻址、基本块跳转、循环、函数调用、参数传递和整数运算等关键机制。
+这样的程序规模不会使手工翻译过于复杂，同时又能够较完整地观察高级语言结构在 LLVM IR 和 RISC-V 汇编中的不同实现方式。
 
-\subsection{LLVM IR 实现}
+
+\subsection{测试用例与预期结果}
+
+为了验证两种实现的正确性，本实验为 LLVM IR 和 RISC-V 使用完全相同的测试输入。
+
+除了普通输入外，还专门设置了超出上下界的输入，用于检查边界修正逻辑。
+
+\begin{table}[H]
+\centering
+\caption{统一测试用例与预期结果}
+\begin{tabular}{cccc}
+\toprule
+输入 & 实际参与计算的 $n$ & 预期输出 & 测试目的 \\
+\midrule
+0  & 1 & 3   & 验证下界修正 \\
+1  & 1 & 3   & 验证下界边界 \\
+4  & 4 & 21  & 验证普通偶数输入 \\
+5  & 5 & 17  & 验证普通奇数输入 \\
+8  & 8 & 111 & 验证上界边界 \\
+10 & 8 & 111 & 验证上界修正 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+其中输入 0 会在主函数中被修正为 1；
+输入 10 会被限制为 8。
+因此，这两组用例可以专门检查条件分支是否按照源程序语义正确执行。
+
+其余输入则主要用于验证数组寻址、循环、乘法、除法、取模以及函数调用等实现。
+
+通过统一测试程序和统一输入，可以使后续 LLVM IR 与 RISC-V 的验证结果具有直接可比性。
+
+
+% =========================================================
+\section{LLVM IR 实现与验证}
+% =========================================================
+
+\subsection{总体结构与基本块设计}
 
 \noindent
 \textbf{主要负责人：王帅（2413995）}
-LLVM IR 部分以同一份 SysY 测试程序为语义基准，手工完成
-\texttt{calc} 和 \texttt{main} 两个函数的中间表示实现。
-实现采用基于栈内存的直接翻译方式，局部变量通过
-\texttt{alloca} 分配空间，并使用 \texttt{load} 和
-\texttt{store} 完成读写。
 
-在 \texttt{calc} 函数中，一维数组
-\texttt{values[8]} 使用
+LLVM IR 部分以第 3 章中的 SysY 程序作为语义基准，
+手工完成 \texttt{calc} 和 \texttt{main} 两个函数的中间表示。
+
+实现采用接近未优化编译结果的直接翻译方式：
+局部变量首先使用 \texttt{alloca} 在函数栈帧中分配空间，
+随后通过 \texttt{load} 和 \texttt{store} 完成读写。
+
+与 SysY 中按照语句顺序组织程序不同，LLVM IR 中控制流以基本块为单位组织。
+每个基本块以标签开始，并以 \texttt{br} 或 \texttt{ret} 等终结指令结束。
+
+以 \texttt{calc} 为例，主要基本块包括：
+
+\begin{table}[H]
+\centering
+\caption{\texttt{calc} 函数基本块及作用}
+\begin{tabularx}{\textwidth}{@{}p{3.0cm}X@{}}
+\toprule
+基本块 & 主要作用 \\
+\midrule
+
+\texttt{entry} &
+分配局部变量并完成初值设置 \\
+
+\texttt{loop.cond} &
+读取 $i$ 和 $n$，判断是否继续执行循环 \\
+
+\texttt{loop.body} &
+计算 $i+1$、奇偶性和数组元素地址 \\
+
+\texttt{if.then} &
+处理偶数情况，将平方写入数组 \\
+
+\texttt{if.else} &
+处理奇数情况，将负值写入数组 \\
+
+\texttt{if.end} &
+读取数组元素、更新累加结果和循环变量 \\
+
+\texttt{loop.end} &
+读取最终结果并返回 \\
+
+\bottomrule
+\end{tabularx}
+\end{table}
+
+因此，源程序中的结构化控制语句，在 LLVM IR 中被显式转换为多个基本块之间的有向控制流。
+
+
+\subsection{局部变量与数组寻址}
+
+SysY 中的局部整型变量统一使用 LLVM IR 的 \texttt{i32} 类型。
+
+在 \texttt{calc} 函数入口处，首先为局部对象分配空间：
 
 \begin{lstlisting}
 %values = alloca [8 x i32], align 16
+%i = alloca i32, align 4
+%result = alloca i32, align 4
+%n = alloca i32, align 4
 \end{lstlisting}
 
-分配空间。数组元素 \texttt{values[i]} 的地址通过
-\texttt{getelementptr} 计算：
+其中：
+
+\begin{itemize}
+    \item \texttt{values} 对应 SysY 中的 \texttt{int values[8]}；
+    \item \texttt{i} 对应循环变量；
+    \item \texttt{result} 保存累加结果；
+    \item \texttt{n} 保存传入的函数参数。
+\end{itemize}
+
+参数 \texttt{\%n\_arg} 进入函数后，通过：
+
+\begin{lstlisting}
+store i32 %n_arg, i32* %n, align 4
+\end{lstlisting}
+
+写入局部存储空间。
+
+之后需要使用该变量时，再通过：
+
+\begin{lstlisting}
+%n_val = load i32, i32* %n, align 4
+\end{lstlisting}
+
+取得实际值。
+
+数组元素
+
+\[
+\texttt{values}[i]
+\]
+
+不能像高级语言一样直接使用下标访问，而需要显式计算元素地址。
+
+首先将 32 位索引转换为 64 位：
 
 \begin{lstlisting}
 %idx64 = sext i32 %i_cur to i64
-%elem_ptr = getelementptr inbounds [8 x i32],
-            [8 x i32]* %values,
-            i64 0, i64 %idx64
 \end{lstlisting}
 
-该过程把 SysY 中的数组下标访问显式转换为基地址和元素偏移的地址计算。
+然后使用 \texttt{getelementptr}：
 
-源程序中的循环和条件分支被划分为多个基本块。
-例如，\texttt{while (i < n)} 对应
-\texttt{loop.cond}、\texttt{loop.body} 和
-\texttt{loop.end} 等基本块，通过 \texttt{icmp} 生成
-布尔条件，再利用 \texttt{br} 指令控制基本块之间的跳转。
-奇偶判断同样通过 \texttt{srem}、\texttt{icmp} 和条件分支
-实现，并分别进入 \texttt{if.then} 与 \texttt{if.else}。
+\begin{lstlisting}
+%elem_ptr = getelementptr inbounds [8 x i32],
+            [8 x i32]* %values,
+            i64 0,
+            i64 %idx64
+\end{lstlisting}
 
-整数乘法、除法和取模分别使用
-\texttt{mul}、\texttt{sdiv} 和 \texttt{srem}。
-由于 SysY 中的 \texttt{int} 为 32 位整数，因此主要数据类型
-统一使用 LLVM IR 的 \texttt{i32}。
+这里第一个索引 0 表示仍然以当前数组对象为基础，
+第二个索引 \texttt{\%idx64} 选择数组中的第 $i$ 个元素。
 
-运行时输入输出通过声明课程 SysY 运行时接口实现：
+因此，SysY 中一次简单的数组下标访问，在 LLVM IR 中被明确拆分为索引类型转换和地址计算。
+
+
+\subsection{控制流与整数运算}
+
+SysY 中的：
+
+\begin{lstlisting}
+while (i < n)
+\end{lstlisting}
+
+在 LLVM IR 中由条件比较和基本块跳转实现。
+
+循环条件部分为：
+
+\begin{lstlisting}
+%i_val = load i32, i32* %i, align 4
+%n_val = load i32, i32* %n, align 4
+%loop_cmp = icmp slt i32 %i_val, %n_val
+br i1 %loop_cmp, label %loop.body, label %loop.end
+\end{lstlisting}
+
+其中 \texttt{icmp slt} 执行有符号整数“小于”比较。
+
+如果比较结果为真，则进入：
+
+\begin{lstlisting}
+loop.body
+\end{lstlisting}
+
+否则跳转到：
+
+\begin{lstlisting}
+loop.end
+\end{lstlisting}
+
+结束循环。
+
+循环内部的奇偶判断：
+
+\begin{lstlisting}
+if ((i + 1) % 2 == 0)
+\end{lstlisting}
+
+转换为：
+
+\begin{lstlisting}
+%i_plus_1 = add nsw i32 %i_cur, 1
+%mod2 = srem i32 %i_plus_1, 2
+%is_even = icmp eq i32 %mod2, 0
+br i1 %is_even, label %if.then, label %if.else
+\end{lstlisting}
+
+其中：
+
+\begin{itemize}
+    \item \texttt{add} 对应整数加法；
+    \item \texttt{srem} 对应有符号整数取模；
+    \item \texttt{icmp eq} 判断余数是否等于 0；
+    \item \texttt{br} 根据比较结果选择不同基本块。
+\end{itemize}
+
+偶数分支中的平方运算：
+
+\begin{lstlisting}
+%square = mul nsw i32 %i_plus_1, %i_plus_1
+\end{lstlisting}
+
+使用 \texttt{mul} 实现。
+
+奇数分支中的一元负号：
+
+\begin{lstlisting}
+%negative = sub nsw i32 0, %i_plus_1
+\end{lstlisting}
+
+通过 $0-x$ 转换为减法实现。
+
+主函数中的整数除法与取模分别使用：
+
+\begin{lstlisting}
+%q = sdiv i32 %n2, 2
+%r = srem i32 %n2, 2
+\end{lstlisting}
+
+因此，SysY 中的基本算术运算均可以映射到对应的 LLVM IR 整数指令。
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]
+{images/llvm/llvm_ir.png}
+\caption{数组寻址与条件控制流的 LLVM IR 关键实现}
+\label{fig:llvm-ir-handwritten}
+\end{figure}
+
+
+\subsection{函数调用与 SysY 运行时接口}
+
+SysY 程序依赖课程运行时提供输入输出函数。
+
+在 LLVM IR 中首先声明：
 
 \begin{lstlisting}
 declare i32 @getint()
@@ -467,25 +808,111 @@ declare void @putint(i32)
 declare void @putch(i32)
 \end{lstlisting}
 
-最终使用 Clang 将 \texttt{main.ll} 编译，并链接
-\texttt{libsysy\_x86.a}：
+这些声明只给出函数类型，并没有在当前 \texttt{main.ll} 中定义函数体。
+具体实现将在链接阶段由 SysY 运行时库提供。
+
+读取输入时使用：
+
+\begin{lstlisting}
+%input = call i32 @getint()
+\end{lstlisting}
+
+返回值直接作为 SSA 值保存在 \texttt{\%input} 中。
+
+用户自定义函数调用：
+
+\begin{lstlisting}
+%calc_result = call i32 @calc(i32 %n2)
+\end{lstlisting}
+
+表示将 \texttt{\%n2} 作为参数传入 \texttt{calc}，
+并取得一个 \texttt{i32} 返回值。
+
+最终输出使用：
+
+\begin{lstlisting}
+call void @putint(i32 %sum3)
+call void @putch(i32 10)
+\end{lstlisting}
+
+其中 \texttt{putch(10)} 输出换行字符。
+
+与后续 RISC-V 汇编实现相比，LLVM IR 的函数调用仍然保留了较高层的函数和参数类型信息。
+此时无需显式指定参数寄存器或保存返回地址，这些更接近目标体系结构的细节由后端代码生成阶段继续处理。
+
+
+\subsection{编译、链接与执行验证}
+
+由于本实验环境使用的 Clang/LLVM 版本采用 typed pointer 语法，
+因此指针需要写为：
+
+\begin{lstlisting}
+i32*
+\end{lstlisting}
+
+以及：
+
+\begin{lstlisting}
+[8 x i32]*
+\end{lstlisting}
+
+而不能直接使用较新 LLVM IR 中统一的 \texttt{ptr} 写法。
+
+完成 \texttt{main.ll} 后，首先由 Clang 将 LLVM IR 转换为本机目标代码，
+然后与 SysY x86 运行时库链接：
 
 \begin{lstlisting}
 clang main.ll -L../lib -lsysy_x86 -o main
 \end{lstlisting}
 
-随后分别使用 0、1、4、5、8、10 六组输入测试。
-程序输出依次为 3、3、21、17、111、111，
-均与 SysY 源程序的预期结果一致，说明所实现 LLVM IR
-在这些测试用例下保持了源程序的可观察语义。
+链接完成后，首先使用：
 
-\begin{figure}[H]
+\begin{lstlisting}
+echo 5 | ./main
+\end{lstlisting}
+
+进行单组验证，程序输出：
+
+\begin{lstlisting}
+17
+\end{lstlisting}
+
+与人工计算结果一致。
+
+随后使用统一测试集：
+
+\begin{lstlisting}
+for n in 0 1 4 5 8 10; do
+    echo "Input: $n"
+    echo "$n" | ./main
+done
+\end{lstlisting}
+
+得到结果：
+
+\begin{table}[H]
 \centering
-\includegraphics[width=0.88\textwidth]
-{images/llvm/llvm_ir.png}
-\caption{SysY 程序的 LLVM IR 关键实现}
-\label{fig:llvm-ir-handwritten}
-\end{figure}
+\caption{LLVM IR 实现测试结果}
+\begin{tabular}{cccc}
+\toprule
+输入 & 实际参与计算的 $n$ & 预期结果 & LLVM IR 输出 \\
+\midrule
+0  & 1 & 3   & 3 \\
+1  & 1 & 3   & 3 \\
+4  & 4 & 21  & 21 \\
+5  & 5 & 17  & 17 \\
+8  & 8 & 111 & 111 \\
+10 & 8 & 111 & 111 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+六组测试全部与预期值一致。
+
+输入 0 和 10 分别验证了下界和上界修正；
+其余输入同时验证了基本块跳转、数组寻址、循环、整数运算以及函数调用。
+
+因此，在当前测试范围内，可以确认手写 LLVM IR 与原 SysY 程序保持一致的可观察行为。
 
 \begin{figure}[H]
 \centering
@@ -494,7 +921,6 @@ clang main.ll -L../lib -lsysy_x86 -o main
 \caption{LLVM IR 六组输入执行结果}
 \label{fig:llvm-validation}
 \end{figure}
-
 % =========================================================
 \section{RISC-V 汇编实现与验证}
 % =========================================================
@@ -743,45 +1169,112 @@ MLIR，即 Multi-Level Intermediate Representation，采用多层中间表示思
 
 因此，lowering 不再只是“一次从高级语言变成低层 IR”，而可以理解为多个中间表示之间连续降低抽象层次的过程。
 
-\subsection{AscendNPU IR 与 VecAdd}
+\subsection{AscendNPU IR 官方 VecAdd 示例分析}
 
-题目提供的 AscendNPU IR VecAdd 示例展示了这一思想在昇腾 NPU 编译中的应用。
+根据 AscendNPU IR 官方快速入门中的 VecAdd 示例，
+其输入和输出均使用带有显式存储空间属性的 \texttt{memref} 表示。
+例如，全局内存中的数据使用：
 
-向量加法在数学上只是：
+\begin{lstlisting}
+memref<16xi16, #hivm.address_space<gm>>
+\end{lstlisting}
+
+而片上 Unified Buffer 中的临时数据使用：
+
+\begin{lstlisting}
+memref<16xi16, #hivm.address_space<ub>>
+\end{lstlisting}
+
+这与普通 LLVM IR 中相对通用的内存指针存在明显区别：
+AscendNPU IR 在中间表示阶段已经显式保留了数据所在的硬件存储层次。
+
+官方 VecAdd 的主要计算过程可以抽象为：
+
+\[
+\mathrm{GM}
+\overset{\texttt{hivm.hir.load}}{\longrightarrow}
+\mathrm{UB}
+\overset{\texttt{hivm.hir.vadd}}{\longrightarrow}
+\mathrm{UB}
+\overset{\texttt{hivm.hir.store}}{\longrightarrow}
+\mathrm{GM}.
+\]
+
+其中，两路输入首先分别从 GM 搬运到 UB：
+
+\begin{lstlisting}
+hivm.hir.load ...
+\end{lstlisting}
+
+随后在 UB 上执行向量加法：
+
+\begin{lstlisting}
+hivm.hir.vadd ...
+\end{lstlisting}
+
+最后将结果重新写回 GM：
+
+\begin{lstlisting}
+hivm.hir.store ...
+\end{lstlisting}
+
+因此，虽然源语义只是简单的
 
 \[
 C=A+B,
 \]
 
-但在实际设备上执行时，还需要考虑输入数据位于什么存储空间、何时搬入片上缓冲区、由什么计算单元完成向量运算，以及何时将结果写回。
+但面向 NPU 的中间表示还需要显式表达数据位于何处、
+数据如何移动以及使用何种硬件操作完成计算。
 
-因此，其核心数据流可以抽象为：
+官方示例使用如下命令进行编译：
+
+\begin{lstlisting}
+bishengir-compile add.mlir -enable-hivm-compile -o kernel.o
+\end{lstlisting}
+
+最终生成可以在昇腾 NPU 上执行的设备侧算子二进制
+\texttt{kernel.o}。
+
+由于本实验环境没有配置 CANN 以及昇腾 NPU 设备，
+因此没有将该示例的上板执行结果作为本机实验结果，
+而是按照题目允许的方式，通过官方文档和 IR 示例对其中端表示进行分析。
+
+\subsection{多级 IR 与逐层 Lowering}
+
+AscendNPU IR 建立在 MLIR 基础上。
+与 LLVM IR 主要围绕一种核心中间表示展开不同，
+MLIR 允许不同 Dialect 在多个抽象层次上共存，
+使编译器能够在仍然保留高层语义时进行领域相关优化，
+再逐步降低到接近硬件的表示。
+
+从 AscendNPU IR 的整体接口设计可以将这种过程理解为：
 
 \[
-\mathrm{GM}
+\text{Torch IR}
 \rightarrow
-\mathrm{UB}
+\text{Linalg / HFusion IR}
 \rightarrow
-\mathrm{Vector\ Add}
+\text{HIVM IR}
 \rightarrow
-\mathrm{GM}.
+\text{NPU Device Binary}.
 \]
 
-其中 GM 表示较大的全局存储空间，UB 表示更靠近计算单元的片上缓冲空间。
+较高层 IR 主要描述框架算子和张量计算语义；
+Linalg/HFusion 层可以进一步进行融合、tiling 和调度；
+HIVM IR 则更加接近昇腾硬件，
+能够显式表示 GM、UB 等存储空间以及向量计算和数据搬运操作。
 
-相比普通 LLVM IR 中较通用的 \texttt{load/store}，这类专用 Dialect 可以在中间表示中显式保留存储层次、数据搬运以及向量运算等信息，从而使编译器能够围绕目标硬件特点执行更有针对性的优化。
+需要说明的是，官方快速入门中的 VecAdd 示例已经直接给出了
+较接近硬件层的 HIVM MLIR，因此示例本身并没有完整展示
+从 Torch IR 开始的每一个转换步骤。
+本实验结合官方的多级 IR 文档理解其整体 lowering 思路，
+而不将文档中未实际展示的中间 Pass 输出作为本机实验结果。
 
-结合 VecAdd 示例，可以将其 lowering 流程概括为：
-
-\[
-\text{通用 MLIR}
-\rightarrow
-\text{AscendNPU 专用 Dialect}
-\rightarrow
-\text{更低层硬件表示}
-\rightarrow
-\text{设备 Kernel}.
-\]
+这一设计说明，多级 lowering 的意义并不只是把一种文本格式
+连续改写为另一种文本格式，而是在不同阶段有选择地保留适合当前
+优化任务的语义信息。较高层阶段保留张量和算子结构，
+较低层阶段则逐渐显式化存储层次、数据搬运和硬件指令。
 
 \subsection{与 LLVM IR 的比较}
 
@@ -825,10 +1318,41 @@ C=A+B,
 
 对 \texttt{-O0} 与 \texttt{-O2} 汇编代码的比较还表明，编译优化会重新组织寄存器使用、循环结构甚至函数调用方式，而不是简单地对源程序进行逐句翻译。优化的目标是在保持程序语义一致的前提下减少不必要的访存、分支和函数调用等开销。
 
-第二部分选择同一个 SysY 程序作为语义基准，分别进行 LLVM IR 和 RISC-V 手工实现。RISC-V 部分进一步涉及局部变量的栈上布局、数组的基址加偏移寻址、条件和循环的跳转实现、RV64 环境中的 32 位整数运算以及函数调用约定。通过与 SysY 运行时库静态链接，并在 QEMU 中测试 0、1、4、5、8、10 六组输入，程序均得到与预期一致的结果。
+第二部分首先共同设计统一的 SysY 测试程序和测试用例，并在此基础上分别完成 LLVM IR 与 RISC-V 两种低层表示。LLVM IR 部分涉及基本块划分、局部变量与数组表示、\texttt{getelementptr} 地址计算、条件和循环控制流、运行时函数声明及链接；RISC-V 部分进一步涉及局部变量的栈上布局、数组的基址加偏移寻址、RV64 环境中的 32 位整数运算以及函数调用约定。两种实现均使用 0、1、4、5、8、10 六组输入验证，并得到与 SysY 源程序一致的结果。
+% =========================================================
+\section*{参考文献}
+\addcontentsline{toc}{section}{参考文献}
+% =========================================================
 
-进阶部分进一步从 LLVM IR 扩展到 MLIR 与 AscendNPU IR。VecAdd 示例表明，面向专用硬件时，中间表示不仅要描述“计算什么”，还可以显式保留“数据位于哪里、如何搬运以及由哪类计算单元处理”等信息。MLIR 通过多种 Dialect 和渐进式 lowering 为这种多层优化提供了更加灵活的基础。
+\begin{enumerate}
 
-通过本次实验，可以更加具体地认识到，编译器并不是一个简单的“源代码转机器码”工具，而是由多个层次的程序表示、转换、优化和运行时支持共同构成的系统。高级语言中的函数、变量、数组、循环和条件结构，最终都需要逐步落实为基本块、地址计算、寄存器、栈空间以及机器级控制流。
+\item
+LLVM Project.
+\textit{LLVM Language Reference Manual}.
+LLVM Documentation.
 
+\item
+GCC Project.
+\textit{Using the GNU Compiler Collection (GCC)}.
+GNU Project Documentation.
+
+\item
+RISC-V International.
+\textit{The RISC-V Instruction Set Manual}.
+
+\item
+MLIR Project.
+\textit{MLIR Documentation}.
+LLVM Project.
+
+\item
+AscendNPU IR.
+\textit{AscendNPU IR Documentation: Quick Start and VecAdd Example}.
+Huawei / AscendNPU IR Project.
+
+\item
+华为昇腾.
+\textit{CANN 编译器与毕昇编译器相关文档}.
+
+\end{enumerate}
 \end{document}

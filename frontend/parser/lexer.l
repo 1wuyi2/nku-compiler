@@ -5,8 +5,9 @@
     #include <frontend/parser/parser.h>
     #include <stdexcept>
     #include <string>
-    #include <limits>      
-    #include <cmath>       
+    #include <cctype>
+    #include <cmath>
+    #include <limits>
 
     using namespace FE;
 
@@ -38,6 +39,13 @@
 %option noyywrap debug
 %option yyclass="Scanner"
 %option prefix="Yacc_"
+
+DIGIT       [0-9]
+HEXDIGIT    [0-9a-fA-F]
+DECEXP      [eE][+-]?{DIGIT}+
+BINEXP      [pP][+-]?{DIGIT}+
+DECFLOAT    (({DIGIT}+\.{DIGIT}*|\.{DIGIT}+){DECEXP}?|{DIGIT}+{DECEXP})
+HEXFLOAT    0[xX](({HEXDIGIT}+\.{HEXDIGIT}*|\.{HEXDIGIT}+|{HEXDIGIT}+){BINEXP})
 
 %%
 
@@ -99,14 +107,34 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
     return YaccParser::make_STR_CONST(str, loc); 
 }
 
-[1-9][0-9]* {
+{HEXFLOAT} {
+    try {
+        float result = convertToFloatHex(yytext);
+        return YaccParser::make_FLOAT_CONST(result, loc);
+    } catch (const std::exception& e) {
+        _parser.reportError(loc, std::string("Error parsing hexadecimal float: ") + e.what());
+        return YaccParser::make_ERR_TOKEN(std::string(yytext), loc);
+    }
+}
+
+{DECFLOAT} {
+    try {
+        float result = convertToFloatDec(yytext);
+        return YaccParser::make_FLOAT_CONST(result, loc);
+    } catch (const std::exception& e) {
+        _parser.reportError(loc, std::string("Error parsing decimal float: ") + e.what());
+        return YaccParser::make_ERR_TOKEN(std::string(yytext), loc);
+    }
+}
+
+0[xX]{HEXDIGIT}+|0[0-7]*|[1-9]{DIGIT}* {
     try {
         bool isLL = false;
         long long result = convertToInt(yytext, '\0', isLL);
-        // if (isLL) return YaccParser::make_LL_CONST(result, loc);
+        if (isLL) return YaccParser::make_LL_CONST(result, loc);
         return YaccParser::make_INT_CONST(static_cast<int>(result), loc);
     } catch (const std::exception& e) {
-        _parser.reportError(loc, std::string("Error parsing hexadecimal int: ") + e.what());
+        _parser.reportError(loc, std::string("Error parsing integer: ") + e.what());
         auto str = std::string(yytext);
         return YaccParser::make_ERR_TOKEN(str, loc);
     }
@@ -140,22 +168,19 @@ long long convertToInt(const char* str, const char end, bool& isLongLong)
     // 该函数用于将字符串转换为整数，能正确处理格式无误的十进制、十六进制和八进制整数
     // 接受一个 isLongLong 引用参数，用于指示结果是否超出 int 范围
 
+    if (str == nullptr) throw std::invalid_argument("null integer literal");
+
     int         base       = 10;
-    long long   result     = 0;
-    int         isNegative = 0;
+    bool        isNegative = false;
     const char* ptr        = str;
-    static int  zeroOffset = '0';
-    static int  aOffset    = 'a' - 10;
-    static int  AOffset    = 'A' - 10;
-    int*        offset     = NULL;
     isLongLong             = false;
 
-    if (*ptr == '-')
+    if (*ptr == '-' || *ptr == '+')
     {
-        isNegative = 1;
+        isNegative = (*ptr == '-');
         ++ptr;
     }
-    else if (*ptr == '+') { ++ptr; }
+    if (*ptr == end) throw std::invalid_argument(std::string(str) + " is not a valid integer literal");
 
     if (ptr[0] == '0' && (ptr[1] == 'x' || ptr[1] == 'X'))
     {
@@ -165,41 +190,41 @@ long long convertToInt(const char* str, const char end, bool& isLongLong)
     else if (ptr[0] == '0')
     {
         base = 8;
-        ptr += 1;
     }
+
+    const unsigned long long limit = isNegative
+                                         ? static_cast<unsigned long long>(std::numeric_limits<long long>::max()) + 1ULL
+                                         : static_cast<unsigned long long>(std::numeric_limits<long long>::max());
+    unsigned long long result = 0;
+    bool               hasDigit = false;
 
     while (*ptr != end)
     {
-        int value = 0;
+        int value = -1;
+        if (*ptr >= '0' && *ptr <= '9') value = *ptr - '0';
+        else if (*ptr >= 'a' && *ptr <= 'f') value = *ptr - 'a' + 10;
+        else if (*ptr >= 'A' && *ptr <= 'F') value = *ptr - 'A' + 10;
 
-        if (base == 16)
-        {
-            if (*ptr >= '0' && *ptr <= '9')
-                offset = &zeroOffset;
-            else if (*ptr >= 'a' && *ptr <= 'f')
-                offset = &aOffset;
-            else if (*ptr >= 'A' && *ptr <= 'F')
-                offset = &AOffset;
-        }
-        else { offset = &zeroOffset; }
+        if (value < 0 || value >= base)
+            throw std::invalid_argument(std::string(str) + " is not a valid integer literal");
+        if (result > (limit - static_cast<unsigned long long>(value)) / base)
+            throw std::out_of_range(std::string(str) + " overflow or underflow for long long");
 
-        value  = *ptr - *offset;
         result = result * base + value;
+        hasDigit = true;
         ++ptr;
     }
 
-    if (isNegative) result = -result;
+    if (!hasDigit) throw std::invalid_argument(std::string(str) + " is not a valid integer literal");
 
-    if (result > std::numeric_limits<int>::max() || result < std::numeric_limits<int>::min())
-    {
-        isLongLong = true;
-        if (result > std::numeric_limits<long long>::max() || result < std::numeric_limits<long long>::min())
-        {
-            throw std::out_of_range(str + std::string(" overflow or underflow for long long"));
-        }
-    }
+    long long signedResult;
+    if (isNegative && result == limit)
+        signedResult = std::numeric_limits<long long>::min();
+    else
+        signedResult = isNegative ? -static_cast<long long>(result) : static_cast<long long>(result);
 
-    return result;
+    isLongLong = signedResult > std::numeric_limits<int>::max() || signedResult < std::numeric_limits<int>::min();
+    return signedResult;
 }
 
 float convertToFloatDec(const char* str)
@@ -207,7 +232,7 @@ float convertToFloatDec(const char* str)
     // 该函数用于将字符串转换为浮点数，能正确处理格式无误的十进制浮点数
 
     const char* head = str;
-    if (str == NULL) { return 0.0f; }
+    if (str == NULL) { throw std::invalid_argument("null decimal float literal"); }
 
     int sign = 1;
     if (*str == '-')
@@ -218,21 +243,26 @@ float convertToFloatDec(const char* str)
     else if (*str == '+') { str++; }
 
     double integerPart = 0.0;
+    bool   hasDigit    = false;
     while (isdigit(*str))
     {
         integerPart = integerPart * 10 + (*str - '0');
+        hasDigit = true;
         str++;
     }
 
     double fractionPart = 0.0;
+    bool   hasFloatSyntax = false;
     if (*str == '.')
     {
+        hasFloatSyntax = true;
         str++;
         double divisor = 10.0;
         while (isdigit(*str))
         {
             fractionPart += (*str - '0') / divisor;
             divisor *= 10.0;
+            hasDigit = true;
             str++;
         }
     }
@@ -241,6 +271,7 @@ float convertToFloatDec(const char* str)
 
     if (*str == 'e' || *str == 'E')
     {
+        hasFloatSyntax = true;
         str++;
         int expSign = 1;
         if (*str == '-')
@@ -250,23 +281,27 @@ float convertToFloatDec(const char* str)
         }
         else if (*str == '+') { str++; }
 
-        int exponent = 0;
+        if (!isdigit(*str))
+            throw std::invalid_argument(std::string(head) + " is not a valid decimal float literal");
+
+        double exponent = 0.0;
         while (isdigit(*str))
         {
             exponent = exponent * 10 + (*str - '0');
             str++;
         }
 
-        value *= pow(10, expSign * exponent);
+        if (value != 0.0) value *= pow(10, expSign * exponent);
     }
+
+    if (!hasDigit || !hasFloatSyntax || *str != '\0')
+        throw std::invalid_argument(std::string(head) + " is not a valid decimal float literal");
 
     value = sign * value;
 
-    if (value > std::numeric_limits<float>::max() || value < -std::numeric_limits<float>::max())
-    {
-        throw std::out_of_range(
-            head + ((value > std::numeric_limits<float>::max()) ? std::string(" overflow") : std::string(" underflow")));
-    }
+    if (!std::isfinite(value) || value > std::numeric_limits<float>::max() ||
+        value < -std::numeric_limits<float>::max())
+        throw std::out_of_range(std::string(head) + " is outside the finite float range");
 
     return static_cast<float>(value);
 }
@@ -276,7 +311,7 @@ float convertToFloatHex(const char* str)
     // 该函数用于将字符串转换为浮点数，能正确处理格式无误的十六进制浮点数
 
     const char* head = str;
-    if (str == NULL) { return 0.0f; }
+    if (str == NULL) { throw std::invalid_argument("null hexadecimal float literal"); }
 
     int sign = 1;
     if (*str == '-')
@@ -286,9 +321,13 @@ float convertToFloatHex(const char* str)
     }
     else if (*str == '+') { str++; }
 
-    if (*str == '0' && (*(str + 1) == 'x' || *(str + 1) == 'X')) { str += 2; }
+    if (*str == '0' && (*(str + 1) == 'x' || *(str + 1) == 'X'))
+        str += 2;
+    else
+        throw std::invalid_argument(std::string(head) + " is not a valid hexadecimal float literal");
 
-    unsigned long long integerPart = 0;
+    double integerPart = 0.0;
+    bool   hasDigit    = false;
     while (isxdigit(*str))
     {
         int digit = 0;
@@ -296,6 +335,7 @@ float convertToFloatHex(const char* str)
         else if (*str >= 'a' && *str <= 'f') { digit = (*str - 'a' + 10); }
         else if (*str >= 'A' && *str <= 'F') { digit = (*str - 'A' + 10); }
         integerPart = integerPart * 16 + digit;
+        hasDigit = true;
         str++;
     }
 
@@ -303,25 +343,25 @@ float convertToFloatHex(const char* str)
     if (*str == '.')
     {
         str++;
-        unsigned long long numerator   = 0;
-        unsigned long long denominator = 1;
+        double divisor = 16.0;
         while (isxdigit(*str))
         {
             int digit = 0;
             if (isdigit(*str)) { digit = (*str - '0'); }
             else if (*str >= 'a' && *str <= 'f') { digit = (*str - 'a' + 10); }
             else if (*str >= 'A' && *str <= 'F') { digit = (*str - 'A' + 10); }
-            numerator = numerator * 16 + digit;
-            denominator *= 16;
+            fractionPart += digit / divisor;
+            divisor *= 16.0;
+            hasDigit = true;
             str++;
         }
-        fractionPart = (double)numerator / (double)denominator;
     }
 
-    double value = (double)integerPart + fractionPart;
-
+    double value       = integerPart + fractionPart;
+    bool   hasExponent = false;
     if (*str == 'p' || *str == 'P')
     {
+        hasExponent = true;
         str++;
         int expSign = 1;
         if (*str == '-')
@@ -331,23 +371,27 @@ float convertToFloatHex(const char* str)
         }
         else if (*str == '+') { str++; }
 
-        int exponent = 0;
+        if (!isdigit(*str))
+            throw std::invalid_argument(std::string(head) + " is not a valid hexadecimal float literal");
+
+        double exponent = 0.0;
         while (isdigit(*str))
         {
             exponent = exponent * 10 + (*str - '0');
             str++;
         }
 
-        value *= pow(2, expSign * exponent);
+        if (value != 0.0) value *= pow(2, expSign * exponent);
     }
+
+    if (!hasDigit || !hasExponent || *str != '\0')
+        throw std::invalid_argument(std::string(head) + " is not a valid hexadecimal float literal");
 
     value = sign * value;
 
-    if (value > std::numeric_limits<float>::max() || value < -std::numeric_limits<float>::max())
-    {
-        throw std::out_of_range(
-            head + ((value > std::numeric_limits<float>::max()) ? std::string(" overflow") : std::string(" underflow")));
-    }
+    if (!std::isfinite(value) || value > std::numeric_limits<float>::max() ||
+        value < -std::numeric_limits<float>::max())
+        throw std::out_of_range(std::string(head) + " is outside the finite float range");
 
     return static_cast<float>(value);
 }

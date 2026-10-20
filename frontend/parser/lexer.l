@@ -106,10 +106,10 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
     try {
         bool isLL = false;
         long long result = convertToInt(yytext, '\0', isLL);
-        // if (isLL) return YaccParser::make_LL_CONST(result, loc);
+        if (isLL) return YaccParser::make_LL_CONST(result, loc);
         return YaccParser::make_INT_CONST(static_cast<int>(result), loc);
     } catch (const std::exception& e) {
-        _parser.reportError(loc, std::string("Error parsing hexadecimal int: ") + e.what());
+        _parser.reportError(loc, std::string("Error parsing integer: ") + e.what());
         auto str = std::string(yytext);
         return YaccParser::make_ERR_TOKEN(str, loc);
     }
@@ -187,6 +187,14 @@ long long convertToInt(const char* str, const char end, bool& isLongLong)
         else { offset = &zeroOffset; }
 
         value  = *ptr - *offset;
+        if(value < 0 || value >= base)
+        {
+            throw std::invalid_argument("invalid integer digit");
+        }
+        if ( result > (std::numeric_limits<long long>::max() - value) / base)
+        {
+            throw std::out_of_range("integer overflow");
+        }
         result = result * base + value;
         ++ptr;
     }
@@ -196,15 +204,33 @@ long long convertToInt(const char* str, const char end, bool& isLongLong)
     if (result > std::numeric_limits<int>::max() || result < std::numeric_limits<int>::min())
     {
         isLongLong = true;
-        if (result > std::numeric_limits<long long>::max() || result < std::numeric_limits<long long>::min())
-        {
-            throw std::out_of_range(str + std::string(" overflow or underflow for long long"));
-        }
     }
 
     return result;
 }
+/*使用C++标准库的std::stoll()来简化转换
+long long convertToInt(const char* str, const char end, bool& isLongLong)
+{
+    if (str == nullptr)
+        throw std::invalid_argument("null integer literal");
 
+    std::string text;
+    for (const char* p = str; *p != '\0' && *p != end; ++p)
+        text.push_back(*p);
+
+    std::size_t pos = 0;
+    long long result = std::stoll(text, &pos, 0);
+
+    if (pos != text.size())
+        throw std::invalid_argument("invalid integer literal: " + text);
+
+    isLongLong =
+        result > std::numeric_limits<int>::max() ||
+        result < std::numeric_limits<int>::min();
+
+    return result;
+}
+*/
 float convertToFloatDec(const char* str)
 {
     // 该函数用于将字符串转换为浮点数，能正确处理格式无误的十进制浮点数

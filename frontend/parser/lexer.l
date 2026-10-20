@@ -62,6 +62,9 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
     loc.columns(handleTab());
 }
 
+"int"               { RETT(INT, loc) }
+"float"             { RETT(FLOAT, loc) }
+"void"              { RETT(VOID, loc) }
 "if"                { RETT(IF, loc) }
 "else"              { RETT(ELSE, loc) }
 "for"               { RETT(FOR, loc) }

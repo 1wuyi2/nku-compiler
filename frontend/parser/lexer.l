@@ -102,7 +102,7 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
     return YaccParser::make_STR_CONST(str, loc); 
 }
 
-[1-9][0-9]* {
+0[xX][0-9a-fA-F]+|0[0-7]*|[1-9][0-9]* {
     try {
         bool isLL = false;
         long long result = convertToInt(yytext, '\0', isLL);

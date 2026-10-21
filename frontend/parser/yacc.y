@@ -65,8 +65,9 @@
 %token <long long> LL_CONST
 %token <float> FLOAT_CONST
 %token <std::string> STR_CONST ERR_TOKEN SLASH_COMMENT
-
 %token <std::string> IDENT 
+
+%token PLUS MINUS MULTIPLY DIVIDE MODULO
 
 %token INT FLOAT VOID
 %token IF ELSE FOR WHILE CONTINUE BREAK SWITCH CASE GOTO DO RETURN CONST

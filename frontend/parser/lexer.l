@@ -79,6 +79,8 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
 
 "const"             { RETT(CONST, loc) }
 
+
+
 ";"                 { RETT(SEMICOLON, loc) }
 ","                 { RETT(COMMA, loc) }
 
@@ -101,7 +103,7 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
     if (!str.empty()) str = str.substr(1, str.size() - 2);
     return YaccParser::make_STR_CONST(str, loc); 
 }
-(([0-9]+\.[0-9]*|.[0-9]+)([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+) {
+(([0-9]+\.[0-9]*|\.[0-9]+)([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+) {
     try {
         float result = convertToFloatDec(yytext);
         return YaccParser::make_FLOAT_CONST(result, loc);

@@ -79,7 +79,18 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
 
 "const"             { RETT(CONST, loc) }
 
-
+"+"                 { RETT(PLUS, loc) }
+"-"                 { RETT(MINUS, loc) }
+"*"                 { RETT(MULTIPLY, loc) }
+"/"                 { RETT(DIVIDE, loc) }
+"%"                 { RETT(MODULO, loc) }
+"=="                { RETT(EQ, loc) }
+"!="                { RETT(NE, loc) }
+"<="                { RETT(LE, loc) }
+">="                { RETT(GE, loc) }
+"="                 { RETT(ASSIGN, loc) }
+"<"                 { RETT(LT, loc) }
+">"                 { RETT(GT, loc) }
 
 ";"                 { RETT(SEMICOLON, loc) }
 ","                 { RETT(COMMA, loc) }

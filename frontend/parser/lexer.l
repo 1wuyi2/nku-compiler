@@ -11,6 +11,8 @@
     using namespace FE;
 
     static location loc;
+    static location blockCommentStart;
+
 
     // YY_USER_ACTION 宏会自动插入到每个规则的代码块开头
     // 如下方的 "int"               { RETT(INT, loc) }
@@ -38,6 +40,7 @@
 %option noyywrap debug
 %option yyclass="Scanner"
 %option prefix="Yacc_"
+%x BLOCK_COMMENT
 
 %%
 
@@ -103,10 +106,35 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
     // return YaccParser::make_SLASH_COMMENT(str, loc);  //思考为什么要把这一行注释掉
 }
 
-"/*""*/" {
-    //TODO(Lab1)：实现多行注释的处理，包括修改上方的匹配规则
+"/*" {
+    blockCommentStart = loc;
+    BEGIN(BLOCK_COMMENT);
 }
 
+<BLOCK_COMMENT>\*+\/ {
+    BEGIN(INITIAL);
+}
+<BLOCK_COMMENT>[^*\n]+ {
+    /*忽略注释正文*/
+}
+<BLOCK_COMMENT>\*+ {
+    /*忽略尚未构成结束标记的星号*/
+}
+<BLOCK_COMMENT>\n {
+    loc.lines(1);
+    loc.step();
+}
+<BLOCK_COMMENT><<EOF>> {
+    BEGIN(INITIAL);
+    _parser.reportError(
+        blockCommentStart,
+        "Unterminated block comment"
+    );
+    return YaccParser::make_ERR_TOKEN(
+        std::string("Unterminated block comment"),
+        blockCommentStart
+    );
+}
 [A-Za-z_]+[A-Za-z0-9_]* {
     auto str = std::string(yytext);
     return YaccParser::make_IDENT(str, loc); 

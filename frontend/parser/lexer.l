@@ -91,6 +91,9 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
 "="                 { RETT(ASSIGN, loc) }
 "<"                 { RETT(LT, loc) }
 ">"                 { RETT(GT, loc) }
+"!"                 { RETT(NOT, loc) }
+"&&"                { RETT(AND, loc) }
+"||"                { RETT(OR, loc) }
 
 ";"                 { RETT(SEMICOLON, loc) }
 ","                 { RETT(COMMA, loc) }

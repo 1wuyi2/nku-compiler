@@ -92,8 +92,8 @@ TODO(Lab1)：参考SysY2022的定义，实现更多的词法，如浮点数、�
 
 "+"                 { RETT(PLUS, loc) }
 "-"                 { RETT(MINUS, loc) }
-"*"                 { RETT(MULTIPLY, loc) }
-"/"                 { RETT(DIVIDE, loc) }
+"*"                 { RETT(STAR, loc) }
+"/"                 { RETT(SLASH, loc) }
 "%"                 { RETT(MODULO, loc) }
 "=="                { RETT(EQ, loc) }
 "!="                { RETT(NE, loc) }

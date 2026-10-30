@@ -45,7 +45,7 @@
 
 DIGIT       [0-9]
 HEXDIGIT    [0-9a-fA-F]
-DECEXP      [eE][+-]?{DIGIT}+
+DECEXP      [eE][+-]?{DIGIT}+//浮点数
 BINEXP      [pP][+-]?{DIGIT}+
 DECFLOAT    (({DIGIT}+\.{DIGIT}*|\.{DIGIT}+){DECEXP}?|{DIGIT}+{DECEXP})
 HEXFLOAT    0[xX](({HEXDIGIT}+\.{HEXDIGIT}*|\.{HEXDIGIT}+|{HEXDIGIT}+){BINEXP})

@@ -160,6 +160,9 @@ STMT:
     EXPR_STMT {
         $$ = $1;
     }
+    | VAR_DECL_STMT {
+        $$ = $1;
+    }
     | FUNC_DECL_STMT {
         $$ = $1;
     }
@@ -222,6 +225,9 @@ VAR_DECLARATION:
 
 VAR_DECL_STMT:
     /* TODO(Lab2): Implement variable declaration statement rule */
+    VAR_DECLARATION SEMICOLON {
+        $$ = new VarDeclStmt($1, @1.begin.line, @1.begin.column);
+    }
     ;
 
 FUNC_BODY:
@@ -287,10 +293,28 @@ PARAM_DECLARATOR_LIST:
         $$ = new std::vector<ParamDeclarator*>();
     }
     //TODO(Lab2)：考虑函数形参列表的构成情况
+    | PARAM_DECLARATOR {
+        $$ = new std::vector<ParamDeclarator*>();
+        $$->push_back($1);
+    }
+    | PARAM_DECLARATOR_LIST COMMA PARAM_DECLARATOR {
+        $$ = $1;
+        $$->push_back($3);
+    }
     ;
 
 VAR_DECLARATOR:
     //TODO(Lab2)：完成变量声明符的处理
+    IDENT {
+        Entry* entry = Entry::getEntry($1);
+        ExprNode* lval = new LeftValExpr(entry, nullptr, @1.begin.line, @1.begin.column);
+        $$ = new VarDeclarator(lval, nullptr, @1.begin.line, @1.begin.column);
+    }
+    | IDENT ASSIGN INITIALIZER {
+        Entry* entry = Entry::getEntry($1);
+        ExprNode* lval = new LeftValExpr(entry, nullptr, @1.begin.line, @1.begin.column);
+        $$ = new VarDeclarator(lval, $3, @1.begin.line, @1.begin.column);
+    }
     ;
 
 VAR_DECLARATOR_LIST:
@@ -306,6 +330,9 @@ VAR_DECLARATOR_LIST:
 
 INITIALIZER:
     /* TODO(Lab2): Implement variable initializer rule */
+    NOCOMMA_EXPR {
+        $$ = new Initializer($1, @1.begin.line, @1.begin.column);
+    }
     ;
 
 INITIALIZER_LIST:

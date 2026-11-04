@@ -552,12 +552,24 @@ ARRAY_DIMENSION_EXPR:
 
 ARRAY_DIMENSION_EXPR_LIST:
     /* TODO(Lab2): Implement variable dimension rule */
+    ARRAY_DIMENSION_EXPR {
+        $$ = new std::vector<ExprNode*>();
+        $$->push_back($1);
+    }
+    | ARRAY_DIMENSION_EXPR_LIST ARRAY_DIMENSION_EXPR {
+        $$ = $1;
+        $$->push_back($2);
+    }
     ;
 
 LEFT_VAL_EXPR:
     IDENT {
         Entry* entry = Entry::getEntry($1);
         $$ = new LeftValExpr(entry, nullptr, @1.begin.line, @1.begin.column);
+    }
+    | IDENT ARRAY_DIMENSION_EXPR_LIST {
+        Entry* entry = Entry::getEntry($1);
+        $$ = new LeftValExpr(entry, $2, @1.begin.line, @1.begin.column);
     }
     ;
 

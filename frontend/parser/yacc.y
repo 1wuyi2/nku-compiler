@@ -160,16 +160,10 @@ STMT:
     EXPR_STMT {
         $$ = $1;
     }
-    | VAR_DECL_STMT {
-        $$ = $1;
-    }
     | FUNC_DECL_STMT {
         $$ = $1;
     }
     | FOR_STMT {
-        $$ = $1;
-    }
-    | IF_STMT {
         $$ = $1;
     }
     | CONTINUE_STMT {
@@ -182,6 +176,9 @@ STMT:
         $$ = nullptr;
     }
     //TODO(Lab2)：考虑更多语句类型
+    | RETURN_STMT {
+        $$ = $1;
+    }
     ;
 
 CONTINUE_STMT:
@@ -195,6 +192,24 @@ EXPR_STMT:
         $$ = new ExprStmt($1, @1.begin.line, @1.begin.column);
     }
     ;
+
+RETURN_STMT:
+    RETURN EXPR SEMICOLON {
+        $$ = new ReturnStmt(
+            $2,
+            @1.begin.line,
+            @1.begin.column
+        );
+    }
+    | RETURN SEMICOLON {
+        $$ = new ReturnStmt(
+            nullptr,
+            @1.begin.line,
+            @1.begin.column
+        );
+    }
+    ;
+    
 
 VAR_DECLARATION:
     TYPE VAR_DECLARATOR_LIST {
@@ -341,33 +356,63 @@ NOCOMMA_EXPR:
     LOGICAL_OR_EXPR {
         $$ = $1;
     }
-    | ASSIGN_EXPR {
-        $$ = $1;
-    }
     ;
 
 LOGICAL_OR_EXPR:
     /* TODO(Lab2): Implement logical OR expression rule */
+    LOGICAL_AND_EXPR {
+        $$ = $1;
+    }
     ;
 
 LOGICAL_AND_EXPR:
     /* TODO(Lab2): Implement logical AND expression rule */
+    EQUALITY_EXPR {
+        $$ = $1;
+    }
     ;
 
 EQUALITY_EXPR:
     /* TODO(Lab2): Implement equality expression rule */
+    RELATIONAL_EXPR {
+        $$ = $1;
+    }
     ;
 
 RELATIONAL_EXPR:
     /* TODO(Lab2): Implement relational expression rule */
+    ADDSUB_EXPR {
+        $$ = $1;
+    }
     ;
 
 ADDSUB_EXPR:
     /* TODO(Lab2): Implement addition and subtraction expression rule */
+    MULDIV_EXPR {
+        $$ = $1;
+    }
+    | ADDSUB_EXPR PLUS MULDIV_EXPR {
+        $$ = new BinaryExpr(Operator::ADD, $1, $3, $1->line_num, $1->col_num);
+    }
+    | ADDSUB_EXPR MINUS MULDIV_EXPR {
+        $$ = new BinaryExpr(Operator::SUB, $1, $3, $1->line_num, $1->col_num);
+    }
     ;
 
 MULDIV_EXPR:
     /* TODO(Lab2): Implement multiplication and division expression rule */
+    UNARY_EXPR {
+        $$ = $1;
+    }
+    | MULDIV_EXPR STAR UNARY_EXPR {
+        $$ = new BinaryExpr(Operator::MUL, $1, $3, $1->line_num, $1->col_num);
+    }
+    | MULDIV_EXPR SLASH UNARY_EXPR {
+        $$ = new BinaryExpr(Operator::DIV, $1, $3, $1->line_num, $1->col_num);
+    }
+    | MULDIV_EXPR MODULO UNARY_EXPR {
+        $$ = new BinaryExpr(Operator::MOD, $1, $3, $1->line_num, $1->col_num);
+    }
     ;
 
 UNARY_EXPR:
@@ -375,7 +420,7 @@ UNARY_EXPR:
         $$ = $1;
     }
     | UNARY_OP UNARY_EXPR {
-        $$ = new UnaryExpr($1, $2, $2->line_num, $2->col_num);
+        $$ = new UnaryExpr($1, $2, @1.begin.line, @1.begin.column);
     }
     ;
 
@@ -431,10 +476,6 @@ LEFT_VAL_EXPR:
         Entry* entry = Entry::getEntry($1);
         $$ = new LeftValExpr(entry, nullptr, @1.begin.line, @1.begin.column);
     }
-    | IDENT ARRAY_DIMENSION_EXPR_LIST {
-        Entry* entry = Entry::getEntry($1);
-        $$ = new LeftValExpr(entry, $2, @1.begin.line, @1.begin.column);
-    }
     ;
 
 LITERAL_EXPR:
@@ -442,14 +483,38 @@ LITERAL_EXPR:
         $$ = new LiteralExpr($1, @1.begin.line, @1.begin.column);
     }
     //TODO(Lab2): 处理更多字面量
+    | LL_CONST {
+        $$ = new LiteralExpr($1, @1.begin.line, @1.begin.column);
+    }
+    | FLOAT_CONST {
+        $$ = new LiteralExpr($1, @1.begin.line, @1.begin.column);
+    }
     ;
 
 TYPE:
     // TODO(Lab2): 完成类型的处理
+      INT {
+        $$ = intType;
+    }
+    | FLOAT {
+        $$ = floatType;
+    }
+    | VOID {
+        $$ = voidType;
+    }
     ;
 
 UNARY_OP:
     // TODO(Lab2): 完成一元运算符的处理
+    PLUS {
+        $$ = Operator::ADD;
+    }
+    | MINUS {
+        $$ = Operator::SUB;
+    }
+    | NOT {
+        $$ = Operator::NOT;
+    }
     ;
 
 %%

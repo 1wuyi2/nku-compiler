@@ -321,6 +321,9 @@ INITIALIZER_LIST:
 
 ASSIGN_EXPR:
     // TODO(Lab2): 完成赋值表达式的处理
+    LEFT_VAL_EXPR ASSIGN NOCOMMA_EXPR {
+        $$ = new BinaryExpr(Operator::ASSIGN, $1, $3, $1->line_num, $1->col_num);
+    }
     ;
 
 EXPR_LIST:
@@ -356,12 +359,18 @@ NOCOMMA_EXPR:
     LOGICAL_OR_EXPR {
         $$ = $1;
     }
+    | ASSIGN_EXPR {
+        $$ = $1;
+    }
     ;
 
 LOGICAL_OR_EXPR:
     /* TODO(Lab2): Implement logical OR expression rule */
     LOGICAL_AND_EXPR {
         $$ = $1;
+    }
+    | LOGICAL_OR_EXPR OR LOGICAL_AND_EXPR {
+        $$ = new BinaryExpr(Operator::OR, $1, $3, $1->line_num, $1->col_num);
     }
     ;
 
@@ -370,6 +379,9 @@ LOGICAL_AND_EXPR:
     EQUALITY_EXPR {
         $$ = $1;
     }
+    | LOGICAL_AND_EXPR AND EQUALITY_EXPR {
+        $$ = new BinaryExpr(Operator::AND, $1, $3, $1->line_num, $1->col_num);
+    }
     ;
 
 EQUALITY_EXPR:
@@ -377,12 +389,30 @@ EQUALITY_EXPR:
     RELATIONAL_EXPR {
         $$ = $1;
     }
+    | EQUALITY_EXPR EQ RELATIONAL_EXPR {
+        $$ = new BinaryExpr(Operator::EQ, $1, $3, $1->line_num, $1->col_num);
+    }
+    | EQUALITY_EXPR NE RELATIONAL_EXPR {
+        $$ = new BinaryExpr(Operator::NEQ, $1, $3, $1->line_num, $1->col_num);
+    }
     ;
 
 RELATIONAL_EXPR:
     /* TODO(Lab2): Implement relational expression rule */
     ADDSUB_EXPR {
         $$ = $1;
+    }
+    | RELATIONAL_EXPR LT ADDSUB_EXPR {
+        $$ = new BinaryExpr(Operator::LT, $1, $3, $1->line_num, $1->col_num);
+    }
+    | RELATIONAL_EXPR LE ADDSUB_EXPR {
+        $$ = new BinaryExpr(Operator::LE, $1, $3, $1->line_num, $1->col_num);
+    }
+    | RELATIONAL_EXPR GT ADDSUB_EXPR {
+        $$ = new BinaryExpr(Operator::GT, $1, $3, $1->line_num, $1->col_num);
+    }
+    | RELATIONAL_EXPR GE ADDSUB_EXPR {
+        $$ = new BinaryExpr(Operator::GE, $1, $3, $1->line_num, $1->col_num);
     }
     ;
 

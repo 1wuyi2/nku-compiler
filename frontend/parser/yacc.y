@@ -169,7 +169,19 @@ STMT:
     | FOR_STMT {
         $$ = $1;
     }
+    | IF_STMT {
+        $$ = $1;
+    }
+    | WHILE_STMT {
+        $$ = $1;
+    }
+    | BREAK_STMT {
+        $$ = $1;
+    }
     | CONTINUE_STMT {
+        $$ = $1;
+    }
+    | BLOCK_STMT {
         $$ = $1;
     }
     | SEMICOLON {
@@ -187,6 +199,27 @@ STMT:
 CONTINUE_STMT:
     CONTINUE SEMICOLON {
         $$ = new ContinueStmt(@1.begin.line, @1.begin.column);
+    }
+    ;
+
+BREAK_STMT:
+    BREAK SEMICOLON {
+        $$ = new BreakStmt(@1.begin.line, @1.begin.column);
+    }
+    ;
+
+WHILE_STMT:
+    WHILE LPAREN EXPR RPAREN STMT {
+        $$ = new WhileStmt($3, $5, @1.begin.line, @1.begin.column);
+    }
+    ;
+
+BLOCK_STMT:
+    LBRACE RBRACE {
+        $$ = new BlockStmt(new std::vector<StmtNode*>(), @1.begin.line, @1.begin.column);
+    }
+    | LBRACE STMT_LIST RBRACE {
+        $$ = new BlockStmt($2, @1.begin.line, @1.begin.column);
     }
     ;
 
@@ -231,21 +264,8 @@ VAR_DECL_STMT:
     ;
 
 FUNC_BODY:
-    LBRACE RBRACE {
-        $$ = nullptr;
-    }
-    | LBRACE STMT_LIST RBRACE {
-        if (!$2 || $2->empty())
-        {
-            $$ = nullptr;
-            delete $2;
-        }
-        else if ($2->size() == 1)
-        {
-            $$ = (*$2)[0];
-            delete $2;
-        }
-        else $$ = new BlockStmt($2, @1.begin.line, @1.begin.column);
+    BLOCK_STMT {
+        $$ = $1;
     }
     ;
 
@@ -269,6 +289,12 @@ FOR_STMT:
 
 IF_STMT:
     /* TODO(Lab2): Implement if statement rule */
+    IF LPAREN EXPR RPAREN STMT %prec THEN {
+        $$ = new IfStmt($3, $5, nullptr, @1.begin.line, @1.begin.column);
+    }
+    | IF LPAREN EXPR RPAREN STMT ELSE STMT {
+        $$ = new IfStmt($3, $5, $7, @1.begin.line, @1.begin.column);
+    }
     ;
 
 //TODO(Lab2)：按照你补充的语句类型，实现这些语句的处理

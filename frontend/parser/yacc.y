@@ -114,6 +114,8 @@
 %nterm <FE::AST::StmtNode*> BREAK_STMT
 %nterm <FE::AST::StmtNode*> CONTINUE_STMT
 %nterm <FE::AST::StmtNode*> FOR_STMT
+%nterm <FE::AST::StmtNode*> FOR_INIT
+%nterm <FE::AST::ExprNode*> OPT_EXPR
 %nterm <FE::AST::StmtNode*> FUNC_BODY
 %nterm <FE::AST::StmtNode*> STMT
 
@@ -276,14 +278,30 @@ FUNC_DECL_STMT:
     }
     ;
 
-FOR_STMT:
-    FOR LPAREN VAR_DECLARATION SEMICOLON EXPR SEMICOLON EXPR RPAREN STMT {
-        VarDeclStmt* initStmt = new VarDeclStmt($3, @3.begin.line, @3.begin.column);
-        $$ = new ForStmt(initStmt, $5, $7, $9, @1.begin.line, @1.begin.column);
+FOR_INIT:
+    VAR_DECLARATION {
+        $$ = new VarDeclStmt($1, @1.begin.line, @1.begin.column);
     }
-    | FOR LPAREN EXPR SEMICOLON EXPR SEMICOLON EXPR RPAREN STMT {
-        StmtNode* initStmt = new ExprStmt($3, $3->line_num, $3->col_num);
-        $$ = new ForStmt(initStmt, $5, $7, $9, @1.begin.line, @1.begin.column);
+    | EXPR {
+        $$ = new ExprStmt($1, @1.begin.line, @1.begin.column);
+    }
+    | /* empty */ {
+        $$ = nullptr;
+    }
+    ;
+
+OPT_EXPR:
+    EXPR {
+        $$ = $1;
+    }
+    | /* empty */ {
+        $$ = nullptr;
+    }
+    ;
+
+FOR_STMT:
+    FOR LPAREN FOR_INIT SEMICOLON OPT_EXPR SEMICOLON OPT_EXPR RPAREN STMT {
+        $$ = new ForStmt($3, $5, $7, $9, @1.begin.line, @1.begin.column);
     }
     ;
 
@@ -302,16 +320,23 @@ IF_STMT:
 
 PARAM_DECLARATOR:
     TYPE IDENT {
-        Entry* entry = Entry::getEntry($2);
-        $$ = new ParamDeclarator($1, entry, nullptr, @1.begin.line, @1.begin.column);
+        $$ = new ParamDeclarator($1, Entry::getEntry($2), nullptr, @1.begin.line, @1.begin.column);
     }
     | TYPE IDENT LBRACKET RBRACKET {
-        std::vector<ExprNode*>* dim = new std::vector<ExprNode*>();
-        dim->emplace_back(new LiteralExpr(-1, @3.begin.line, @3.begin.column));
-        Entry* entry = Entry::getEntry($2);
-        $$ = new ParamDeclarator($1, entry, dim, @1.begin.line, @1.begin.column);
+        auto* dims = new std::vector<ExprNode*>();
+        dims->push_back(new LiteralExpr(-1, @3.begin.line, @3.begin.column));
+        $$ = new ParamDeclarator($1, Entry::getEntry($2), dims, @1.begin.line, @1.begin.column);
     }
-    //TODO(Lab2)：考虑函数形参更多情况
+    | TYPE IDENT LBRACKET RBRACKET ARRAY_DIMENSION_EXPR_LIST {
+        auto* dims = new std::vector<ExprNode*>();
+        dims->push_back(new LiteralExpr(-1, @3.begin.line, @3.begin.column));
+        dims->insert(dims->end(), $5->begin(), $5->end());
+        delete $5;  // Transfer nodes to dims; delete only the temporary vector.
+        $$ = new ParamDeclarator($1, Entry::getEntry($2), dims, @1.begin.line, @1.begin.column);
+    }
+    | TYPE IDENT ARRAY_DIMENSION_EXPR_LIST {
+        $$ = new ParamDeclarator($1, Entry::getEntry($2), $3, @1.begin.line, @1.begin.column);
+    }
     ;
 
 PARAM_DECLARATOR_LIST:
@@ -330,16 +355,21 @@ PARAM_DECLARATOR_LIST:
     ;
 
 VAR_DECLARATOR:
-    //TODO(Lab2)：完成变量声明符的处理
     IDENT {
-        Entry* entry = Entry::getEntry($1);
-        ExprNode* lval = new LeftValExpr(entry, nullptr, @1.begin.line, @1.begin.column);
+        auto* lval = new LeftValExpr(Entry::getEntry($1), nullptr, @1.begin.line, @1.begin.column);
         $$ = new VarDeclarator(lval, nullptr, @1.begin.line, @1.begin.column);
     }
     | IDENT ASSIGN INITIALIZER {
-        Entry* entry = Entry::getEntry($1);
-        ExprNode* lval = new LeftValExpr(entry, nullptr, @1.begin.line, @1.begin.column);
+        auto* lval = new LeftValExpr(Entry::getEntry($1), nullptr, @1.begin.line, @1.begin.column);
         $$ = new VarDeclarator(lval, $3, @1.begin.line, @1.begin.column);
+    }
+    | IDENT ARRAY_DIMENSION_EXPR_LIST {
+        auto* lval = new LeftValExpr(Entry::getEntry($1), $2, @1.begin.line, @1.begin.column);
+        $$ = new VarDeclarator(lval, nullptr, @1.begin.line, @1.begin.column);
+    }
+    | IDENT ARRAY_DIMENSION_EXPR_LIST ASSIGN INITIALIZER {
+        auto* lval = new LeftValExpr(Entry::getEntry($1), $2, @1.begin.line, @1.begin.column);
+        $$ = new VarDeclarator(lval, $4, @1.begin.line, @1.begin.column);
     }
     ;
 
@@ -355,9 +385,14 @@ VAR_DECLARATOR_LIST:
     ;
 
 INITIALIZER:
-    /* TODO(Lab2): Implement variable initializer rule */
     NOCOMMA_EXPR {
         $$ = new Initializer($1, @1.begin.line, @1.begin.column);
+    }
+    | LBRACE RBRACE {
+        $$ = new InitializerList(new std::vector<InitDecl*>(), @1.begin.line, @1.begin.column);
+    }
+    | LBRACE INITIALIZER_LIST RBRACE {
+        $$ = new InitializerList($2, @1.begin.line, @1.begin.column);
     }
     ;
 

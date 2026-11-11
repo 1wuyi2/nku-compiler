@@ -29,12 +29,15 @@ namespace FE::AST
 
                 if (p->dims)
                 {
-                    for (size_t j = 0; j < p->dims->size(); ++j)
+                    for (auto* dimExpr : *p->dims)
                     {
-                        ExprNode* dimExpr = (*p->dims)[j];
-                        auto*     lit     = static_cast<LiteralExpr*>(dimExpr);
-
-                        int v = lit->literal.getInt();
+                        if (!dimExpr || !dimExpr->isLiteralExpr())
+                        {
+                            paramStr += "[expr]";
+                            continue;
+                        }
+                        auto* lit = static_cast<LiteralExpr*>(dimExpr);
+                        long long v = lit->literal.getLL();
                         if (v < 0)
                             paramStr += "[]";
                         else
@@ -147,33 +150,33 @@ namespace FE::AST
 
     void ASTPrinter::visit(ForStmt& node, std::ostream* os)
     {
-
         emitHeader(*os, std::string("ForStmt, line: ") + std::to_string(node.line_num));
-
+        int remaining = (node.init != nullptr) + (node.cond != nullptr) +
+                        (node.step != nullptr) + (node.body != nullptr);
         if (node.init)
         {
-            withChild(false, [&]() {
+            withChild(--remaining == 0, [&]() {
                 emitHeader(*os, "Init:");
                 withChild(true, [&]() { apply(*this, *node.init, os); });
             });
         }
         if (node.cond)
         {
-            withChild(false, [&]() {
+            withChild(--remaining == 0, [&]() {
                 emitHeader(*os, "Condition:");
                 withChild(true, [&]() { apply(*this, *node.cond, os); });
             });
         }
         if (node.step)
         {
-            withChild(false, [&]() {
+            withChild(--remaining == 0, [&]() {
                 emitHeader(*os, "Step:");
                 withChild(true, [&]() { apply(*this, *node.step, os); });
             });
         }
         if (node.body)
         {
-            withChild(true, [&]() {
+            withChild(--remaining == 0, [&]() {
                 emitHeader(*os, "Body:");
                 withChild(true, [&]() { apply(*this, *node.body, os); });
             });

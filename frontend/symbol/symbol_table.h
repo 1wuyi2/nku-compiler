@@ -3,12 +3,18 @@
 
 #include <frontend/symbol/isymbol_table.h>
 #include <map>
+#include <vector>
 
 namespace FE::Sym
 {
     class SymTable : public iSymTable<SymTable>
     {
         friend iSymTable<SymTable>;
+
+        using Scope = std::map<Entry*, FE::AST::VarAttr>;
+
+        // scopes[0] is the global scope; the last element is the current scope.
+        std::vector<Scope> scopes{1};
 
         void reset_impl();
 

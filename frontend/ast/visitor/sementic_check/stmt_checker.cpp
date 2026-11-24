@@ -15,24 +15,78 @@ namespace FE::AST
     {
         // TODO(Lab3-1): 实现函数声明的语义检查
         // 检查作用域，记录函数信息，处理形参和函数体，检查返回语句
-        (void)node;
-        TODO("Lab3-1: Implement FuncDeclStmt semantic checking");
+        if (!node.entry) return false;
+
+        // Root pre-registers functions.  A different node stored under this
+        // name means this declaration was the duplicate already diagnosed.
+        auto found = funcDecls.find(node.entry);
+        if (found == funcDecls.end())
+            funcDecls.emplace(node.entry, &node);
+        else if (found->second != &node)
+            return false;
+
+        Type* oldRetType   = curFuncRetType;
+        bool  oldHasReturn = funcHasReturn;
+        curFuncRetType     = node.retType;
+        funcHasReturn      = false;
+
+        enterScope();
+        bool result = true;
+        try
+        {
+            if (node.params)
+                for (auto* param : *node.params)
+                    if (param) result &= apply(*this, *param);
+
+            if (auto* body = dynamic_cast<BlockStmt*>(node.body))
+                result &= visitBlock(*body, false);
+            else if (node.body)
+                result &= apply(*this, *node.body);
+        } catch (...)
+        {
+            exitScope();
+            curFuncRetType = oldRetType;
+            funcHasReturn  = oldHasReturn;
+            throw;
+        }
+        exitScope();
+
+        curFuncRetType = oldRetType;
+        funcHasReturn  = oldHasReturn;
+        return result;
     }
 
     bool ASTChecker::visit(VarDeclStmt& node)
     {
         // TODO(Lab3-1): 实现变量声明语句的语义检查
         // 空声明直接通过，否则委托给变量声明处理
-        (void)node;
-        TODO("Lab3-1: Implement VarDeclStmt semantic checking");
+        if (!node.decl) return true;
+        return apply(*this, *node.decl);
     }
 
     bool ASTChecker::visit(BlockStmt& node)
     {
         // TODO(Lab3-1): 实现块语句的语义检查
         // 进入新作用域，逐条访问语句，退出作用域
-        (void)node;
-        TODO("Lab3-1: Implement BlockStmt semantic checking");
+        return visitBlock(node, true);
+    }
+
+    bool ASTChecker::visitBlock(BlockStmt& node, bool createScope)
+    {
+        if (createScope) enterScope();
+        bool result = true;
+        try
+        {
+            if (node.stmts)
+                for (auto* stmt : *node.stmts)
+                    if (stmt) result &= apply(*this, *stmt);
+        } catch (...)
+        {
+            if (createScope) exitScope();
+            throw;
+        }
+        if (createScope) exitScope();
+        return result;
     }
 
     bool ASTChecker::visit(ReturnStmt& node)

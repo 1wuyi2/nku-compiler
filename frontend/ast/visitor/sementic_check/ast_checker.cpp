@@ -3,12 +3,117 @@
 
 namespace FE::AST
 {
+    namespace
+    {
+        bool isLibraryFunction(FE::Sym::Entry* entry)
+        {
+            if (!entry) return false;
+            const std::string&                 name  = entry->getName();
+            static const std::set<std::string> names = {"getint",
+                "getch",
+                "getarray",
+                "getfloat",
+                "getfarray",
+                "putint",
+                "putch",
+                "putarray",
+                "putfloat",
+                "putfarray",
+                "_sysy_starttime",
+                "_sysy_stoptime"};
+            return names.count(name) != 0;
+        }
+    }  // namespace
+
     bool ASTChecker::visit(Root& node)
     {
         // TODO(Lab3-1): 实现根节点的语义检查
         // 重置符号表，遍历所有顶层语句进行检查，确保存在main函数
-        (void)node;
-        TODO("Lab3-1: Implement Root node semantic checking");
+        symTable.reset();
+        glbSymbols.clear();
+        errors.clear();
+        mainExists     = false;
+        funcHasReturn  = false;
+        curFuncRetType = voidType;
+        loopDepth      = 0;
+        scopeSymbols.assign(1, {});
+        currentDeclType    = nullptr;
+        currentDeclIsConst = false;
+
+        // Function declarations are registered before bodies are visited.
+        // Calls are checked in a later stage, but this keeps the table ready
+        // for forward calls without pretending that call semantics exist yet.
+        for (auto it = funcDecls.begin(); it != funcDecls.end();)
+        {
+            if (isLibraryFunction(it->first))
+                ++it;
+            else
+                it = funcDecls.erase(it);
+        }
+
+        auto* stmts = node.getStmts();
+        if (!stmts) return true;
+
+        for (auto* stmt : *stmts)
+        {
+            auto* func = dynamic_cast<FuncDeclStmt*>(stmt);
+            if (!func || !func->entry) continue;
+
+            auto [it, inserted] = funcDecls.emplace(func->entry, func);
+            if (!inserted)
+            {
+                reportError(*func, "redefinition of function '" + func->entry->getName() + "'");
+                continue;
+            }
+            if (func->entry->getName() == "main") mainExists = true;
+        }
+
+        bool result = true;
+        for (auto* stmt : *stmts)
+        {
+            if (!stmt) continue;
+            if (!dynamic_cast<VarDeclStmt*>(stmt) && !dynamic_cast<FuncDeclStmt*>(stmt))
+            {
+                reportError(*stmt, "statement is not allowed at global scope");
+                result = false;
+                continue;
+            }
+            result &= apply(*this, *stmt);
+        }
+
+        // Full main-signature validation belongs to the function-semantics
+        // stage.  mainExists is deliberately maintained but not enforced here.
+        return result && errors.empty();
+    }
+
+    void ASTChecker::enterScope()
+    {
+        symTable.enterScope();
+        scopeSymbols.emplace_back();
+    }
+
+    void ASTChecker::exitScope()
+    {
+        symTable.exitScope();
+        if (scopeSymbols.size() > 1) scopeSymbols.pop_back();
+    }
+
+    bool ASTChecker::isDeclaredInCurrentScope(FE::Sym::Entry* entry) const
+    {
+        return entry && !scopeSymbols.empty() && scopeSymbols.back().count(entry) != 0;
+    }
+
+    void ASTChecker::rememberCurrentScope(FE::Sym::Entry* entry)
+    {
+        if (entry && !scopeSymbols.empty()) scopeSymbols.back().insert(entry);
+    }
+
+    void ASTChecker::reportError(const Node& node, const std::string& message)
+    {
+        if (node.line_num >= 0)
+            errors.push_back("line " + std::to_string(node.line_num) + ": " + message);
+        else
+            errors.push_back(message);
     }
 
     void ASTChecker::libFuncRegister()

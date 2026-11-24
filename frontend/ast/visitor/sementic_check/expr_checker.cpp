@@ -7,8 +7,33 @@ namespace FE::AST
     {
         // TODO(Lab3-1): 实现左值表达式的语义检查
         // 检查变量是否存在，处理数组下标访问，进行类型检查和常量折叠
-        (void)node;
-        TODO("Lab3-1: Implement LeftValExpr semantic checking");
+        VarAttr* attr = symTable.getSymbol(node.entry);
+        if (!attr)
+        {
+            const std::string name = node.entry ? node.entry->getName() : "<null>";
+            reportError(node, "use of undeclared variable '" + name + "'");
+            node.isLval               = false;
+            node.attr.val.value.type  = voidType;
+            node.attr.val.isConstexpr = false;
+            return false;
+        }
+
+        bool result = true;
+        if (node.indices)
+        {
+            for (auto* index : *node.indices)
+                if (index) result &= apply(*this, *index);
+        }
+
+        node.isLval               = true;
+        node.attr.val.value.type  = attr->type;
+        node.attr.val.isConstexpr = false;
+        if (attr->isConstDecl && !attr->initList.empty())
+        {
+            node.attr.val.value       = attr->initList.front();
+            node.attr.val.isConstexpr = true;
+        }
+        return result;
     }
 
     bool ASTChecker::visit(LiteralExpr& node)

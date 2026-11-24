@@ -7,6 +7,7 @@
 #include <frontend/ast/expr.h>
 #include <frontend/ast/stmt.h>
 #include <frontend/symbol/symbol_table.h>
+#include <set>
 #include <vector>
 
 namespace FE::AST
@@ -50,6 +51,14 @@ namespace FE::AST
 
         size_t loopDepth;
 
+        // SymTable::getSymbol() searches enclosing scopes.  Keep only the
+        // names declared at each level here so redefinition checks do not
+        // accidentally reject legal shadowing.
+        std::vector<std::set<FE::Sym::Entry*>> scopeSymbols;
+
+        Type* currentDeclType;
+        bool  currentDeclIsConst;
+
       public:
         std::vector<std::string> errors;
 
@@ -61,6 +70,9 @@ namespace FE::AST
               funcHasReturn(false),
               curFuncRetType(voidType),
               loopDepth(0),
+              scopeSymbols(1),
+              currentDeclType(nullptr),
+              currentDeclIsConst(false),
               errors()
         {
             libFuncRegister();
@@ -127,6 +139,13 @@ namespace FE::AST
         // 该函数向符号表中注册 SysY 的库函数，以便在语义检查时获取它们的信息
         // 示例实现已提供，展示如何创建函数声明并加入 funcDecls
         void libFuncRegister();
+
+        void enterScope();
+        void exitScope();
+        bool isDeclaredInCurrentScope(FE::Sym::Entry* entry) const;
+        void rememberCurrentScope(FE::Sym::Entry* entry);
+        bool visitBlock(BlockStmt& node, bool createScope);
+        void reportError(const Node& node, const std::string& message);
 
       private:
         // 这两个辅助函数用于对一元/二元表达式做类型推断与常量折叠（若可能）

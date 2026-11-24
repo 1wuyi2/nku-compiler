@@ -10,6 +10,7 @@
 #include <middleend/module/ir_module.h>
 #include <debug.h>
 #include <list>
+#include <vector>
 
 /*
  * Lab 3-2: 中间代码生成 (IR Generation)
@@ -110,6 +111,8 @@ namespace ME
         std::map<size_t, bool>                    paramPtrTab;  // if the i-th param is a pointer or not
         std::map<FE::AST::LeftValExpr*, Operand*> lval2ptr;
         Operand*                                  exprResult;
+        // (continue target, break target), one entry for each enclosing loop.
+        std::vector<std::pair<size_t, size_t>> loopTargets;
 
       public:
         ASTCodeGen(const std::map<FE::Sym::Entry*, FE::AST::VarAttr>& glbSymbols,
@@ -122,7 +125,8 @@ namespace ME
               reg2attr(),
               paramPtrTab(),
               lval2ptr(),
-              exprResult(nullptr)
+              exprResult(nullptr),
+              loopTargets()
         {}
 
       private:
@@ -171,6 +175,7 @@ namespace ME
             name2reg.reset();
             reg2attr.clear();
             lval2ptr.clear();
+            loopTargets.clear();
             curFunc    = func;
             curBlock   = nullptr;
             exprResult = nullptr;
@@ -180,6 +185,7 @@ namespace ME
             name2reg.reset();
             reg2attr.clear();
             lval2ptr.clear();
+            loopTargets.clear();
             curFunc    = nullptr;
             curBlock   = nullptr;
             exprResult = nullptr;
@@ -219,10 +225,10 @@ namespace ME
       private:
         DataType convert(FE::AST::Type* at);
         Operand* evaluateExprValue(FE::AST::ExprNode& node, Module* m);
+        Operand* evaluateCondition(FE::AST::ExprNode& node, Module* m);
         Operand* convertOperand(DataType from, DataType to, Operand* src, Block* block);
         Operand* handleUnaryCalc(FE::AST::UnaryExpr& node, Module* m);
-        Operand* handleBinaryCalc(
-            FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, FE::AST::Operator bop, Module* m);
+        Operand* handleBinaryCalc(FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, FE::AST::Operator bop, Module* m);
 
       private:
         LoadInst* createLoadInst(DataType t, Operand* ptr, size_t resReg);

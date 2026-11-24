@@ -10,12 +10,12 @@ namespace ME
         ASSERT(node.entry != nullptr && node.isLval && "Invalid left-value expression");
         ASSERT((!node.indices || node.indices->empty()) && "Array code generation belongs to Advanced");
 
-        Operand* ptr     = nullptr;
-        DataType valType = DataType::UNK;
+        Operand*     ptr      = nullptr;
+        DataType     valType  = DataType::UNK;
         const size_t localReg = name2reg.getReg(node.entry);
         if (localReg != static_cast<size_t>(-1))
         {
-            ptr = getRegOperand(localReg);
+            ptr         = getRegOperand(localReg);
             auto attrIt = reg2attr.find(localReg);
             ASSERT(attrIt != reg2attr.end() && "Local variable is missing IR attributes");
             valType = convert(attrIt->second.type);
@@ -29,7 +29,7 @@ namespace ME
         }
         ASSERT((valType == DataType::I32 || valType == DataType::F32) && "Unsupported scalar load type");
 
-        lval2ptr[&node] = ptr;
+        lval2ptr[&node]       = ptr;
         const size_t valueReg = getNewRegId();
         insert(createLoadInst(valType, ptr, valueReg));
         exprResult = getRegOperand(valueReg);
@@ -65,14 +65,13 @@ namespace ME
         ASSERT(lhs.entry != nullptr && lhs.isLval && "Assignment requires a modifiable left value");
         ASSERT((!lhs.indices || lhs.indices->empty()) && "Array assignment belongs to Advanced");
 
-        Operand* ptr = nullptr;
+        Operand*     ptr      = nullptr;
         const size_t localReg = name2reg.getReg(lhs.entry);
         if (localReg != static_cast<size_t>(-1))
         {
-            ptr = getRegOperand(localReg);
+            ptr         = getRegOperand(localReg);
             auto attrIt = reg2attr.find(localReg);
-            ASSERT(attrIt != reg2attr.end() && !attrIt->second.isConstDecl &&
-                   "Assignment target is not modifiable");
+            ASSERT(attrIt != reg2attr.end() && !attrIt->second.isConstDecl && "Assignment target is not modifiable");
         }
         else
         {
@@ -96,22 +95,48 @@ namespace ME
     void ASTCodeGen::handleLogicalAnd(
         FE::AST::BinaryExpr& node, FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, Module* m)
     {
-        // TODO(Lab 3-2): 生成短路与的基本块与条件分支
         (void)node;
-        (void)lhs;
-        (void)rhs;
-        (void)m;
-        TODO("Lab3-2: Implement logical AND codegen");
+        Operand* lhsCond    = evaluateCondition(lhs, m);
+        Block*   lhsEnd     = curBlock;
+        Block*   rhsBlock   = createBlock();
+        Block*   mergeBlock = createBlock();
+        insert(new BrCondInst(lhsCond, getLabelOperand(rhsBlock->blockId), getLabelOperand(mergeBlock->blockId)));
+
+        enterBlock(rhsBlock);
+        Operand* rhsCond = evaluateCondition(rhs, m);
+        Block*   rhsEnd  = curBlock;
+        insert(createBranchInst(mergeBlock->blockId));
+
+        enterBlock(mergeBlock);
+        const size_t resultReg = getNewRegId();
+        auto*        phi       = new PhiInst(DataType::I1, getRegOperand(resultReg));
+        phi->addIncoming(getImmeI32Operand(0), getLabelOperand(lhsEnd->blockId));
+        phi->addIncoming(rhsCond, getLabelOperand(rhsEnd->blockId));
+        insert(phi);
+        exprResult = getRegOperand(resultReg);
     }
     void ASTCodeGen::handleLogicalOr(
         FE::AST::BinaryExpr& node, FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, Module* m)
     {
-        // TODO(Lab 3-2): 生成短路或的基本块与条件分支
         (void)node;
-        (void)lhs;
-        (void)rhs;
-        (void)m;
-        TODO("Lab3-2: Implement logical OR codegen");
+        Operand* lhsCond    = evaluateCondition(lhs, m);
+        Block*   lhsEnd     = curBlock;
+        Block*   rhsBlock   = createBlock();
+        Block*   mergeBlock = createBlock();
+        insert(new BrCondInst(lhsCond, getLabelOperand(mergeBlock->blockId), getLabelOperand(rhsBlock->blockId)));
+
+        enterBlock(rhsBlock);
+        Operand* rhsCond = evaluateCondition(rhs, m);
+        Block*   rhsEnd  = curBlock;
+        insert(createBranchInst(mergeBlock->blockId));
+
+        enterBlock(mergeBlock);
+        const size_t resultReg = getNewRegId();
+        auto*        phi       = new PhiInst(DataType::I1, getRegOperand(resultReg));
+        phi->addIncoming(getImmeI32Operand(1), getLabelOperand(lhsEnd->blockId));
+        phi->addIncoming(rhsCond, getLabelOperand(rhsEnd->blockId));
+        insert(phi);
+        exprResult = getRegOperand(resultReg);
     }
     void ASTCodeGen::visit(FE::AST::BinaryExpr& node, Module* m)
     {
@@ -128,8 +153,8 @@ namespace ME
                 handleAssign(*lhs, *node.rhs, m);
                 return;
             }
-            case FE::AST::Operator::AND:
-            case FE::AST::Operator::OR: ERROR("Short-circuit logical IR generation belongs to Lab3 stage 3D");
+            case FE::AST::Operator::AND: handleLogicalAnd(node, *node.lhs, *node.rhs, m); return;
+            case FE::AST::Operator::OR: handleLogicalOr(node, *node.lhs, *node.rhs, m); return;
             default: break;
         }
 
@@ -144,9 +169,9 @@ namespace ME
 
         auto declIt = funcDecls.find(node.func);
         ASSERT(declIt != funcDecls.end() && declIt->second != nullptr && "Callee is missing its signature");
-        FE::AST::FuncDeclStmt* callee = declIt->second;
-        const size_t argumentCount = node.args ? node.args->size() : 0;
-        const size_t parameterCount = callee->params ? callee->params->size() : 0;
+        FE::AST::FuncDeclStmt* callee         = declIt->second;
+        const size_t           argumentCount  = node.args ? node.args->size() : 0;
+        const size_t           parameterCount = callee->params ? callee->params->size() : 0;
         ASSERT(argumentCount == parameterCount && "Call argument count does not match its signature");
 
         CallInst::argList args;
@@ -162,8 +187,8 @@ namespace ME
             ASSERT(block != nullptr && !isCurrentBlockTerminated() && "Argument evaluation terminated its block");
             const DataType argumentType  = convert(argument->attr.val.value.type);
             const DataType parameterType = convert(parameter->type);
-            ASSERT(parameterType != DataType::VOID && parameterType != DataType::UNK &&
-                   "Invalid function parameter type");
+            ASSERT(
+                parameterType != DataType::VOID && parameterType != DataType::UNK && "Invalid function parameter type");
             if (parameterType != DataType::PTR)
                 value = convertOperand(argumentType, parameterType, value, block);
             else

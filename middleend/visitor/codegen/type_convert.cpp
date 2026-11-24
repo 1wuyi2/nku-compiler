@@ -102,6 +102,14 @@ namespace ME
         return exprResult;
     }
 
+    Operand* ASTCodeGen::evaluateCondition(FE::AST::ExprNode& node, Module* m)
+    {
+        Operand* value = evaluateExprValue(node, m);
+        ASSERT(
+            curBlock != nullptr && !isCurrentBlockTerminated() && "Condition evaluation did not leave a usable block");
+        return convertOperand(convert(node.attr.val.value.type), DataType::I1, value, curBlock);
+    }
+
     Operand* ASTCodeGen::convertOperand(DataType from, DataType to, Operand* src, Block* block)
     {
         ASSERT(src != nullptr && block != nullptr && "Type conversion requires an operand and block");
@@ -179,8 +187,7 @@ namespace ME
             return getRegOperand(dest);
         }
 
-        if (node.op != FE::AST::Operator::ADD && node.op != FE::AST::Operator::SUB)
-            ERROR("Unsupported unary operator");
+        if (node.op != FE::AST::Operator::ADD && node.op != FE::AST::Operator::SUB) ERROR("Unsupported unary operator");
 
         const DataType resultType = convert(node.attr.val.value.type);
         src                       = convertOperand(srcType, resultType, src, block);

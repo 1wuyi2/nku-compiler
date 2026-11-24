@@ -8,41 +8,33 @@ namespace ME
         // 查找变量位置（全局或局部），处理数组下标/GEP，必要时发出load
         (void)node;
         (void)m;
+        exprResult = nullptr;
         TODO("Lab3-2: Implement LeftValExpr IR generation");
     }
 
     void ASTCodeGen::visit(FE::AST::LiteralExpr& node, Module* m)
     {
         (void)m;
+        exprResult = nullptr;
 
-        size_t reg = getNewRegId();
         switch (node.literal.type->getBaseType())
         {
+            case FE::AST::Type_t::BOOL: exprResult = getImmeI32Operand(node.literal.getBool() ? 1 : 0); break;
             case FE::AST::Type_t::INT:
             case FE::AST::Type_t::LL:  // treat as I32
-            {
-                int             val  = node.literal.getInt();
-                ArithmeticInst* inst = createArithmeticI32Inst_ImmeAll(Operator::ADD, val, 0, reg);  // reg = val + 0
-                insert(inst);
+                exprResult = getImmeI32Operand(node.literal.getInt());
                 break;
-            }
-            case FE::AST::Type_t::FLOAT:
-            {
-                float           val  = node.literal.getFloat();
-                ArithmeticInst* inst = createArithmeticF32Inst_ImmeAll(Operator::FADD, val, 0, reg);  // reg = val + 0
-                insert(inst);
-                break;
-            }
+            case FE::AST::Type_t::FLOAT: exprResult = getImmeF32Operand(node.literal.getFloat()); break;
             default: ERROR("Unsupported literal type");
         }
     }
 
     void ASTCodeGen::visit(FE::AST::UnaryExpr& node, Module* m)
     {
-        // TODO(Lab 3-2): 生成一元运算的 IR（访问操作数、必要的类型转换、发出运算指令）
-        (void)node;
-        (void)m;
-        TODO("Lab3-2: Implement UnaryExpr IR generation");
+        ASSERT(curFunc != nullptr && curBlock != nullptr && "Unary expression requires a current function/block");
+        ASSERT(node.expr != nullptr && "Unary expression has no operand");
+        exprResult = nullptr;
+        exprResult = handleUnaryCalc(node, m);
     }
 
     void ASTCodeGen::handleAssign(FE::AST::LeftValExpr& lhs, FE::AST::ExprNode& rhs, Module* m)
@@ -75,10 +67,19 @@ namespace ME
     }
     void ASTCodeGen::visit(FE::AST::BinaryExpr& node, Module* m)
     {
-        // TODO(Lab 3-2): 生成二元表达式 IR（含赋值、逻辑与/或、算术/比较）
-        (void)node;
-        (void)m;
-        TODO("Lab3-2: Implement BinaryExpr IR generation");
+        ASSERT(curFunc != nullptr && curBlock != nullptr && "Binary expression requires a current function/block");
+        ASSERT(node.lhs != nullptr && node.rhs != nullptr && "Binary expression has a missing operand");
+        exprResult = nullptr;
+
+        switch (node.op)
+        {
+            case FE::AST::Operator::ASSIGN: ERROR("Assignment IR generation belongs to Lab3 stage 3B");
+            case FE::AST::Operator::AND:
+            case FE::AST::Operator::OR: ERROR("Short-circuit logical IR generation belongs to Lab3 stage 3D");
+            default: break;
+        }
+
+        exprResult = handleBinaryCalc(*node.lhs, *node.rhs, node.op, m);
     }
 
     void ASTCodeGen::visit(FE::AST::CallExpr& node, Module* m)
@@ -86,6 +87,7 @@ namespace ME
         // TODO(Lab 3-2): 生成函数调用 IR（准备参数、可选返回寄存器、发出call）
         (void)node;
         (void)m;
+        exprResult = nullptr;
         TODO("Lab3-2: Implement CallExpr IR generation");
     }
 
@@ -94,6 +96,7 @@ namespace ME
         // TODO(Lab 3-2): 依序生成逗号表达式每个子表达式的 IR
         (void)node;
         (void)m;
+        exprResult = nullptr;
         TODO("Lab3-2: Implement CommaExpr IR generation");
     }
 }  // namespace ME

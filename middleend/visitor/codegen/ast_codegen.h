@@ -100,6 +100,7 @@ namespace ME
         std::map<size_t, FE::AST::VarAttr>        reg2attr;
         std::map<size_t, bool>                    paramPtrTab;  // if the i-th param is a pointer or not
         std::map<FE::AST::LeftValExpr*, Operand*> lval2ptr;
+        Operand*                                  exprResult;
 
       public:
         ASTCodeGen(const std::map<FE::Sym::Entry*, FE::AST::VarAttr>& glbSymbols,
@@ -111,7 +112,8 @@ namespace ME
               name2reg(),
               reg2attr(),
               paramPtrTab(),
-              lval2ptr()
+              lval2ptr(),
+              exprResult(nullptr)
         {}
 
       private:
@@ -154,23 +156,52 @@ namespace ME
         void handleGlobalVarDecl(FE::AST::VarDeclStmt* decls, Module* m);
 
       private:
-        void   enterFunc(Function* func) { curFunc = func; }
-        void   exitFunc() { curFunc = nullptr; }
-        void   enterBlock(Block* block) { curBlock = block; }
-        void   enterBlock(size_t label) { curBlock = curFunc->getBlock(label); }
+        void enterFunc(Function* func)
+        {
+            ASSERT(func != nullptr && "Cannot enter a null function");
+            curFunc    = func;
+            curBlock   = nullptr;
+            exprResult = nullptr;
+        }
+        void exitFunc()
+        {
+            curFunc    = nullptr;
+            curBlock   = nullptr;
+            exprResult = nullptr;
+        }
+        void enterBlock(Block* block)
+        {
+            ASSERT(curFunc != nullptr && block != nullptr && "Code generation requires a valid function/block");
+            curBlock = block;
+        }
+        void enterBlock(size_t label)
+        {
+            ASSERT(curFunc != nullptr && "Code generation requires a current function");
+            enterBlock(curFunc->getBlock(label));
+        }
         void   exitBlock() { curBlock = nullptr; }
         Block* createBlock() { return curFunc->createBlock(); }
         Block* getBlock(size_t label) { return curFunc->getBlock(label); }
         size_t getMaxReg() { return curFunc->getMaxReg(); }
         size_t getMaxLabel() { return curFunc->getMaxLabel(); }
-        size_t getNewRegId() { return curFunc->getNewRegId(); }
-        void   insert(Instruction* inst) { curBlock->insertBack(inst); }
+        size_t getNewRegId()
+        {
+            ASSERT(curFunc != nullptr && "Register allocation requires a current function");
+            return curFunc->getNewRegId();
+        }
+        void insert(Instruction* inst)
+        {
+            ASSERT(curBlock != nullptr && inst != nullptr && "Instruction insertion requires a current block");
+            curBlock->insertBack(inst);
+        }
 
       private:
         DataType convert(FE::AST::Type* at);
-        void     handleUnaryCalc(FE::AST::ExprNode& node, FE::AST::Operator uop, Block* block, Module* m);
-        void     handleBinaryCalc(
-                FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, FE::AST::Operator bop, Block* block, Module* m);
+        Operand* evaluateExprValue(FE::AST::ExprNode& node, Module* m);
+        Operand* convertOperand(DataType from, DataType to, Operand* src, Block* block);
+        Operand* handleUnaryCalc(FE::AST::UnaryExpr& node, Module* m);
+        Operand* handleBinaryCalc(
+            FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, FE::AST::Operator bop, Module* m);
 
       private:
         LoadInst* createLoadInst(DataType t, Operand* ptr, size_t resReg);

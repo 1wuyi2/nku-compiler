@@ -138,11 +138,50 @@ namespace ME
 
     void ASTCodeGen::visit(FE::AST::CallExpr& node, Module* m)
     {
-        // TODO(Lab 3-2): 生成函数调用 IR（准备参数、可选返回寄存器、发出call）
-        (void)node;
-        (void)m;
         exprResult = nullptr;
-        TODO("Lab3-2: Implement CallExpr IR generation");
+        ASSERT(curFunc != nullptr && curBlock != nullptr && "Function call requires a current function/block");
+        ASSERT(node.func != nullptr && "Function call has no callee");
+
+        auto declIt = funcDecls.find(node.func);
+        ASSERT(declIt != funcDecls.end() && declIt->second != nullptr && "Callee is missing its signature");
+        FE::AST::FuncDeclStmt* callee = declIt->second;
+        const size_t argumentCount = node.args ? node.args->size() : 0;
+        const size_t parameterCount = callee->params ? callee->params->size() : 0;
+        ASSERT(argumentCount == parameterCount && "Call argument count does not match its signature");
+
+        CallInst::argList args;
+        args.reserve(argumentCount);
+        for (size_t i = 0; i < argumentCount; ++i)
+        {
+            FE::AST::ExprNode*        argument  = (*node.args)[i];
+            FE::AST::ParamDeclarator* parameter = (*callee->params)[i];
+            ASSERT(argument != nullptr && parameter != nullptr && "Invalid call argument or parameter");
+
+            Operand* value = evaluateExprValue(*argument, m);
+            Block*   block = curBlock;
+            ASSERT(block != nullptr && !isCurrentBlockTerminated() && "Argument evaluation terminated its block");
+            const DataType argumentType  = convert(argument->attr.val.value.type);
+            const DataType parameterType = convert(parameter->type);
+            ASSERT(parameterType != DataType::VOID && parameterType != DataType::UNK &&
+                   "Invalid function parameter type");
+            if (parameterType != DataType::PTR)
+                value = convertOperand(argumentType, parameterType, value, block);
+            else
+                ASSERT(argumentType == DataType::PTR && "Pointer argument type mismatch");
+            args.emplace_back(parameterType, value);
+        }
+
+        const DataType returnType = convert(callee->retType);
+        ASSERT(returnType != DataType::UNK && returnType != DataType::PTR && "Invalid function return type");
+        if (returnType == DataType::VOID)
+        {
+            insert(createCallInst(returnType, node.func->getName(), args));
+            return;
+        }
+
+        const size_t resultReg = getNewRegId();
+        insert(createCallInst(returnType, node.func->getName(), args, resultReg));
+        exprResult = getRegOperand(resultReg);
     }
 
     void ASTCodeGen::visit(FE::AST::CommaExpr& node, Module* m)

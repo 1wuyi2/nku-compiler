@@ -207,7 +207,13 @@ namespace ME
         void insert(Instruction* inst)
         {
             ASSERT(curBlock != nullptr && inst != nullptr && "Instruction insertion requires a current block");
+            ASSERT((curBlock->insts.empty() || !curBlock->insts.back()->isTerminator()) &&
+                   "Cannot append an instruction after a block terminator");
             curBlock->insertBack(inst);
+        }
+        bool isCurrentBlockTerminated() const
+        {
+            return curBlock && !curBlock->insts.empty() && curBlock->insts.back()->isTerminator();
         }
 
       private:

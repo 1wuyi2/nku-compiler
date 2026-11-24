@@ -80,16 +80,19 @@ namespace ME
 
     void ASTCodeGen::visit(FE::AST::Root& node, Module* m)
     {
-        // 示例：注册库函数
+        ASSERT(m != nullptr && "Root code generation requires a module");
         libFuncRegister(m);
 
-        // Stage 3B only emits module-level variables. Function definitions are
-        // deliberately left for the later function/code-flow stage.
         if (!node.getStmts()) return;
         for (FE::AST::StmtNode* stmt : *node.getStmts())
         {
             auto* varDecl = dynamic_cast<FE::AST::VarDeclStmt*>(stmt);
             if (varDecl) handleGlobalVarDecl(varDecl, m);
+        }
+        for (FE::AST::StmtNode* stmt : *node.getStmts())
+        {
+            auto* funcDecl = dynamic_cast<FE::AST::FuncDeclStmt*>(stmt);
+            if (funcDecl) apply(*this, *funcDecl, m);
         }
     }
 

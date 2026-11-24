@@ -4,17 +4,76 @@ namespace ME
 {
     void ASTCodeGen::visit(FE::AST::ExprStmt& node, Module* m)
     {
-        if (!node.expr) return;
+        if (!node.expr || isCurrentBlockTerminated()) return;
         apply(*this, *node.expr, m);
     }
 
     void ASTCodeGen::visit(FE::AST::FuncDeclStmt& node, Module* m)
     {
-        // TODO(Lab 3-2): 生成函数定义 IR（形参、入口/结束基本块、返回补丁）
-        // 设置函数返回类型与参数寄存器，创建基本块骨架，并生成函数体
-        (void)node;
-        (void)m;
-        TODO("Lab3-2: Implement FuncDeclStmt IR generation");
+        ASSERT(m != nullptr && node.entry != nullptr && node.retType != nullptr && "Invalid function definition");
+        const DataType returnType = convert(node.retType);
+        ASSERT((returnType == DataType::VOID || returnType == DataType::I32 || returnType == DataType::F32) &&
+               "Unsupported function return type");
+
+        FuncDefInst::argList irParams;
+        Function* function = new Function(new FuncDefInst(returnType, node.entry->getName()));
+        enterFunc(function);
+        try
+        {
+            if (node.params)
+            {
+                for (FE::AST::ParamDeclarator* param : *node.params)
+                {
+                    ASSERT(param != nullptr && param->entry != nullptr && param->type != nullptr &&
+                           "Invalid function parameter");
+                    const DataType paramType = convert(param->type);
+                    ASSERT((paramType == DataType::I32 || paramType == DataType::F32) &&
+                           "Array parameters belong to Advanced");
+                    const size_t argumentReg = getNewRegId();
+                    irParams.emplace_back(paramType, getRegOperand(argumentReg));
+                }
+            }
+            function->funcDef->argRegs = irParams;
+
+            enterBlock(createBlock());
+            if (node.params)
+            {
+                for (size_t i = 0; i < node.params->size(); ++i)
+                {
+                    FE::AST::ParamDeclarator* param = (*node.params)[i];
+                    const DataType paramType = convert(param->type);
+                    const size_t ptrReg = getNewRegId();
+                    insert(createAllocaInst(paramType, ptrReg));
+                    insert(createStoreInst(paramType, irParams[i].second, getRegOperand(ptrReg)));
+                    name2reg.addSymbol(param->entry, ptrReg);
+                    reg2attr[ptrReg] = FE::AST::VarAttr(param->type, false);
+                }
+            }
+
+            // Parameters and declarations in the outermost function block
+            // intentionally share one source-language scope.
+            if (auto* body = dynamic_cast<FE::AST::BlockStmt*>(node.body))
+            {
+                if (body->stmts)
+                    for (FE::AST::StmtNode* stmt : *body->stmts)
+                    {
+                        if (isCurrentBlockTerminated()) break;
+                        if (stmt) apply(*this, *stmt, m);
+                    }
+            }
+            else if (node.body && !isCurrentBlockTerminated())
+                apply(*this, *node.body, m);
+
+            if (returnType == DataType::VOID && !isCurrentBlockTerminated()) insert(createRetInst());
+            ASSERT(isCurrentBlockTerminated() && "Non-void function ended without a return terminator");
+        } catch (...)
+        {
+            delete function;
+            exitFunc();
+            throw;
+        }
+        exitFunc();
+        m->functions.push_back(function);
     }
 
     void ASTCodeGen::visit(FE::AST::VarDeclStmt& node, Module* m)
@@ -30,7 +89,10 @@ namespace ME
         {
             if (node.stmts)
                 for (FE::AST::StmtNode* stmt : *node.stmts)
+                {
+                    if (isCurrentBlockTerminated()) break;
                     if (stmt) apply(*this, *stmt, m);
+                }
         } catch (...)
         {
             name2reg.exitScope();
@@ -41,10 +103,27 @@ namespace ME
 
     void ASTCodeGen::visit(FE::AST::ReturnStmt& node, Module* m)
     {
-        // TODO(Lab 3-2): 生成 return 语句 IR（可选返回值与类型转换）
-        (void)node;
-        (void)m;
-        TODO("Lab3-2: Implement ReturnStmt IR generation");
+        ASSERT(curFunc != nullptr && curBlock != nullptr && curFunc->funcDef != nullptr &&
+               "Return requires a current function/block");
+        if (isCurrentBlockTerminated()) return;
+
+        const DataType returnType = curFunc->funcDef->retType;
+        if (!node.retExpr)
+        {
+            ASSERT(returnType == DataType::VOID && "Non-void return requires a value");
+            insert(createRetInst());
+            exprResult = nullptr;
+            return;
+        }
+
+        ASSERT(returnType != DataType::VOID && "Void function cannot return a value");
+        Operand* value = evaluateExprValue(*node.retExpr, m);
+        Block*   block = curBlock;
+        ASSERT(block != nullptr && !isCurrentBlockTerminated() && "Return expression terminated its block");
+        const DataType valueType = convert(node.retExpr->attr.val.value.type);
+        value = convertOperand(valueType, returnType, value, block);
+        insert(new RetInst(returnType, value));
+        exprResult = nullptr;
     }
 
     void ASTCodeGen::visit(FE::AST::WhileStmt& node, Module* m)

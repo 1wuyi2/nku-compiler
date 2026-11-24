@@ -127,7 +127,7 @@ namespace ME
     std::string GlbVarDeclInst::toString() const
     {
         std::stringstream ss;
-        ss << "@" << name << " = global ";
+        ss << "@" << name << (isConst ? " = constant " : " = global ");
         if (initList.arrayDims.empty())
         {
             ss << dt << " ";

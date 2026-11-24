@@ -19,18 +19,24 @@ namespace ME
 
     void ASTCodeGen::visit(FE::AST::VarDeclStmt& node, Module* m)
     {
-        // TODO(Lab 3-2): 生成变量声明语句 IR（局部变量分配、初始化）
-        (void)node;
-        (void)m;
-        TODO("Lab3-2: Implement VarDeclStmt IR generation");
+        ASSERT(node.decl != nullptr && "Variable declaration statement has no declaration");
+        apply(*this, *node.decl, m);
     }
 
     void ASTCodeGen::visit(FE::AST::BlockStmt& node, Module* m)
     {
-        // TODO(Lab 3-2): 生成语句块 IR（作用域管理，顺序生成子语句）
-        (void)node;
-        (void)m;
-        TODO("Lab3-2: Implement BlockStmt IR generation");
+        name2reg.enterScope();
+        try
+        {
+            if (node.stmts)
+                for (FE::AST::StmtNode* stmt : *node.stmts)
+                    if (stmt) apply(*this, *stmt, m);
+        } catch (...)
+        {
+            name2reg.exitScope();
+            throw;
+        }
+        name2reg.exitScope();
     }
 
     void ASTCodeGen::visit(FE::AST::ReturnStmt& node, Module* m)

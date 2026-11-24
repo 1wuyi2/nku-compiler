@@ -64,7 +64,10 @@ namespace ME
 
           public:
             RegTab() : curScope(new Scope(nullptr)) {}
-            ~RegTab()
+            ~RegTab() { clear(); }
+
+          private:
+            void clear()
             {
                 Scope* scope = curScope;
                 while (scope)
@@ -73,9 +76,15 @@ namespace ME
                     delete scope;
                     scope = parent;
                 }
+                curScope = nullptr;
             }
 
           public:
+            void reset()
+            {
+                clear();
+                curScope = new Scope(nullptr);
+            }
             void   addSymbol(FE::Sym::Entry* entry, size_t reg) { curScope->sym2Reg[entry] = reg; }
             size_t getReg(FE::Sym::Entry* entry)
             {
@@ -159,12 +168,18 @@ namespace ME
         void enterFunc(Function* func)
         {
             ASSERT(func != nullptr && "Cannot enter a null function");
+            name2reg.reset();
+            reg2attr.clear();
+            lval2ptr.clear();
             curFunc    = func;
             curBlock   = nullptr;
             exprResult = nullptr;
         }
         void exitFunc()
         {
+            name2reg.reset();
+            reg2attr.clear();
+            lval2ptr.clear();
             curFunc    = nullptr;
             curBlock   = nullptr;
             exprResult = nullptr;

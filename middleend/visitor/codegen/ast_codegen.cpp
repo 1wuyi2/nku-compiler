@@ -50,10 +50,32 @@ namespace ME
 
     void ASTCodeGen::handleGlobalVarDecl(FE::AST::VarDeclStmt* decls, Module* m)
     {
-        // TODO(Lab 3-2): 生成全局变量声明 IR（支持标量与数组的初值）
-        (void)decls;
-        (void)m;
-        TODO("Lab3-2: Implement global var declaration IR generation");
+        ASSERT(decls != nullptr && decls->decl != nullptr && m != nullptr);
+        FE::AST::VarDeclaration& declaration = *decls->decl;
+        if (!declaration.decls) return;
+
+        for (FE::AST::VarDeclarator* declarator : *declaration.decls)
+        {
+            if (!declarator) continue;
+            auto* lval = dynamic_cast<FE::AST::LeftValExpr*>(declarator->lval);
+            ASSERT(lval != nullptr && lval->entry != nullptr && "Invalid global variable declarator");
+            ASSERT((!lval->indices || lval->indices->empty()) && "Array code generation belongs to Advanced");
+
+            auto attrIt = glbSymbols.find(lval->entry);
+            ASSERT(attrIt != glbSymbols.end() && "Global variable is missing semantic attributes");
+            const FE::AST::VarAttr& attr = attrIt->second;
+            const DataType          type = convert(attr.type);
+            ASSERT((type == DataType::I32 || type == DataType::F32) && "Unsupported global scalar type");
+
+            Operand* init = nullptr;
+            if (!attr.initList.empty())
+            {
+                const FE::AST::VarValue& value = attr.initList.front();
+                init = type == DataType::F32 ? static_cast<Operand*>(getImmeF32Operand(value.getFloat()))
+                                             : static_cast<Operand*>(getImmeI32Operand(value.getInt()));
+            }
+            m->globalVars.push_back(new GlbVarDeclInst(type, lval->entry->getName(), init, attr.isConstDecl));
+        }
     }
 
     void ASTCodeGen::visit(FE::AST::Root& node, Module* m)
@@ -61,11 +83,14 @@ namespace ME
         // 示例：注册库函数
         libFuncRegister(m);
 
-        // TODO(Lab 3-2): 生成模块级 IR
-        // 处理顶层语句：全局变量声明、函数定义等
-        (void)node;
-        (void)m;
-        TODO("Lab3-2: Implement Root IR generation");
+        // Stage 3B only emits module-level variables. Function definitions are
+        // deliberately left for the later function/code-flow stage.
+        if (!node.getStmts()) return;
+        for (FE::AST::StmtNode* stmt : *node.getStmts())
+        {
+            auto* varDecl = dynamic_cast<FE::AST::VarDeclStmt*>(stmt);
+            if (varDecl) handleGlobalVarDecl(varDecl, m);
+        }
     }
 
     LoadInst* ASTCodeGen::createLoadInst(DataType t, Operand* ptr, size_t resReg)

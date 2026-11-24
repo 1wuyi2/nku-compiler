@@ -223,13 +223,14 @@ namespace ME
         std::string      name;
         Operand*         init;
         FE::AST::VarAttr initList;
+        bool             isConst;
 
       public:
-        GlbVarDeclInst(DataType t, const std::string& n, Operand* i = nullptr)
-            : Instruction(Operator::GLOBAL_VAR), dt(t), name(n), init(i)
+        GlbVarDeclInst(DataType t, const std::string& n, Operand* i = nullptr, bool c = false)
+            : Instruction(Operator::GLOBAL_VAR), dt(t), name(n), init(i), initList(), isConst(c)
         {}
         GlbVarDeclInst(DataType t, const std::string& n, FE::AST::VarAttr il)
-            : Instruction(Operator::GLOBAL_VAR), dt(t), name(n), init(nullptr), initList(il)
+            : Instruction(Operator::GLOBAL_VAR), dt(t), name(n), init(nullptr), initList(il), isConst(il.isConstDecl)
         {}
         ~GlbVarDeclInst() override = default;
 

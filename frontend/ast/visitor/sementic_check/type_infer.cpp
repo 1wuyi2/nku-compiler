@@ -104,13 +104,10 @@ namespace FE::AST
         ExprValue exprVal;
         exprVal.isConstexpr = isConst;
 
-        if (preferredType->getBaseType() == Type_t::FLOAT)
-            exprVal.value = VarValue(static_cast<float>(result));
-        else if (result >= std::numeric_limits<int>::min() && result <= std::numeric_limits<int>::max() &&
-                 preferredType->getBaseType() != Type_t::LL)
-            exprVal.value = VarValue(static_cast<int>(result));
-        else
+        if (preferredType->getBaseType() == Type_t::LL)
             exprVal.value = VarValue(result);
+        else
+            exprVal.value = VarValue(static_cast<int>(result));
 
         return exprVal;
     }
@@ -134,9 +131,27 @@ namespace FE::AST
                 if constexpr (std::is_same_v<T, int>)
                 {
                     if (value == INT_MIN)
-                        return handleIntegerResult(2147483648LL, resultType, operand.isConstexpr);
+                    {
+                        errors.push_back("integer constant overflow for unary '-' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
                     else
                         return handleIntegerResult(-static_cast<long long>(value), resultType, operand.isConstexpr);
+                }
+                else if constexpr (std::is_same_v<T, long long>)
+                {
+                    if (value == std::numeric_limits<long long>::min())
+                    {
+                        errors.push_back("integer constant overflow for unary '-' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
+                    result.value = makeVarValue(-value);
                 }
                 else
                     result.value = makeVarValue(-value);
@@ -202,42 +217,128 @@ namespace FE::AST
         switch (op)
         {
             case Operator::ADD:
-                if constexpr (std::is_integral_v<T>)
-                    return handleIntegerResult(static_cast<long long>(lvalue) + static_cast<long long>(rvalue),
-                        resultType,
-                        result.isConstexpr);
+                if constexpr (std::is_same_v<T, int>)
+                {
+                    const long long value = static_cast<long long>(lvalue) + static_cast<long long>(rvalue);
+                    if (value < INT_MIN || value > INT_MAX)
+                    {
+                        errors.push_back("integer constant overflow for '+' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
+                    return handleIntegerResult(value, resultType, true);
+                }
+                else if constexpr (std::is_same_v<T, long long>)
+                {
+                    long long value;
+                    if (__builtin_add_overflow(lvalue, rvalue, &value))
+                    {
+                        errors.push_back("integer constant overflow for '+' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
+                    return handleIntegerResult(value, resultType, true);
+                }
                 else
                     result.value = makeVarValue(lvalue + rvalue);
                 break;
             case Operator::SUB:
-                if constexpr (std::is_integral_v<T>)
-                    return handleIntegerResult(static_cast<long long>(lvalue) - static_cast<long long>(rvalue),
-                        resultType,
-                        result.isConstexpr);
+                if constexpr (std::is_same_v<T, int>)
+                {
+                    const long long value = static_cast<long long>(lvalue) - static_cast<long long>(rvalue);
+                    if (value < INT_MIN || value > INT_MAX)
+                    {
+                        errors.push_back("integer constant overflow for '-' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
+                    return handleIntegerResult(value, resultType, true);
+                }
+                else if constexpr (std::is_same_v<T, long long>)
+                {
+                    long long value;
+                    if (__builtin_sub_overflow(lvalue, rvalue, &value))
+                    {
+                        errors.push_back("integer constant overflow for '-' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
+                    return handleIntegerResult(value, resultType, true);
+                }
                 else
                     result.value = makeVarValue(lvalue - rvalue);
                 break;
             case Operator::MUL:
-                if constexpr (std::is_integral_v<T>)
-                    return handleIntegerResult(static_cast<long long>(lvalue) * static_cast<long long>(rvalue),
-                        resultType,
-                        result.isConstexpr);
+                if constexpr (std::is_same_v<T, int>)
+                {
+                    const long long value = static_cast<long long>(lvalue) * static_cast<long long>(rvalue);
+                    if (value < INT_MIN || value > INT_MAX)
+                    {
+                        errors.push_back("integer constant overflow for '*' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
+                    return handleIntegerResult(value, resultType, true);
+                }
+                else if constexpr (std::is_same_v<T, long long>)
+                {
+                    long long value;
+                    if (__builtin_mul_overflow(lvalue, rvalue, &value))
+                    {
+                        errors.push_back("integer constant overflow for '*' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
+                    return handleIntegerResult(value, resultType, true);
+                }
                 else
                     result.value = makeVarValue(lvalue * rvalue);
                 break;
             case Operator::DIV:
                 if constexpr (std::is_integral_v<T>)
+                {
+                    if (lvalue == std::numeric_limits<T>::min() && rvalue == static_cast<T>(-1))
+                    {
+                        errors.push_back("integer constant overflow for '/' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
                     return handleIntegerResult(static_cast<long long>(lvalue) / static_cast<long long>(rvalue),
                         resultType,
                         result.isConstexpr);
+                }
                 else
                     result.value = makeVarValue(lvalue / rvalue);
                 break;
             case Operator::MOD:
                 if constexpr (std::is_integral_v<T>)
+                {
+                    if (lvalue == std::numeric_limits<T>::min() && rvalue == static_cast<T>(-1))
+                    {
+                        errors.push_back("integer constant overflow for '%' at line " + std::to_string(lineNum));
+                        hasError           = true;
+                        result.value.type  = voidType;
+                        result.isConstexpr = false;
+                        return result;
+                    }
                     return handleIntegerResult(static_cast<long long>(lvalue) % static_cast<long long>(rvalue),
                         resultType,
                         result.isConstexpr);
+                }
                 break;
             case Operator::GT: result.value = makeVarValue(lvalue > rvalue); break;
             case Operator::GE: result.value = makeVarValue(lvalue >= rvalue); break;

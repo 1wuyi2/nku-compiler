@@ -1,14 +1,78 @@
 #include <frontend/ast/visitor/sementic_check/ast_checker.h>
 #include <debug.h>
+#include <cmath>
+#include <limits>
 
 namespace FE::AST
 {
+    namespace
+    {
+        bool isScalar(Type* type)
+        {
+            if (!type || type->getTypeGroup() != TypeGroup::BASIC) return false;
+            const Type_t kind = type->getBaseType();
+            return kind == Type_t::BOOL || kind == Type_t::INT || kind == Type_t::LL || kind == Type_t::FLOAT;
+        }
+
+        bool convertConstant(const VarValue& source, Type* target, VarValue& result)
+        {
+            if (!isScalar(source.type) || !isScalar(target)) return false;
+
+            switch (target->getBaseType())
+            {
+                case Type_t::BOOL: result = VarValue(source.getBool()); return true;
+                case Type_t::INT:
+                {
+                    long double value = 0;
+                    switch (source.type->getBaseType())
+                    {
+                        case Type_t::BOOL: value = source.boolValue; break;
+                        case Type_t::INT: value = source.intValue; break;
+                        case Type_t::LL: value = source.llValue; break;
+                        case Type_t::FLOAT: value = source.floatValue; break;
+                        default: return false;
+                    }
+                    if (!std::isfinite(value) || value < std::numeric_limits<int>::min() ||
+                        value > std::numeric_limits<int>::max())
+                        return false;
+                    result = VarValue(static_cast<int>(value));
+                    return true;
+                }
+                case Type_t::LL:
+                {
+                    long double value = 0;
+                    switch (source.type->getBaseType())
+                    {
+                        case Type_t::BOOL: value = source.boolValue; break;
+                        case Type_t::INT: value = source.intValue; break;
+                        case Type_t::LL: value = source.llValue; break;
+                        case Type_t::FLOAT: value = source.floatValue; break;
+                        default: return false;
+                    }
+                    if (!std::isfinite(value) || value < std::numeric_limits<long long>::min() ||
+                        value > std::numeric_limits<long long>::max())
+                        return false;
+                    result = VarValue(static_cast<long long>(value));
+                    return true;
+                }
+                case Type_t::FLOAT: result = VarValue(source.getFloat()); return true;
+                default: return false;
+            }
+        }
+    }  // namespace
+
     bool ASTChecker::visit(Initializer& node)
     {
         // 示例实现：单个初始化器的语义检查
         // 1) 访问初始化值表达式
         // 2) 将子表达式的属性拷贝到当前节点
-        ASSERT(node.init_val && "Null initializer value");
+        if (!node.init_val)
+        {
+            reportError(node, "missing initializer expression");
+            node.attr.val.value.type  = voidType;
+            node.attr.val.isConstexpr = false;
+            return false;
+        }
         bool res  = apply(*this, *node.init_val);
         node.attr = node.init_val->attr;
         return res;
@@ -64,16 +128,64 @@ namespace FE::AST
             }
         }
 
+        const bool isScalarDeclarator = !lval->indices || lval->indices->empty();
         if (node.init)
         {
-            result &= apply(*this, *node.init);
+            const bool initOk = apply(*this, *node.init);
+            result &= initOk;
             node.attr = node.init->attr;
 
             VarAttr* stored = symTable.getSymbol(lval->entry);
-            if (registered && stored && node.init->singleInit && node.init->attr.val.isConstexpr)
-                stored->initList.push_back(node.init->attr.val.value);
+            if (registered && stored && isScalarDeclarator)
+            {
+                if (!node.init->singleInit)
+                {
+                    reportError(
+                        node, "initializer list is not valid for scalar variable '" + lval->entry->getName() + "'");
+                    result = false;
+                }
+                else if (initOk)
+                {
+                    Type* initType = node.init->attr.val.value.type;
+                    if (!isScalar(stored->type) || !isScalar(initType))
+                    {
+                        reportError(node,
+                            "cannot initialize variable '" + lval->entry->getName() + "' of type '" +
+                                stored->type->toString() + "' with expression of type '" +
+                                (initType ? initType->toString() : std::string("<null>")) + "'");
+                        result = false;
+                    }
+                    else if (stored->isConstDecl && !node.init->attr.val.isConstexpr)
+                    {
+                        reportError(node,
+                            "initializer for const variable '" + lval->entry->getName() +
+                                "' is not a constant expression");
+                        result = false;
+                    }
+                    else if (node.init->attr.val.isConstexpr)
+                    {
+                        VarValue converted;
+                        if (!convertConstant(node.init->attr.val.value, stored->type, converted))
+                        {
+                            reportError(node,
+                                "constant initializer is out of range for variable '" + lval->entry->getName() + "'");
+                            result = false;
+                        }
+                        else
+                            stored->initList.push_back(converted);
+                    }
+                }
+            }
         }
-        else { node.attr = lval->attr; }
+        else
+        {
+            node.attr = lval->attr;
+            if (registered && currentDeclIsConst && isScalarDeclarator)
+            {
+                reportError(node, "const variable '" + lval->entry->getName() + "' requires an initializer");
+                result = false;
+            }
+        }
 
         if (registered && symTable.isGlobalScope())
         {

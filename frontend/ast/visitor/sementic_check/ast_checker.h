@@ -58,6 +58,7 @@ namespace FE::AST
 
         Type* currentDeclType;
         bool  currentDeclIsConst;
+        bool  evaluateConstants;
 
       public:
         std::vector<std::string> errors;
@@ -73,6 +74,7 @@ namespace FE::AST
               scopeSymbols(1),
               currentDeclType(nullptr),
               currentDeclIsConst(false),
+              evaluateConstants(true),
               errors()
         {
             libFuncRegister();

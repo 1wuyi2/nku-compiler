@@ -39,6 +39,7 @@ namespace FE::AST
         scopeSymbols.assign(1, {});
         currentDeclType    = nullptr;
         currentDeclIsConst = false;
+        evaluateConstants  = true;
 
         // Function declarations are registered before bodies are visited.
         // Calls are checked in a later stage, but this keeps the table ready

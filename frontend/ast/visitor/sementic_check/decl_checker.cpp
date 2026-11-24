@@ -14,6 +14,13 @@ namespace FE::AST
             return kind == Type_t::BOOL || kind == Type_t::INT || kind == Type_t::LL || kind == Type_t::FLOAT;
         }
 
+        bool isValidVariableType(Type* type)
+        {
+            if (!type || type->getTypeGroup() != TypeGroup::BASIC) return false;
+            const Type_t kind = type->getBaseType();
+            return kind == Type_t::INT || kind == Type_t::FLOAT;
+        }
+
         bool convertConstant(const VarValue& source, Type* target, VarValue& result)
         {
             if (!isScalar(source.type) || !isScalar(target)) return false;
@@ -242,6 +249,13 @@ namespace FE::AST
         currentDeclIsConst = node.isConstDecl;
 
         bool result = true;
+        if (!isValidVariableType(node.type))
+        {
+            reportError(node,
+                "variable declaration has invalid type '" +
+                    (node.type ? node.type->toString() : std::string("<null>")) + "'");
+            result = false;
+        }
         try
         {
             for (auto* decl : *node.decls)

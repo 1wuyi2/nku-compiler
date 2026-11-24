@@ -35,7 +35,29 @@ namespace FE::AST
                     {
                         case Type_t::BOOL: value = source.boolValue; break;
                         case Type_t::INT: value = source.intValue; break;
-                        case Type_t::LL: value = source.llValue; break;
+                        case Type_t::LL:
+                        {
+                            // SysY hexadecimal integer constants such as
+                            // 0x80000000 denote their 32-bit bit pattern when
+                            // used as int values.
+                            const long long llValue = source.llValue;
+                            if (llValue >= std::numeric_limits<int>::min() &&
+                                llValue <= std::numeric_limits<int>::max())
+                            {
+                                result = VarValue(static_cast<int>(llValue));
+                                return true;
+                            }
+                            if (llValue < 0 || static_cast<unsigned long long>(llValue) >
+                                                   std::numeric_limits<unsigned int>::max())
+                                return false;
+                            const unsigned long long bits = static_cast<unsigned long long>(llValue);
+                            const long long signedValue =
+                                bits <= static_cast<unsigned long long>(std::numeric_limits<int>::max())
+                                    ? static_cast<long long>(bits)
+                                    : static_cast<long long>(bits) - (1LL << 32);
+                            result = VarValue(static_cast<int>(signedValue));
+                            return true;
+                        }
                         case Type_t::FLOAT: value = source.floatValue; break;
                         default: return false;
                     }

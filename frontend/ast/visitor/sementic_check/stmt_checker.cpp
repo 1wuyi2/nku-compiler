@@ -128,7 +128,8 @@ namespace FE::AST
         }
         exitScope();
 
-        if (node.retType && node.retType != voidType && !alwaysReturns(node.body))
+        const bool isMain = node.entry->getName() == "main";
+        if (node.retType && node.retType != voidType && !isMain && !alwaysReturns(node.body))
         {
             reportError(node, "non-void function '" + node.entry->getName() + "' does not return on every path");
             result = false;

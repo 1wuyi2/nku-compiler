@@ -64,7 +64,13 @@ namespace ME
             else if (node.body && !isCurrentBlockTerminated())
                 apply(*this, *node.body, m);
 
-            if (returnType == DataType::VOID && !isCurrentBlockTerminated()) insert(createRetInst());
+            if (!isCurrentBlockTerminated())
+            {
+                if (returnType == DataType::VOID)
+                    insert(createRetInst());
+                else if (node.entry->getName() == "main" && returnType == DataType::I32)
+                    insert(createRetInst(0));
+            }
             ASSERT(isCurrentBlockTerminated() && "Non-void function ended without a return terminator");
         } catch (...)
         {

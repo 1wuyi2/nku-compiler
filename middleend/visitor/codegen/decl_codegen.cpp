@@ -40,7 +40,12 @@ namespace ME
             ASSERT((!lval->indices || lval->indices->empty()) && "Array code generation belongs to Advanced");
 
             const size_t ptrReg = getNewRegId();
-            insert(createAllocaInst(type, ptrReg));
+            // Keep stack allocation out of loop bodies.  The initializer must
+            // still execute at the declaration point, but the storage itself
+            // has function lifetime and can be allocated in the entry block.
+            Block* entryBlock = curFunc->getBlock(0);
+            ASSERT(entryBlock != nullptr && "Function entry block is missing");
+            entryBlock->insertFront(createAllocaInst(type, ptrReg));
             name2reg.addSymbol(lval->entry, ptrReg);
             reg2attr[ptrReg] = FE::AST::VarAttr(node.type, node.isConstDecl);
             lval2ptr[lval]   = getRegOperand(ptrReg);

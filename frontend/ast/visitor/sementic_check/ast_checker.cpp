@@ -35,6 +35,7 @@ namespace FE::AST
         mainExists     = false;
         funcHasReturn  = false;
         curFuncRetType = voidType;
+        inFunction     = false;
         loopDepth      = 0;
         scopeSymbols.assign(1, {});
         currentDeclType    = nullptr;
@@ -53,7 +54,11 @@ namespace FE::AST
         }
 
         auto* stmts = node.getStmts();
-        if (!stmts) return true;
+        if (!stmts)
+        {
+            errors.push_back("main function is not defined");
+            return false;
+        }
 
         for (auto* stmt : *stmts)
         {
@@ -66,7 +71,13 @@ namespace FE::AST
                 reportError(*func, "redefinition of function '" + func->entry->getName() + "'");
                 continue;
             }
-            if (func->entry->getName() == "main") mainExists = true;
+            if (func->entry->getName() == "main")
+            {
+                mainExists              = true;
+                const size_t paramCount = func->params ? func->params->size() : 0;
+                if (func->retType != intType || paramCount != 0)
+                    reportError(*func, "main function must have return type 'int' and no parameters");
+            }
         }
 
         bool result = true;
@@ -82,8 +93,11 @@ namespace FE::AST
             result &= apply(*this, *stmt);
         }
 
-        // Full main-signature validation belongs to the function-semantics
-        // stage.  mainExists is deliberately maintained but not enforced here.
+        if (!mainExists)
+        {
+            errors.push_back("main function is not defined");
+            result = false;
+        }
         return result && errors.empty();
     }
 

@@ -105,7 +105,12 @@ namespace FE::AST
 
         bool result     = true;
         bool registered = false;
-        if (isDeclaredInCurrentScope(lval->entry))
+        if (symTable.isGlobalScope() && funcDecls.count(lval->entry) != 0)
+        {
+            reportError(node, "global variable '" + lval->entry->getName() + "' conflicts with a function");
+            result = false;
+        }
+        else if (isDeclaredInCurrentScope(lval->entry))
         {
             reportError(node, "redefinition of variable '" + lval->entry->getName() + "'");
             result = false;
@@ -153,6 +158,13 @@ namespace FE::AST
                             "cannot initialize variable '" + lval->entry->getName() + "' of type '" +
                                 stored->type->toString() + "' with expression of type '" +
                                 (initType ? initType->toString() : std::string("<null>")) + "'");
+                        result = false;
+                    }
+                    else if (symTable.isGlobalScope() && !node.init->attr.val.isConstexpr)
+                    {
+                        reportError(node,
+                            "initializer for global variable '" + lval->entry->getName() +
+                                "' is not a constant expression");
                         result = false;
                     }
                     else if (stored->isConstDecl && !node.init->attr.val.isConstexpr)

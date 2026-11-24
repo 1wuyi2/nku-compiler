@@ -221,8 +221,80 @@ namespace FE::AST
     {
         // TODO(Lab3-1): 实现函数调用表达式的语义检查
         // 检查函数是否存在，访问实参列表，检查参数数量和类型匹配
-        (void)node;
-        TODO("Lab3-1: Implement CallExpr semantic checking");
+        node.attr.val.value.type  = voidType;
+        node.attr.val.isConstexpr = false;
+
+        bool result = true;
+        if (node.args)
+        {
+            for (auto* arg : *node.args)
+            {
+                if (!arg)
+                {
+                    reportError(node, "null argument in function call");
+                    result = false;
+                    continue;
+                }
+                result &= apply(*this, *arg);
+            }
+        }
+
+        const std::string name = node.func ? node.func->getName() : "<null>";
+        if (!node.func)
+        {
+            reportError(node, "call has no function name");
+            return false;
+        }
+        if (symTable.getSymbol(node.func))
+        {
+            reportError(node, "called object '" + name + "' is not a function");
+            return false;
+        }
+
+        auto found = funcDecls.find(node.func);
+        if (found == funcDecls.end() || !found->second)
+        {
+            reportError(node, "call to undeclared function '" + name + "'");
+            return false;
+        }
+
+        FuncDeclStmt* function       = found->second;
+        const size_t  argumentCount  = node.args ? node.args->size() : 0;
+        const size_t  parameterCount = function->params ? function->params->size() : 0;
+        if (argumentCount != parameterCount)
+        {
+            reportError(node,
+                "function '" + name + "' expects " + std::to_string(parameterCount) + " argument(s), but " +
+                    std::to_string(argumentCount) + " were provided");
+            result = false;
+        }
+
+        const size_t commonCount = std::min(argumentCount, parameterCount);
+        for (size_t i = 0; i < commonCount; ++i)
+        {
+            ExprNode*        argument  = (*node.args)[i];
+            ParamDeclarator* parameter = (*function->params)[i];
+            if (!argument || !parameter) continue;
+
+            Type*      argumentType  = argument->attr.val.value.type;
+            Type*      parameterType = parameter->type;
+            const bool bothScalar    = isScalar(argumentType) && isScalar(parameterType);
+            const bool exactType     = argumentType && parameterType &&
+                                   argumentType->getTypeGroup() == parameterType->getTypeGroup() &&
+                                   argumentType->getBaseType() == parameterType->getBaseType();
+            if (!bothScalar && !exactType)
+            {
+                reportError(node,
+                    "argument " + std::to_string(i + 1) + " of function '" + name + "' has type '" +
+                        (argumentType ? argumentType->toString() : std::string("<null>")) +
+                        "', but parameter type is '" +
+                        (parameterType ? parameterType->toString() : std::string("<null>")) + "'");
+                result = false;
+            }
+        }
+
+        node.attr.val.value.type = function->retType ? function->retType : voidType;
+        return result;
     }
 
     bool ASTChecker::visit(CommaExpr& node)

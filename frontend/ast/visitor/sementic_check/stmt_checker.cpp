@@ -3,6 +3,50 @@
 
 namespace FE::AST
 {
+    namespace
+    {
+        bool isScalar(Type* type)
+        {
+            if (!type || type->getTypeGroup() != TypeGroup::BASIC) return false;
+            const Type_t kind = type->getBaseType();
+            return kind == Type_t::BOOL || kind == Type_t::INT || kind == Type_t::LL || kind == Type_t::FLOAT;
+        }
+
+        bool isValidReturnType(Type* type)
+        {
+            if (!type || type->getTypeGroup() != TypeGroup::BASIC) return false;
+            const Type_t kind = type->getBaseType();
+            return kind == Type_t::VOID || kind == Type_t::INT || kind == Type_t::FLOAT;
+        }
+
+        bool isValidParameterType(Type* type)
+        {
+            if (!type) return false;
+            if (type->getTypeGroup() == TypeGroup::POINTER)
+                return type->getBaseType() == Type_t::INT || type->getBaseType() == Type_t::FLOAT;
+            return type->getTypeGroup() == TypeGroup::BASIC &&
+                   (type->getBaseType() == Type_t::INT || type->getBaseType() == Type_t::FLOAT);
+        }
+
+        bool alwaysReturns(const StmtNode* stmt)
+        {
+            if (!stmt) return false;
+            if (dynamic_cast<const ReturnStmt*>(stmt)) return true;
+            if (auto* block = dynamic_cast<const BlockStmt*>(stmt))
+            {
+                if (!block->stmts) return false;
+                for (auto* child : *block->stmts)
+                    if (alwaysReturns(child)) return true;
+                return false;
+            }
+            if (auto* branch = dynamic_cast<const IfStmt*>(stmt))
+                return branch->elseStmt && alwaysReturns(branch->thenStmt) && alwaysReturns(branch->elseStmt);
+            return false;
+        }
+
+        bool isConditionType(Type* type) { return isScalar(type); }
+    }  // namespace
+
     bool ASTChecker::visit(ExprStmt& node)
     {
         // 示例实现：表达式语句的语义检查
@@ -15,28 +59,59 @@ namespace FE::AST
     {
         // TODO(Lab3-1): 实现函数声明的语义检查
         // 检查作用域，记录函数信息，处理形参和函数体，检查返回语句
-        if (!node.entry) return false;
+        if (!node.entry)
+        {
+            reportError(node, "function declaration has no name");
+            return false;
+        }
 
         // Root pre-registers functions.  A different node stored under this
         // name means this declaration was the duplicate already diagnosed.
-        auto found = funcDecls.find(node.entry);
-        if (found == funcDecls.end())
-            funcDecls.emplace(node.entry, &node);
-        else if (found->second != &node)
-            return false;
+        bool result = true;
+        if (!symTable.isGlobalScope())
+        {
+            reportError(node, "function '" + node.entry->getName() + "' is not declared at global scope");
+            result = false;
+        }
+        else
+        {
+            auto found = funcDecls.find(node.entry);
+            if (found == funcDecls.end())
+                funcDecls.emplace(node.entry, &node);
+            else if (found->second != &node)
+                result = false;
+        }
 
-        Type* oldRetType   = curFuncRetType;
-        bool  oldHasReturn = funcHasReturn;
-        curFuncRetType     = node.retType;
-        funcHasReturn      = false;
+        Type*  oldRetType    = curFuncRetType;
+        bool   oldHasReturn  = funcHasReturn;
+        bool   oldInFunction = inFunction;
+        size_t oldLoopDepth  = loopDepth;
+        curFuncRetType       = node.retType;
+        funcHasReturn        = false;
+        inFunction           = true;
+        loopDepth            = 0;
 
         enterScope();
-        bool result = true;
         try
         {
+            if (!isValidReturnType(node.retType))
+            {
+                reportError(node, "invalid return type for function '" + node.entry->getName() + "'");
+                result = false;
+            }
             if (node.params)
                 for (auto* param : *node.params)
-                    if (param) result &= apply(*this, *param);
+                {
+                    if (!param) continue;
+                    if (!isValidParameterType(param->type))
+                    {
+                        reportError(*param,
+                            "invalid type for parameter '" +
+                                (param->entry ? param->entry->getName() : std::string("<null>")) + "'");
+                        result = false;
+                    }
+                    result &= apply(*this, *param);
+                }
 
             if (auto* body = dynamic_cast<BlockStmt*>(node.body))
                 result &= visitBlock(*body, false);
@@ -47,12 +122,22 @@ namespace FE::AST
             exitScope();
             curFuncRetType = oldRetType;
             funcHasReturn  = oldHasReturn;
+            inFunction     = oldInFunction;
+            loopDepth      = oldLoopDepth;
             throw;
         }
         exitScope();
 
+        if (node.retType && node.retType != voidType && !alwaysReturns(node.body))
+        {
+            reportError(node, "non-void function '" + node.entry->getName() + "' does not return on every path");
+            result = false;
+        }
+
         curFuncRetType = oldRetType;
         funcHasReturn  = oldHasReturn;
+        inFunction     = oldInFunction;
+        loopDepth      = oldLoopDepth;
         return result;
     }
 
@@ -89,51 +174,179 @@ namespace FE::AST
         return result;
     }
 
+    bool ASTChecker::visitControlledStmt(StmtNode* node)
+    {
+        if (!node) return true;
+        const bool createScope = dynamic_cast<VarDeclStmt*>(node) != nullptr;
+        if (createScope) enterScope();
+        bool result = false;
+        try
+        {
+            result = apply(*this, *node);
+        } catch (...)
+        {
+            if (createScope) exitScope();
+            throw;
+        }
+        if (createScope) exitScope();
+        return result;
+    }
+
     bool ASTChecker::visit(ReturnStmt& node)
     {
         // TODO(Lab3-1): 实现返回语句的语义检查
         // 设置返回标记，检查作用域，检查返回值类型匹配
-        (void)node;
-        TODO("Lab3-1: Implement ReturnStmt semantic checking");
+        if (!inFunction)
+        {
+            reportError(node, "return statement is not within a function");
+            if (node.retExpr) apply(*this, *node.retExpr);
+            return false;
+        }
+
+        funcHasReturn = true;
+        if (!node.retExpr)
+        {
+            if (curFuncRetType != voidType)
+            {
+                reportError(node, "non-void function must return a value");
+                return false;
+            }
+            return true;
+        }
+
+        const bool exprOk = apply(*this, *node.retExpr);
+        if (curFuncRetType == voidType)
+        {
+            reportError(node, "void function must not return a value");
+            return false;
+        }
+        if (!exprOk) return false;
+        Type* exprType = node.retExpr->attr.val.value.type;
+        if (!isScalar(curFuncRetType) || !isScalar(exprType))
+        {
+            reportError(node,
+                "cannot return expression of type '" + (exprType ? exprType->toString() : std::string("<null>")) +
+                    "' from function returning '" +
+                    (curFuncRetType ? curFuncRetType->toString() : std::string("<null>")) + "'");
+            return false;
+        }
+        return true;
     }
 
     bool ASTChecker::visit(WhileStmt& node)
     {
         // TODO(Lab3-1): 实现while循环的语义检查
         // 检查作用域，访问条件表达式，管理循环深度，访问循环体
-        (void)node;
-        TODO("Lab3-1: Implement WhileStmt semantic checking");
+        bool result = true;
+        if (!node.cond)
+        {
+            reportError(node, "while statement requires a condition");
+            result = false;
+        }
+        else
+        {
+            const bool condOk = apply(*this, *node.cond);
+            result &= condOk;
+            if (condOk && !isConditionType(node.cond->attr.val.value.type))
+            {
+                reportError(node, "while condition must have scalar type");
+                result = false;
+            }
+        }
+
+        ++loopDepth;
+        try
+        {
+            result &= visitControlledStmt(node.body);
+        } catch (...)
+        {
+            --loopDepth;
+            throw;
+        }
+        --loopDepth;
+        return result;
     }
 
     bool ASTChecker::visit(IfStmt& node)
     {
         // TODO(Lab3-1): 实现if语句的语义检查
         // 检查作用域，访问条件表达式，分别访问then和else分支
-        (void)node;
-        TODO("Lab3-1: Implement IfStmt semantic checking");
+        bool result = true;
+        if (!node.cond)
+        {
+            reportError(node, "if statement requires a condition");
+            result = false;
+        }
+        else
+        {
+            const bool condOk = apply(*this, *node.cond);
+            result &= condOk;
+            if (condOk && !isConditionType(node.cond->attr.val.value.type))
+            {
+                reportError(node, "if condition must have scalar type");
+                result = false;
+            }
+        }
+        result &= visitControlledStmt(node.thenStmt);
+        if (node.elseStmt) result &= visitControlledStmt(node.elseStmt);
+        return result;
     }
 
     bool ASTChecker::visit(BreakStmt& node)
     {
         // TODO(Lab3-1): 实现break语句的语义检查
         // 检查是否在循环内使用
-        (void)node;
-        TODO("Lab3-1: Implement BreakStmt semantic checking");
+        if (loopDepth != 0) return true;
+        reportError(node, "break statement is not within a loop");
+        return false;
     }
 
     bool ASTChecker::visit(ContinueStmt& node)
     {
         // TODO(Lab3-1): 实现continue语句的语义检查
         // 检查是否在循环内使用
-        (void)node;
-        TODO("Lab3-1: Implement ContinueStmt semantic checking");
+        if (loopDepth != 0) return true;
+        reportError(node, "continue statement is not within a loop");
+        return false;
     }
 
     bool ASTChecker::visit(ForStmt& node)
     {
         // TODO(Lab3-1): 实现for循环的语义检查
         // 检查作用域，访问初始化、条件、步进表达式，管理循环深度
-        (void)node;
-        TODO("Lab3-1: Implement ForStmt semantic checking");
+        enterScope();
+        bool result = true;
+        try
+        {
+            if (node.init) result &= apply(*this, *node.init);
+            if (node.cond)
+            {
+                const bool condOk = apply(*this, *node.cond);
+                result &= condOk;
+                if (condOk && !isConditionType(node.cond->attr.val.value.type))
+                {
+                    reportError(node, "for condition must have scalar type");
+                    result = false;
+                }
+            }
+            if (node.step) result &= apply(*this, *node.step);
+
+            ++loopDepth;
+            try
+            {
+                result &= visitControlledStmt(node.body);
+            } catch (...)
+            {
+                --loopDepth;
+                throw;
+            }
+            --loopDepth;
+        } catch (...)
+        {
+            exitScope();
+            throw;
+        }
+        exitScope();
+        return result;
     }
 }  // namespace FE::AST

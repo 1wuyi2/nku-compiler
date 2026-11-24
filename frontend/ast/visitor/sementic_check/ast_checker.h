@@ -48,6 +48,7 @@ namespace FE::AST
 
         bool  funcHasReturn;
         Type* curFuncRetType;
+        bool  inFunction;
 
         size_t loopDepth;
 
@@ -70,6 +71,7 @@ namespace FE::AST
               mainExists(false),
               funcHasReturn(false),
               curFuncRetType(voidType),
+              inFunction(false),
               loopDepth(0),
               scopeSymbols(1),
               currentDeclType(nullptr),
@@ -147,6 +149,7 @@ namespace FE::AST
         bool isDeclaredInCurrentScope(FE::Sym::Entry* entry) const;
         void rememberCurrentScope(FE::Sym::Entry* entry);
         bool visitBlock(BlockStmt& node, bool createScope);
+        bool visitControlledStmt(StmtNode* node);
         void reportError(const Node& node, const std::string& message);
 
       private:

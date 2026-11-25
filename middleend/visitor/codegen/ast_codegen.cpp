@@ -59,13 +59,19 @@ namespace ME
             if (!declarator) continue;
             auto* lval = dynamic_cast<FE::AST::LeftValExpr*>(declarator->lval);
             ASSERT(lval != nullptr && lval->entry != nullptr && "Invalid global variable declarator");
-            ASSERT((!lval->indices || lval->indices->empty()) && "Array code generation belongs to Advanced");
 
             auto attrIt = glbSymbols.find(lval->entry);
             ASSERT(attrIt != glbSymbols.end() && "Global variable is missing semantic attributes");
             const FE::AST::VarAttr& attr = attrIt->second;
             const DataType          type = convert(attr.type);
             ASSERT((type == DataType::I32 || type == DataType::F32) && "Unsupported global scalar type");
+
+            // 数组的形状与常量初值由语义分析提供。
+            if (!attr.arrayDims.empty())
+            {
+                m->globalVars.push_back(new GlbVarDeclInst(type, lval->entry->getName(), attr));
+                continue;
+            }
 
             Operand* init = nullptr;
             if (!attr.initList.empty())

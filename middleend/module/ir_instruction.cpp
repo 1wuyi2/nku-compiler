@@ -84,7 +84,7 @@ namespace ME
                 if (initVal.type == FE::AST::floatType)
                 {
                     float fv = initVal.getFloat();
-                    if (fv != 0.0f) allZero = false;
+                    if (FLOAT_TO_DOUBLE_BITS(fv) != 0) allZero = false;
                 }
                 if (!allZero) break;
             }
@@ -97,7 +97,7 @@ namespace ME
             }
         }
 
-        if (beginPos == endPos)
+        if (dimDph == v.arrayDims.size())
         {
             switch (type)
             {
@@ -115,7 +115,9 @@ namespace ME
         for (size_t i = dimDph; i < v.arrayDims.size(); ++i) s << "[" << v.arrayDims[i] << " x ";
         s << type << std::string(v.arrayDims.size() - dimDph, ']') << " [";
 
-        int step = std::accumulate(v.arrayDims.begin() + dimDph + 1, v.arrayDims.end(), 1, std::multiplies<int>());
+        size_t step = 1;
+        for (size_t i = dimDph + 1; i < v.arrayDims.size(); ++i)
+            step *= static_cast<size_t>(v.arrayDims[i]);
         for (int i = 0; i < v.arrayDims[dimDph]; ++i)
         {
             if (i != 0) s << ",";

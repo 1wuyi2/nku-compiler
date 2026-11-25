@@ -59,7 +59,7 @@ int main(int argc, char** argv)
     {
         string arg = argv[i];
 
-        if (arg == "-lexer" || arg == "-parser" || arg == "-llvm" || arg == "-S") { step = arg; }
+        if (arg == "-lexer" || arg == "-parser" || arg == "-semant" || arg == "-llvm" || arg == "-S") { step = arg; }
         else if (arg == "-o")
         {
             if (i + 1 < argc)
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     if (inputFile.empty())
     {
         cerr << "Error: No input file specified" << endl;
-        cerr << "Usage: " << argv[0] << " [-lexer|-parser|-llvm|-S] [-o output_file] input_file [-O]" << endl;
+        cerr << "Usage: " << argv[0] << " [-lexer|-parser|-semant|-llvm|-S] [-o output_file] input_file [-O]" << endl;
         return 1;
     }
 
@@ -272,6 +272,14 @@ int main(int argc, char** argv)
             cerr << "Semantic check failed with " << checker.errors.size() << " errors." << endl;
             for (const auto& err : checker.errors) cerr << "Error: " << err << endl;
             ret = 1;
+            goto cleanup_ast;
+        }
+
+        // 单独验收语义分析，不进入尚未完成的 Advanced IR 生成。
+        if (step == "-semant")
+        {
+            *outStream << "Semantic check passed." << endl;
+            ret = 0;
             goto cleanup_ast;
         }
 

@@ -147,6 +147,47 @@ namespace FE::AST
         else
         {
             VarAttr varAttr(currentDeclType ? currentDeclType : voidType, currentDeclIsConst, symTable.getScopeDepth());
+
+            // 声明中的下标是维度表达式，而不是元素访问。
+            // 在注册新变量前求值，避免新变量遮蔽维度中引用的外层常量。
+            if (lval->indices)
+            {
+                for (auto* dim : *lval->indices)
+                {
+                    if (!dim)
+                    {
+                        reportError(node, "missing array dimension");
+                        result = false;
+                        continue;
+                    }
+                    if (!apply(*this, *dim))
+                    {
+                        result = false;
+                        continue;
+                    }
+                    const auto& value = dim->attr.val;
+                    Type* dimType = value.value.type;
+                    if (!dimType || dimType->getTypeGroup() != TypeGroup::BASIC ||
+                        (dimType->getBaseType() != Type_t::INT && dimType->getBaseType() != Type_t::LL) ||
+                        !value.isConstexpr)
+                    {
+                        reportError(*dim, "array dimension must be an integer constant expression");
+                        result = false;
+                        continue;
+                    }
+                    const long long size = value.getLL();
+                    if (size <= 0 || size > std::numeric_limits<int>::max())
+                    {
+                        reportError(*dim, "array dimension must be a positive integer within int range");
+                        result = false;
+                        continue;
+                    }
+                    varAttr.arrayDims.push_back(static_cast<int>(size));
+                }
+            }
+            // 无效维度不进入符号表，避免保存不完整的形状。
+            if (!result) return false;
+
             symTable.addSymbol(lval->entry, varAttr);
             rememberCurrentScope(lval->entry);
             registered = true;
@@ -154,12 +195,6 @@ namespace FE::AST
             lval->isLval               = true;
             lval->attr.val.value.type  = varAttr.type;
             lval->attr.val.isConstexpr = false;
-
-            if (lval->indices)
-            {
-                for (auto* index : *lval->indices)
-                    if (index) result &= apply(*this, *index);
-            }
         }
 
         const bool isScalarDeclarator = !lval->indices || lval->indices->empty();
@@ -221,7 +256,7 @@ namespace FE::AST
         else
         {
             node.attr = lval->attr;
-            if (registered && currentDeclIsConst && isScalarDeclarator)
+            if (registered && currentDeclIsConst)
             {
                 reportError(node, "const variable '" + lval->entry->getName() + "' requires an initializer");
                 result = false;

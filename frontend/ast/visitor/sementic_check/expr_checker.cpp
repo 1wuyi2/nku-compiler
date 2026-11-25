@@ -59,21 +59,52 @@ namespace FE::AST
         }
 
         bool result = true;
+        const size_t indexCount = node.indices ? node.indices->size() : 0;
+        const size_t rank = attr->arrayDims.size();
+        if (indexCount > rank)
+        {
+            reportError(node, "too many subscripts for variable '" + node.entry->getName() + "'");
+            result = false;
+        }
         if (node.indices)
         {
             for (auto* index : *node.indices)
-                if (index) result &= apply(*this, *index);
+            {
+                if (!index)
+                {
+                    reportError(node, "missing array subscript");
+                    result = false;
+                    continue;
+                }
+                if (!apply(*this, *index))
+                {
+                    result = false;
+                    continue;
+                }
+                if (!isIntegral(index->attr.val.value.type))
+                {
+                    reportError(*index, "array subscript must have integer type");
+                    result = false;
+                }
+            }
         }
 
-        node.isLval               = true;
-        node.attr.val.value.type  = attr->type;
+        node.isLval               = result;
         node.attr.val.isConstexpr = false;
-        if (attr->isConstDecl && !attr->initList.empty())
+        if (!result)
+        {
+            node.attr.val.value.type = voidType;
+            return false;
+        }
+        // 完整下标得到标量；无下标或部分下标得到数组/子数组地址类型。
+        // 形参退化、剩余形状匹配和常量数组元素折叠留到后续模块。
+        node.attr.val.value.type = indexCount < rank ? TypeFactory::getPtrType(attr->type) : attr->type;
+        if (rank == 0 && attr->isConstDecl && !attr->initList.empty())
         {
             node.attr.val.value       = attr->initList.front();
             node.attr.val.isConstexpr = evaluateConstants;
         }
-        return result;
+        return true;
     }
 
     bool ASTChecker::visit(LiteralExpr& node)

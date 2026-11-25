@@ -2,6 +2,7 @@
 #include <debug.h>
 #include <cmath>
 #include <limits>
+#include <new>
 
 namespace FE::AST
 {
@@ -187,6 +188,17 @@ namespace FE::AST
             }
             // 无效维度不进入符号表，避免保存不完整的形状。
             if (!result) return false;
+            // 提前防止维度乘积或元素字节数溢出。
+            size_t elementCount = 1;
+            for (int dim : varAttr.arrayDims)
+            {
+                if (elementCount > std::numeric_limits<size_t>::max() / 4 / static_cast<size_t>(dim))
+                {
+                    reportError(node, "array size overflows addressable storage");
+                    return false;
+                }
+                elementCount *= static_cast<size_t>(dim);
+            }
 
             symTable.addSymbol(lval->entry, varAttr);
             rememberCurrentScope(lval->entry);
@@ -198,6 +210,7 @@ namespace FE::AST
         }
 
         const bool isScalarDeclarator = !lval->indices || lval->indices->empty();
+        node.arrayInitEntries.clear();
         if (node.init)
         {
             const bool initOk = apply(*this, *node.init);
@@ -205,6 +218,119 @@ namespace FE::AST
             node.attr = node.init->attr;
 
             VarAttr* stored = symTable.getSymbol(lval->entry);
+            if (registered && stored && !isScalarDeclarator && initOk)
+            {
+                // suffix[d] 是从第 d 维开始的子数组容量，最后一项为标量容量 1。
+                const auto& dims = stored->arrayDims;
+                const size_t rank = dims.size();
+                std::vector<size_t> suffix(rank + 1, 1);
+                for (size_t d = rank; d > 0; --d)
+                    suffix[d - 1] = suffix[d] * static_cast<size_t>(dims[d - 1]);
+
+                if (node.init->singleInit)
+                {
+                    reportError(node, "array initializer must be a brace-enclosed list");
+                    result = false;
+                }
+                else
+                {
+                    // 全局/const 数组需要完整的编译期值；普通局部数组保留表达式。
+                    const bool requireConstant = symTable.isGlobalScope() || stored->isConstDecl;
+                    const VarValue zero = stored->type == floatType ? VarValue(0.0f) : VarValue(0);
+                    std::vector<VarValue> values;
+                    if (requireConstant)
+                    {
+                        if (suffix[0] > values.max_size())
+                        {
+                            reportError(node, "array initializer is too large");
+                            return false;
+                        }
+                        try { values.assign(suffix[0], zero); }
+                        catch (const std::bad_alloc&)
+                        {
+                            reportError(node, "array initializer is too large");
+                            return false;
+                        }
+                    }
+
+                    // 每次递归只允许填充当前子对象的范围。
+                    // 遇到花括号时，选取当前位置对齐的最大下一级子对象；
+                    // 未对齐时继续下降到较小子对象（必要时为标量）。
+                    auto flatten = [&](auto&& self, InitDecl* init, size_t depth, size_t start) -> bool {
+                        if (auto* scalar = dynamic_cast<Initializer*>(init))
+                        {
+                            if (!scalar->init_val || !isScalar(scalar->attr.val.value.type))
+                            {
+                                reportError(*init, "array initializer element must be scalar");
+                                return false;
+                            }
+                            const auto& value = scalar->attr.val;
+                            if (requireConstant && !value.isConstexpr)
+                            {
+                                reportError(*init, "array initializer requires a constant expression");
+                                return false;
+                            }
+                            if (value.isConstexpr)
+                            {
+                                VarValue converted;
+                                if (!convertConstant(value.value, stored->type, converted))
+                                {
+                                    reportError(*init, "array constant initializer is out of range");
+                                    return false;
+                                }
+                                if (requireConstant) values[start] = converted;
+                            }
+                            node.arrayInitEntries.emplace_back(start, scalar->init_val);
+                            return true;
+                        }
+                        auto* list = dynamic_cast<InitializerList*>(init);
+                        if (!list)
+                        {
+                            reportError(node, "invalid array initializer");
+                            return false;
+                        }
+                        if (!list->init_list) return true;
+                        size_t used = 0;
+                        bool ok = true;
+                        const size_t capacity = suffix[depth];
+                        for (auto* child : *list->init_list)
+                        {
+                            if (!child)
+                            {
+                                reportError(*list, "missing array initializer element");
+                                ok = false;
+                                continue;
+                            }
+                            if (used >= capacity)
+                            {
+                                reportError(*child, "too many array initializer elements for subobject");
+                                return false;
+                            }
+                            size_t childDepth = rank;
+                            if (!child->singleInit && depth < rank)
+                            {
+                                childDepth = depth + 1;
+                                while (childDepth < rank && used % suffix[childDepth] != 0)
+                                    ++childDepth;
+                            }
+                            // 标量的额外嵌套花括号仍只占一个元素。
+                            const size_t span = suffix[childDepth];
+                            if (span > capacity - used)
+                            {
+                                reportError(*child, "too many array initializer elements for subobject");
+                                return false;
+                            }
+                            ok &= self(self, child, childDepth, start + used);
+                            used += span;
+                        }
+                        return ok;
+                    };
+                    const bool layoutOk = flatten(flatten, node.init, 0, 0);
+                    result &= layoutOk;
+                    if (layoutOk && requireConstant) stored->initList = std::move(values);
+                    if (!layoutOk) node.arrayInitEntries.clear();
+                }
+            }
             if (registered && stored && isScalarDeclarator)
             {
                 if (!node.init->singleInit)

@@ -2,6 +2,7 @@
 #define __FRONTEND_AST_DECL_H__
 
 #include <frontend/ast/ast.h>
+#include <utility>
 /*
 本文件是AST的声明类节点类定义集合。
 如果需要，你可以在类中添加成员变量和成员函数，辅助你完成实验
@@ -71,6 +72,9 @@ namespace FE::AST
       public:
         ExprNode* lval;
         InitDecl* init;
+        // 显式数组初始化项的行主序偏移及原表达式；未列出的元素补零。
+        // 指针仅引用 init 子树，不拥有节点；供后续局部数组 IR 生成使用。
+        std::vector<std::pair<size_t, ExprNode*>> arrayInitEntries;
 
       public:
         VarDeclarator(ExprNode* lval, InitDecl* init = nullptr, int line_num = -1, int col_num = -1)

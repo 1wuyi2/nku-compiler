@@ -97,12 +97,41 @@ namespace FE::AST
             return false;
         }
         // 完整下标得到标量；无下标或部分下标得到数组/子数组地址类型。
-        // 形参退化、剩余形状匹配和常量数组元素折叠留到后续模块。
+        // 形参退化与剩余形状匹配留到后续模块。
         node.attr.val.value.type = indexCount < rank ? TypeFactory::getPtrType(attr->type) : attr->type;
         if (rank == 0 && attr->isConstDecl && !attr->initList.empty())
         {
             node.attr.val.value       = attr->initList.front();
             node.attr.val.isConstexpr = evaluateConstants;
+        }
+        else if (rank > 0 && indexCount == rank && attr->isConstDecl &&
+                 evaluateConstants && !attr->initList.empty())
+        {
+            // 常量数组的完整常量下标：按行主序计算线性偏移。
+            // 动态下标或越界下标不折叠，避免编译器自身访问越界。
+            size_t offset = 0;
+            bool canFold = true;
+            for (size_t d = 0; d < rank; ++d)
+            {
+                const auto& index = (*node.indices)[d]->attr.val;
+                if (!index.isConstexpr || attr->arrayDims[d] <= 0)
+                {
+                    canFold = false;
+                    break;
+                }
+                const long long value = index.getLL();
+                if (value < 0 || value >= attr->arrayDims[d])
+                {
+                    canFold = false;
+                    break;
+                }
+                offset = offset * static_cast<size_t>(attr->arrayDims[d]) + static_cast<size_t>(value);
+            }
+            if (canFold && offset < attr->initList.size())
+            {
+                node.attr.val.value = attr->initList[offset];
+                node.attr.val.isConstexpr = true;
+            }
         }
         return true;
     }

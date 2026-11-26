@@ -67,10 +67,10 @@
 %token <std::string> STR_CONST ERR_TOKEN SLASH_COMMENT
 %token <std::string> IDENT 
 
-%token PLUS MINUS STAR SLASH MODULO
+%token PLUS MINUS STAR SLASH MODULO MATMUL
 %token ASSIGN LT GT LE GE EQ NE
 %token NOT AND OR
-%token INT FLOAT VOID
+%token INT FLOAT VOID TENSOR
 %token IF ELSE FOR WHILE CONTINUE BREAK SWITCH CASE GOTO DO RETURN CONST
 %token SEMICOLON COMMA LPAREN RPAREN LBRACKET RBRACKET LBRACE RBRACE
 %token END
@@ -531,6 +531,9 @@ MULDIV_EXPR:
     | MULDIV_EXPR MODULO UNARY_EXPR {
         $$ = new BinaryExpr(Operator::MOD, $1, $3, $1->line_num, $1->col_num);
     }
+    | MULDIV_EXPR MATMUL UNARY_EXPR {
+        $$ = new BinaryExpr(Operator::MATMUL, $1, $3, $1->line_num, $1->col_num);
+    }
     ;
 
 UNARY_EXPR:
@@ -631,6 +634,12 @@ TYPE:
     }
     | VOID {
         $$ = voidType;
+    }
+    | TENSOR INT {
+        $$ = TypeFactory::getTensorType(intType);
+    }
+    | TENSOR FLOAT {
+        $$ = TypeFactory::getTensorType(floatType);
     }
     ;
 

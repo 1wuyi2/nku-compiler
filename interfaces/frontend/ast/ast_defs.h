@@ -9,7 +9,8 @@
 
 #define AST_TYPEGROUP_DECL  \
     X(BASIC, basic type, 0) \
-    X(POINTER, pointer type, 1)
+    X(POINTER, pointer type, 1) \
+    X(TENSOR, tensor type, 2)
 
 #define AST_BASETYPE_DECL                                                           \
     X(UNK, unknown type, 0)                                                         \
@@ -37,7 +38,8 @@
     X(BITAND, &, 14)            \
     X(AND, &&, 15)              \
     X(OR, ||, 16)               \
-    X(ASSIGN, =, 17)
+    X(ASSIGN, =, 17)             \
+    X(MATMUL, @, 18)
 
 namespace FE::AST
 {
@@ -110,11 +112,26 @@ namespace FE::AST
         PtrType(Type* t = nullptr) : base(t) {}
     };
 
+    // 张量类型类别与普通数组/指针不同；具体形状由 VarAttr/NodeAttr 保存。
+    struct TensorType : public Type
+    {
+        friend class TypeFactory;
+
+        Type* elementType;
+        std::string toString() const override { return "tensor " + elementType->toString(); }
+        Type_t getBaseType() const override { return elementType->getBaseType(); }
+        TypeGroup getTypeGroup() const override { return TypeGroup::TENSOR; }
+
+      private:
+        explicit TensorType(Type* t) : elementType(t) {}
+    };
+
     class TypeFactory
     {
       public:
         static Type* getBasicType(Type_t t = Type_t::UNK);
         static Type* getPtrType(Type* t = nullptr);
+        static Type* getTensorType(Type* elementType);
 
         static TypeFactory& getInstance()
         {

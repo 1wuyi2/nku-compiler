@@ -73,6 +73,15 @@ namespace FE::AST
         return ptype;
     }
 
+    Type* TypeFactory::getTensorType(Type* elementType)
+    {
+        // 目前只支持 int/float 两种元素类型。类型描述符复用，形状单独保存。
+        ASSERT(elementType == intType || elementType == floatType);
+        static TensorType intTensor(intType);
+        static TensorType floatTensor(floatType);
+        return elementType == intType ? &intTensor : &floatTensor;
+    }
+
     TypeFactory& tf = TypeFactory::getInstance();
 
     VarValue::Proxy::operator bool() const

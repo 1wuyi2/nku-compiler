@@ -75,6 +75,8 @@ namespace FE::AST
         // 显式数组初始化项的行主序偏移及原表达式；未列出的元素补零。
         // 指针仅引用 init 子树，不拥有节点；供后续局部数组 IR 生成使用。
         std::vector<std::pair<size_t, ExprNode*>> arrayInitEntries;
+        // 整体常量张量表达式的行主序初值；供局部 const 张量 IR 生成。
+        std::vector<VarValue> tensorConstInit;
 
       public:
         VarDeclarator(ExprNode* lval, InitDecl* init = nullptr, int line_num = -1, int col_num = -1)

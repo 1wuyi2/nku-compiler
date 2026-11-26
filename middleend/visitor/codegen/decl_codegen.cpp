@@ -67,7 +67,8 @@ namespace ME
             Operand* saved = saveTensorTemps();
             if (!dims.empty())
             {
-                if (node.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR && declarator->init->singleInit)
+                if (node.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR && declarator->init->singleInit &&
+                    declarator->tensorConstInit.empty())
                 {
                     auto* initializer = dynamic_cast<FE::AST::Initializer*>(declarator->init);
                     ASSERT(initializer && initializer->init_val);
@@ -90,6 +91,22 @@ namespace ME
                     insert(createGEP_I32Inst(type, getRegOperand(ptrReg), dims, indices, addrReg));
                     return getRegOperand(addrReg);
                 };
+
+                // 常量表达式已经在前端完整求值，无需执行运行期张量运算。
+                if (!declarator->tensorConstInit.empty())
+                {
+                    ASSERT(declarator->tensorConstInit.size() == elementCount);
+                    for (size_t i = 0; i < elementCount; ++i)
+                    {
+                        const auto& v = declarator->tensorConstInit[i];
+                        Operand* value = type == DataType::F32
+                            ? static_cast<Operand*>(getImmeF32Operand(v.getFloat()))
+                            : static_cast<Operand*>(getImmeI32Operand(v.getInt()));
+                        insert(createStoreInst(type, value, addressAt(i)));
+                    }
+                    releaseTensorTemps(saved);
+                    continue;
+                }
 
                 // 显式初始化时先清零整个数组，再按源程序顺序写入显式元素。
                 // 复用已有的 i32 长度 memset；大数组按块处理，避免长度溢出。

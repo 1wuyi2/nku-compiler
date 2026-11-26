@@ -222,6 +222,7 @@ namespace FE::AST
 
         const bool isScalarDeclarator = !lval->indices || lval->indices->empty();
         node.arrayInitEntries.clear();
+        node.tensorConstInit.clear();
         if (node.init)
         {
             const bool initOk = apply(*this, *node.init);
@@ -254,9 +255,120 @@ namespace FE::AST
                     }
                     else if (symTable.isGlobalScope() || stored->isConstDecl)
                     {
-                        // 本阶段尚未实现整个张量的常量折叠；沿用全局/const 初值限制。
-                        reportError(node, "global or const tensor expression initializer is not supported yet");
-                        result = false;
+                        // 仅在必须提供编译期初值时求值整个张量，普通局部表达式仍在运行期执行。
+                        using Values = std::vector<VarValue>;
+                        auto countOf = [](const std::vector<int>& shape) -> size_t {
+                            if (shape.empty()) return 0;
+                            size_t count = 1;
+                            for (int d : shape)
+                            {
+                                if (d <= 0 || count > Values().max_size() / static_cast<size_t>(d)) return 0;
+                                count *= static_cast<size_t>(d);
+                            }
+                            return count;
+                        };
+                        // 复用标量常量折叠：溢出、零除数、类型转换等规则保持一致。
+                        auto scalarOp = [&](const VarValue& a, const VarValue& b, Operator op,
+                                            const Node& where, VarValue& value) -> bool {
+                            bool error = false;
+                            auto folded = typeInfer(ExprValue(a, true), ExprValue(b, true), op, where, error);
+                            if (error || !folded.isConstexpr || !isScalar(folded.value.type)) return false;
+                            value = folded.value;
+                            return true;
+                        };
+                        auto eval = [&](auto&& self, ExprNode* expr, Values& values) -> bool {
+                            if (!expr) return false;
+                            if (!isTensor(expr->attr.val.value.type))
+                            {
+                                if (!isScalar(expr->attr.val.value.type) || !expr->attr.val.isConstexpr) return false;
+                                values.push_back(expr->attr.val.value);
+                                return true;
+                            }
+                            const size_t count = countOf(expr->attr.arrayDims);
+                            if (!count) return false;
+                            if (auto* ref = dynamic_cast<LeftValExpr*>(expr))
+                            {
+                                const auto* source = symTable.getSymbol(ref->entry);
+                                if (!source || !source->isConstDecl || source->initList.size() != count ||
+                                    (ref->indices && !ref->indices->empty())) return false;
+                                values = source->initList;
+                                return true;
+                            }
+                            if (auto* unary = dynamic_cast<UnaryExpr*>(expr))
+                            {
+                                if (unary->op != Operator::ADD && unary->op != Operator::SUB) return false;
+                                if (!self(self, unary->expr, values) || values.size() != count) return false;
+                                for (auto& v : values)
+                                {
+                                    bool error = false;
+                                    auto folded = typeInfer(ExprValue(v, true), unary->op, *unary, error);
+                                    if (error || !folded.isConstexpr || !isScalar(folded.value.type)) return false;
+                                    v = folded.value;
+                                }
+                                return true;
+                            }
+                            auto* binary = dynamic_cast<BinaryExpr*>(expr);
+                            if (!binary) return false; // 不允许函数调用、赋值、逗号等作为常量张量表达式。
+                            switch (binary->op)
+                            {
+                                case Operator::ADD: case Operator::SUB: case Operator::MUL:
+                                case Operator::DIV: case Operator::MOD: case Operator::MATMUL: break;
+                                default: return false;
+                            }
+                            Values left, right;
+                            if (!self(self, binary->lhs, left) || !self(self, binary->rhs, right)) return false;
+                            const bool lt = isTensor(binary->lhs->attr.val.value.type);
+                            const bool rt = isTensor(binary->rhs->attr.val.value.type);
+                            if (binary->op == Operator::MATMUL)
+                            {
+                                const auto& a = binary->lhs->attr.arrayDims;
+                                const auto& b = binary->rhs->attr.arrayDims;
+                                if (!lt || !rt || a.size() != 2 || b.size() != 2 || a[1] != b[0] ||
+                                    left.size() != countOf(a) || right.size() != countOf(b)) return false;
+                                const size_t m = static_cast<size_t>(a[0]), n = static_cast<size_t>(a[1]);
+                                const size_t p = static_cast<size_t>(b[1]);
+                                values.reserve(count);
+                                for (size_t i = 0; i < m; ++i)
+                                    for (size_t j = 0; j < p; ++j)
+                                    {
+                                        VarValue sum = expr->attr.val.value.type->getBaseType() == Type_t::FLOAT
+                                            ? VarValue(0.0f) : VarValue(0);
+                                        for (size_t k = 0; k < n; ++k)
+                                        {
+                                            VarValue product, next;
+                                            if (!scalarOp(left[i*n+k], right[k*p+j], Operator::MUL, *binary, product) ||
+                                                !scalarOp(sum, product, Operator::ADD, *binary, next)) return false;
+                                            sum = next;
+                                        }
+                                        values.push_back(sum);
+                                    }
+                                return values.size() == count;
+                            }
+                            if (left.size() != (lt ? count : 1) || right.size() != (rt ? count : 1)) return false;
+                            values.reserve(count);
+                            for (size_t i = 0; i < count; ++i)
+                            {
+                                VarValue value;
+                                if (!scalarOp(left[lt ? i : 0], right[rt ? i : 0], binary->op, *binary, value)) return false;
+                                values.push_back(value);
+                            }
+                            return true;
+                        };
+                        auto* initializer = dynamic_cast<Initializer*>(node.init);
+                        Values folded;
+                        bool ok = false;
+                        try { ok = initializer && eval(eval, initializer->init_val, folded); }
+                        catch (const std::bad_alloc&) { ok = false; }
+                        if (!ok || folded.size() != suffix[0])
+                        {
+                            reportError(node, "global or const tensor initializer requires a valid constant expression");
+                            result = false;
+                        }
+                        else
+                        {
+                            stored->initList = folded;
+                            if (!symTable.isGlobalScope()) node.tensorConstInit = std::move(folded);
+                        }
                     }
                 }
                 else

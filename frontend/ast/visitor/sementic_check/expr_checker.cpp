@@ -12,6 +12,17 @@ namespace FE::AST
             return kind == Type_t::BOOL || kind == Type_t::INT || kind == Type_t::LL || kind == Type_t::FLOAT;
         }
 
+        bool isTensor(Type* type)
+        {
+            return type && type->getTypeGroup() == TypeGroup::TENSOR;
+        }
+
+        bool isTensorArithmetic(Operator op)
+        {
+            return op == Operator::ADD || op == Operator::SUB || op == Operator::MUL ||
+                   op == Operator::DIV || op == Operator::MOD;
+        }
+
         bool isIntegral(Type* type)
         {
             if (!isScalar(type)) return false;
@@ -62,6 +73,12 @@ namespace FE::AST
         bool result = true;
         const size_t indexCount = node.indices ? node.indices->size() : 0;
         const size_t rank = attr->arrayDims.size();
+        const bool tensor = isTensor(attr->type);
+        if (tensor && indexCount != 0 && indexCount != rank)
+        {
+            reportError(node, "tensor access requires all subscripts");
+            result = false;
+        }
         if (indexCount > rank)
         {
             reportError(node, "too many subscripts for variable '" + node.entry->getName() + "'");
@@ -98,7 +115,11 @@ namespace FE::AST
             return false;
         }
         // 完整下标得到标量；无下标或部分下标得到数组/子数组地址类型。
-        node.attr.val.value.type = indexCount < rank ? TypeFactory::getPtrType(attr->type) : attr->type;
+        if (tensor)
+            node.attr.val.value.type = indexCount == 0 ? attr->type
+                : TypeFactory::getBasicType(attr->type->getBaseType());
+        else
+            node.attr.val.value.type = indexCount < rank ? TypeFactory::getPtrType(attr->type) : attr->type;
         node.attr.arrayDims.assign(attr->arrayDims.begin() + indexCount, attr->arrayDims.end());
         if (rank == 0 && attr->isConstDecl && !attr->initList.empty())
         {
@@ -161,6 +182,18 @@ namespace FE::AST
 
         const bool childOk = apply(*this, *node.expr);
         Type*      type    = node.expr->attr.val.value.type;
+        node.attr.arrayDims.clear();
+        if (childOk && isTensor(type))
+        {
+            if (node.op != Operator::ADD && node.op != Operator::SUB)
+            {
+                reportError(node, "unsupported unary operator for tensor");
+                return false;
+            }
+            node.attr.val.value.type = type;
+            node.attr.arrayDims = node.expr->attr.arrayDims;
+            return true;
+        }
         if (!childOk || !isScalar(type))
         {
             if (childOk)
@@ -219,7 +252,12 @@ namespace FE::AST
 
         Type* lhsType = node.lhs->attr.val.value.type;
         Type* rhsType = node.rhs->attr.val.value.type;
+        node.attr.arrayDims.clear();
         if (!lhsOk || !rhsOk) return false;
+        const bool leftTensor = isTensor(lhsType);
+        const bool rightTensor = isTensor(rhsType);
+        const auto& leftShape = node.lhs->attr.arrayDims;
+        const auto& rightShape = node.rhs->attr.arrayDims;
 
         if (node.op == Operator::ASSIGN)
         {
@@ -240,6 +278,17 @@ namespace FE::AST
                 reportError(node, "assignment to const variable '" + lval->entry->getName() + "'");
                 return false;
             }
+            if (leftTensor || rightTensor)
+            {
+                if (!leftTensor || !rightTensor || lhsType != rhsType || leftShape != rightShape)
+                {
+                    reportError(node, "tensor assignment type or shape mismatch");
+                    return false;
+                }
+                node.attr.val.value.type = lhsType;
+                node.attr.arrayDims = leftShape;
+                return true;
+            }
             if (!isScalar(lhsType) || !isScalar(rhsType))
             {
                 reportError(node, "incompatible operand types for assignment");
@@ -250,6 +299,55 @@ namespace FE::AST
             return true;
         }
 
+        // 张量运算在进入原有标量 typeInfer 前单独推导类型及形状。
+        if (node.op == Operator::MATMUL)
+        {
+            if (!leftTensor || !rightTensor || lhsType != rhsType ||
+                leftShape.size() != 2 || rightShape.size() != 2 ||
+                leftShape[1] != rightShape[0])
+            {
+                reportError(node, "matrix multiplication requires matching rank-2 tensors and inner dimension");
+                return false;
+            }
+            node.attr.val.value.type = lhsType;
+            node.attr.arrayDims = {leftShape[0], rightShape[1]};
+            return true;
+        }
+        if (leftTensor || rightTensor)
+        {
+            if (!isTensorArithmetic(node.op))
+            {
+                reportError(node, "unsupported binary operator for tensor");
+                return false;
+            }
+            Type* tensorType = leftTensor ? lhsType : rhsType;
+            Type* otherType = leftTensor ? rhsType : lhsType;
+            if (!otherType || (leftTensor && rightTensor ? lhsType != rhsType
+                : !isScalar(otherType) || otherType->getBaseType() != tensorType->getBaseType()))
+            {
+                reportError(node, "tensor arithmetic element type mismatch");
+                return false;
+            }
+            if (leftTensor && rightTensor && leftShape != rightShape)
+            {
+                reportError(node, "tensor arithmetic shape mismatch");
+                return false;
+            }
+            if (node.op == Operator::MOD && tensorType->getBaseType() != Type_t::INT)
+            {
+                reportError(node, "tensor modulus requires int element type");
+                return false;
+            }
+            if ((node.op == Operator::DIV || node.op == Operator::MOD) && !rightTensor &&
+                node.rhs->attr.val.isConstexpr && !node.rhs->attr.val.getBool())
+            {
+                reportError(node, "tensor arithmetic with zero divisor");
+                return false;
+            }
+            node.attr.val.value.type = tensorType;
+            node.attr.arrayDims = leftTensor ? leftShape : rightShape;
+            return true;
+        }
         if (!isBinaryOperator(node.op))
         {
             reportError(node, "invalid binary operator '" + toString(node.op) + "'");

@@ -15,9 +15,14 @@ namespace FE::AST
             return kind == Type_t::BOOL || kind == Type_t::INT || kind == Type_t::LL || kind == Type_t::FLOAT;
         }
 
+        bool isTensor(Type* type)
+        {
+            return type && type->getTypeGroup() == TypeGroup::TENSOR;
+        }
+
         bool isValidVariableType(Type* type)
         {
-            if (!type || type->getTypeGroup() != TypeGroup::BASIC) return false;
+            if (!type || (type->getTypeGroup() != TypeGroup::BASIC && !isTensor(type))) return false;
             const Type_t kind = type->getBaseType();
             return kind == Type_t::INT || kind == Type_t::FLOAT;
         }
@@ -188,6 +193,11 @@ namespace FE::AST
             }
             // 无效维度不进入符号表，避免保存不完整的形状。
             if (!result) return false;
+            if (isTensor(varAttr.type) && varAttr.arrayDims.empty())
+            {
+                reportError(node, "tensor declaration requires at least one dimension");
+                return false;
+            }
             // 提前防止维度乘积或元素字节数溢出。
             size_t elementCount = 1;
             for (int dim : varAttr.arrayDims)
@@ -207,6 +217,7 @@ namespace FE::AST
             lval->isLval               = true;
             lval->attr.val.value.type  = varAttr.type;
             lval->attr.val.isConstexpr = false;
+            lval->attr.arrayDims = varAttr.arrayDims;
         }
 
         const bool isScalarDeclarator = !lval->indices || lval->indices->empty();
@@ -229,14 +240,32 @@ namespace FE::AST
 
                 if (node.init->singleInit)
                 {
-                    reportError(node, "array initializer must be a brace-enclosed list");
-                    result = false;
+                    // 普通数组仍只能用列表初始化；张量允许同类型同形状的表达式。
+                    if (!isTensor(stored->type))
+                    {
+                        reportError(node, "array initializer must be a brace-enclosed list");
+                        result = false;
+                    }
+                    else if (node.init->attr.val.value.type != stored->type ||
+                             node.init->attr.arrayDims != dims)
+                    {
+                        reportError(node, "tensor initializer type or shape mismatch");
+                        result = false;
+                    }
+                    else if (symTable.isGlobalScope() || stored->isConstDecl)
+                    {
+                        // 本阶段尚未实现整个张量的常量折叠；沿用全局/const 初值限制。
+                        reportError(node, "global or const tensor expression initializer is not supported yet");
+                        result = false;
+                    }
                 }
                 else
                 {
                     // 全局/const 数组需要完整的编译期值；普通局部数组保留表达式。
                     const bool requireConstant = symTable.isGlobalScope() || stored->isConstDecl;
-                    const VarValue zero = stored->type == floatType ? VarValue(0.0f) : VarValue(0);
+                    Type* elementType = isTensor(stored->type)
+                        ? TypeFactory::getBasicType(stored->type->getBaseType()) : stored->type;
+                    const VarValue zero = elementType == floatType ? VarValue(0.0f) : VarValue(0);
                     std::vector<VarValue> values;
                     if (requireConstant)
                     {
@@ -273,7 +302,7 @@ namespace FE::AST
                             if (value.isConstexpr)
                             {
                                 VarValue converted;
-                                if (!convertConstant(value.value, stored->type, converted))
+                                if (!convertConstant(value.value, elementType, converted))
                                 {
                                     reportError(*init, "array constant initializer is out of range");
                                     return false;

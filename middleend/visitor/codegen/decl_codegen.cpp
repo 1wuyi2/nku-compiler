@@ -64,6 +64,7 @@ namespace ME
             lval2ptr[lval]   = getRegOperand(ptrReg);
 
             if (!declarator->init) continue;
+            Operand* saved = saveTensorTemps();
             if (!dims.empty())
             {
                 if (node.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR && declarator->init->singleInit)
@@ -71,7 +72,8 @@ namespace ME
                     auto* initializer = dynamic_cast<FE::AST::Initializer*>(declarator->init);
                     ASSERT(initializer && initializer->init_val);
                     Operand* source = evaluateExprValue(*initializer->init_val, m);
-                    copyTensor(type, dims, getRegOperand(ptrReg), source);
+                    copyTensor(type, dims, getRegOperand(ptrReg), source, initializer->init_val->attr.arrayDims);
+                    releaseTensorTemps(saved);
                     continue;
                 }
                 // 将行主序偏移还原成各维下标，首个 0 表示同一个数组对象。
@@ -125,6 +127,7 @@ namespace ME
                     Operand* address = addressAt(offset);
                     insert(createStoreInst(type, value, address));
                 }
+                releaseTensorTemps(saved);
                 continue;
             }
             ASSERT(declarator->init->singleInit && "Initializer lists for arrays belong to Advanced");
@@ -137,6 +140,7 @@ namespace ME
             const DataType valueType = convert(initializer->init_val->attr.val.value.type);
             value                    = convertOperand(valueType, type, value, block);
             block->insert(createStoreInst(type, value, getRegOperand(ptrReg)));
+            releaseTensorTemps(saved);
         }
     }
 }  // namespace ME

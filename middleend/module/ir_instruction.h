@@ -165,6 +165,8 @@ namespace ME
         std::vector<int> dims;
 
       public:
+        // 非空时表示运行期元素个数；固定形状分配继续使用 dims。
+        Operand* dynamicCount = nullptr;
         AllocaInst(DataType t, Operand* r, std::vector<int> d = {}, const std::string& c = "")
             : Instruction(Operator::ALLOCA, c), dt(t), res(r), dims(d)
         {}

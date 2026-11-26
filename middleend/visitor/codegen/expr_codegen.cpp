@@ -12,9 +12,74 @@ namespace ME
         return convert(type);
     }
 
-    Operand* ASTCodeGen::allocateTensor(DataType type, const std::vector<int>& dims)
+    Operand* ASTCodeGen::saveTensorTemps()
+    {
+        if (!hasDynamicTensorParams) return nullptr;
+        const size_t reg = getNewRegId();
+        insert(createCallInst(DataType::PTR, "llvm.stacksave", reg));
+        return getRegOperand(reg);
+    }
+
+    void ASTCodeGen::releaseTensorTemps(Operand* saved)
+    {
+        if (!saved) return;
+        CallInst::argList args = {{DataType::PTR, saved}};
+        insert(createCallInst(DataType::VOID, "llvm.stackrestore", args));
+    }
+
+    Operand* ASTCodeGen::tensorFirstExtent(const std::vector<int>& dims, Operand* base)
     {
         ASSERT(!dims.empty());
+        if (dims[0] > 0) return getImmeI32Operand(dims[0]);
+        auto it = tensorExtents.find(base);
+        ASSERT(dims[0] == -1 && it != tensorExtents.end());
+        return it->second;
+    }
+
+    Operand* ASTCodeGen::tensorElementCount(const std::vector<int>& dims, Operand* first)
+    {
+        ASSERT(!dims.empty());
+        Operand* count = getImmeI32Operand(1);
+        for (size_t i = 0; i < dims.size(); ++i)
+        {
+            ASSERT(dims[i] > 0 || (i == 0 && dims[i] == -1 && first));
+            Operand* extent = dims[i] == -1 ? first : getImmeI32Operand(dims[i]);
+            Operand* product = getRegOperand(getNewRegId());
+            insert(new ArithmeticInst(Operator::MUL, DataType::I64, count, extent, product));
+            count = product;
+        }
+        return count;
+    }
+
+    void ASTCodeGen::requireEqualExtent(Operand* lhs, Operand* rhs)
+    {
+        if (lhs == rhs) return;
+        Operand* test = getRegOperand(getNewRegId());
+        insert(new IcmpInst(DataType::I64, ICmpOp::EQ, lhs, rhs, test));
+        Block* ok = createBlock();
+        Block* fail = createBlock();
+        insert(new BrCondInst(test, getLabelOperand(ok->blockId), getLabelOperand(fail->blockId)));
+        enterBlock(fail);
+        insert(createCallInst(DataType::VOID, "llvm.trap"));
+        insert(createBranchInst(fail->blockId));
+        enterBlock(ok);
+    }
+
+    Operand* ASTCodeGen::allocateTensor(DataType type, const std::vector<int>& dims, Operand* first)
+    {
+        ASSERT(!dims.empty());
+        if (dims[0] == -1)
+        {
+            ASSERT(first != nullptr);
+            Operand* count = tensorElementCount(dims, first);
+            const size_t reg = getNewRegId();
+            auto* inst = createAllocaInst(type, reg);
+            inst->dynamicCount = count;
+            insert(inst);
+            Operand* result = getRegOperand(reg);
+            tensorExtents[result] = first;
+            return result;
+        }
         const size_t reg = getNewRegId();
         curFunc->getBlock(0)->insertFront(createAllocaInst(type, reg, dims));
         return getRegOperand(reg);
@@ -37,18 +102,13 @@ namespace ME
     }
 
     void ASTCodeGen::forTensorElements(const std::vector<int>& dims,
-        const std::function<void(Operand*)>& emit)
+        const std::function<void(Operand*)>& emit, Operand* first)
     {
-        ASSERT(!dims.empty());
-        // i64 计数，避免多维元素个数超出 i32 时发生溢出。
-        Operand* count = getImmeI32Operand(1);
-        for (int extent : dims)
-        {
-            ASSERT(extent > 0 && "Tensor operation needs a fixed shape");
-            Operand* product = getRegOperand(getNewRegId());
-            insert(new ArithmeticInst(Operator::MUL, DataType::I64, count, getImmeI32Operand(extent), product));
-            count = product;
-        }
+        forTensorCount(tensorElementCount(dims, first), emit);
+    }
+
+    void ASTCodeGen::forTensorCount(Operand* count, const std::function<void(Operand*)>& emit)
+    {
         Block* pre = curBlock;
         Block* cond = createBlock();
         Block* body = createBlock();
@@ -73,14 +133,18 @@ namespace ME
         enterBlock(end);
     }
 
-    void ASTCodeGen::copyTensor(DataType type, const std::vector<int>& dims, Operand* dst, Operand* src)
+    void ASTCodeGen::copyTensor(DataType type, const std::vector<int>& dims, Operand* dst, Operand* src,
+        const std::vector<int>& sourceDims)
     {
+        Operand* first = tensorFirstExtent(dims, dst);
+        Operand* sourceFirst = tensorFirstExtent(sourceDims.empty() ? dims : sourceDims, src);
+        requireEqualExtent(first, sourceFirst);
         if (dst == src) return;
         forTensorElements(dims, [&](Operand* index) {
             Operand* val = tensorElementLoad(type, src, index);
             Operand* addr = tensorElementAddress(type, dst, index);
             insert(createStoreInst(type, val, addr));
-        });
+        }, first);
     }
 
     Operand* ASTCodeGen::handleTensorUnary(FE::AST::UnaryExpr& node, Module* m)
@@ -89,7 +153,8 @@ namespace ME
         Operand* source = evaluateExprValue(*node.expr, m);
         const DataType type = tensorElementType(node.attr.val.value.type);
         const auto& dims = node.attr.arrayDims;
-        Operand* result = allocateTensor(type, dims);
+        Operand* first = tensorFirstExtent(dims, source);
+        Operand* result = allocateTensor(type, dims, first);
         if (node.op == FE::AST::Operator::ADD)
         {
             copyTensor(type, dims, result, source);
@@ -104,7 +169,7 @@ namespace ME
                 insert(new ArithmeticInst(Operator::SUB, type, getImmeI32Operand(0), value, neg));
             Operand* addr = tensorElementAddress(type, result, index);
             insert(createStoreInst(type, neg, addr));
-        });
+        }, first);
         return result;
     }
 
@@ -116,18 +181,19 @@ namespace ME
         const auto& bDims = node.rhs->attr.arrayDims;
         const auto& cDims = node.attr.arrayDims;
         ASSERT(aDims.size() == 2 && bDims.size() == 2 && cDims.size() == 2);
-        const int rows = aDims[0];
         const int inner = aDims[1];
         const int cols = bDims[1];
-        ASSERT(rows > 0 && inner > 0 && cols > 0 && bDims[0] == inner);
-        ASSERT(cDims[0] == rows && cDims[1] == cols);
+        ASSERT(inner > 0 && cols > 0);
+        ASSERT(cDims[0] == aDims[0] && cDims[1] == cols);
         const DataType type = tensorElementType(node.attr.val.value.type);
         ASSERT(type == DataType::I32 || type == DataType::F32);
 
         // 两个操作数各求值一次，嵌套张量表达式也先计算完毕。
         Operand* a = evaluateExprValue(*node.lhs, m);
         Operand* b = evaluateExprValue(*node.rhs, m);
-        Operand* c = allocateTensor(type, cDims);
+        Operand* rows = tensorFirstExtent(aDims, a);
+        requireEqualExtent(getImmeI32Operand(inner), tensorFirstExtent(bDims, b));
+        Operand* c = allocateTensor(type, cDims, rows);
         const Operator mulOp = type == DataType::F32 ? Operator::FMUL : Operator::MUL;
         const Operator addOp = type == DataType::F32 ? Operator::FADD : Operator::ADD;
         Operand* zero = type == DataType::F32
@@ -141,7 +207,7 @@ namespace ME
             return result;
         };
 
-        forTensorElements({rows}, [&](Operand* i) {
+        forTensorCount(rows, [&](Operand* i) {
             Operand* aRow = indexOp(Operator::MUL, i, getImmeI32Operand(inner));
             Operand* cRow = indexOp(Operator::MUL, i, getImmeI32Operand(cols));
             forTensorElements({cols}, [&](Operand* j) {
@@ -203,7 +269,11 @@ namespace ME
         Operand* right = evaluateExprValue(*node.rhs, m);
         if (!lt) left = convertOperand(convert(node.lhs->attr.val.value.type), type, left, curBlock);
         if (!rt) right = convertOperand(convert(node.rhs->attr.val.value.type), type, right, curBlock);
-        Operand* result = allocateTensor(type, dims);
+        Operand* lf = lt ? tensorFirstExtent(node.lhs->attr.arrayDims, left) : nullptr;
+        Operand* rf = rt ? tensorFirstExtent(node.rhs->attr.arrayDims, right) : nullptr;
+        if (lt && rt) requireEqualExtent(lf, rf);
+        Operand* first = lt ? lf : rf;
+        Operand* result = allocateTensor(type, dims, first);
         Operator op = Operator::ADD;
         switch (node.op)
         {
@@ -221,7 +291,7 @@ namespace ME
             insert(new ArithmeticInst(op, type, a, b, value));
             Operand* addr = tensorElementAddress(type, result, index);
             insert(createStoreInst(type, value, addr));
-        });
+        }, first);
         return result;
     }
 
@@ -337,7 +407,7 @@ namespace ME
         Operand* value = evaluateExprValue(rhs, m);
         if (lhs.attr.val.value.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR)
         {
-            copyTensor(tensorElementType(lhs.attr.val.value.type), lhs.attr.arrayDims, ptr, value);
+            copyTensor(tensorElementType(lhs.attr.val.value.type), lhs.attr.arrayDims, ptr, value, rhs.attr.arrayDims);
             exprResult = ptr;
             return;
         }
@@ -436,7 +506,14 @@ namespace ME
         ASSERT(argumentCount == parameterCount && "Call argument count does not match its signature");
 
         CallInst::argList args;
-        args.reserve(argumentCount);
+        args.reserve(argumentCount * 2 + 1);
+        const bool tensorReturn = callee->retType->getTypeGroup() == FE::AST::TypeGroup::TENSOR;
+        Operand* returnBuffer = nullptr;
+        if (tensorReturn)
+        {
+            returnBuffer = allocateTensor(tensorElementType(callee->retType), node.attr.arrayDims);
+            args.emplace_back(DataType::PTR, returnBuffer);
+        }
         for (size_t i = 0; i < argumentCount; ++i)
         {
             FE::AST::ExprNode*        argument  = (*node.args)[i];
@@ -455,8 +532,16 @@ namespace ME
             else
                 ASSERT(argumentType == DataType::PTR && "Pointer argument type mismatch");
             args.emplace_back(parameterType, value);
+            if (parameter->type->getTypeGroup() == FE::AST::TypeGroup::TENSOR)
+                args.emplace_back(DataType::I64, tensorFirstExtent(argument->attr.arrayDims, value));
         }
 
+        if (tensorReturn)
+        {
+            insert(createCallInst(DataType::VOID, node.func->getName(), args));
+            exprResult = returnBuffer;
+            return;
+        }
         const DataType returnType = convert(callee->retType);
         ASSERT(returnType != DataType::UNK && returnType != DataType::PTR && "Invalid function return type");
         if (returnType == DataType::VOID)

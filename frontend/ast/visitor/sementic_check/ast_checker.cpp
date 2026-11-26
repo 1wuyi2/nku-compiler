@@ -27,12 +27,38 @@ namespace FE::AST
 
     bool ASTChecker::visit(Root& node)
     {
+        // 返回类型只有元素类型，形状由 return 表达式推导。
+        // 前向调用/带基例的递归可能需要多轮；每轮重新进行完整语义检查。
+        std::vector<FuncDeclStmt*> tensorFunctions;
+        if (auto* stmts = node.getStmts())
+            for (auto* stmt : *stmts)
+                if (auto* func = dynamic_cast<FuncDeclStmt*>(stmt))
+                    if (func->retType && func->retType->getTypeGroup() == TypeGroup::TENSOR)
+                    {
+                        func->attr.arrayDims.clear();
+                        tensorFunctions.push_back(func);
+                    }
+        size_t known = 0;
+        while (true)
+        {
+            const bool ok = checkRootPass(node);
+            if (ok) return true;
+            size_t now = 0;
+            for (auto* func : tensorFunctions) if (!func->attr.arrayDims.empty()) ++now;
+            if (now <= known) return false;
+            known = now;
+        }
+    }
+
+    bool ASTChecker::checkRootPass(Root& node)
+    {
         // TODO(Lab3-1): 实现根节点的语义检查
         // 重置符号表，遍历所有顶层语句进行检查，确保存在main函数
         symTable.reset();
         glbSymbols.clear();
         errors.clear();
         arrayCalls.clear();
+        curFuncDecl = nullptr;
         mainExists     = false;
         funcHasReturn  = false;
         curFuncRetType = voidType;
@@ -110,7 +136,8 @@ namespace FE::AST
                 {
                     auto* arg = (*call->args)[i];
                     auto* param = (*function->params)[i];
-                    if (param->attr.val.value.type->getTypeGroup() != TypeGroup::POINTER) continue;
+                    const auto group = param->attr.val.value.type->getTypeGroup();
+                    if (group != TypeGroup::POINTER && group != TypeGroup::TENSOR) continue;
                     const auto& actual = arg->attr.arrayDims;
                     // 数组 I/O 运行库按连续标量内存读写，不关心原数组的秩。
                     // 元素类型已在 CallExpr 检查，普通函数仍严格匹配形状。

@@ -5,13 +5,17 @@ namespace ME
     void ASTCodeGen::visit(FE::AST::ExprStmt& node, Module* m)
     {
         if (!node.expr || isCurrentBlockTerminated()) return;
+        Operand* saved = saveTensorTemps();
         apply(*this, *node.expr, m);
+        releaseTensorTemps(saved);
+        exprResult = nullptr;
     }
 
     void ASTCodeGen::visit(FE::AST::FuncDeclStmt& node, Module* m)
     {
         ASSERT(m != nullptr && node.entry != nullptr && node.retType != nullptr && "Invalid function definition");
-        const DataType returnType = convert(node.retType);
+        const bool tensorReturn = node.retType->getTypeGroup() == FE::AST::TypeGroup::TENSOR;
+        const DataType returnType = tensorReturn ? DataType::VOID : convert(node.retType);
         ASSERT((returnType == DataType::VOID || returnType == DataType::I32 || returnType == DataType::F32) &&
                "Unsupported function return type");
 
@@ -20,6 +24,11 @@ namespace ME
         enterFunc(function);
         try
         {
+            if (tensorReturn)
+            {
+                tensorReturnBuffer = getRegOperand(getNewRegId());
+                irParams.emplace_back(DataType::PTR, tensorReturnBuffer);
+            }
             if (node.params)
             {
                 for (FE::AST::ParamDeclarator* param : *node.params)
@@ -30,6 +39,8 @@ namespace ME
                     ASSERT(paramType == DataType::I32 || paramType == DataType::F32 || paramType == DataType::PTR);
                     const size_t argumentReg = getNewRegId();
                     irParams.emplace_back(paramType, getRegOperand(argumentReg));
+                    if (param->type->getTypeGroup() == FE::AST::TypeGroup::TENSOR)
+                        irParams.emplace_back(DataType::I64, getRegOperand(getNewRegId()));
                 }
             }
             function->funcDef->argRegs = irParams;
@@ -37,22 +48,29 @@ namespace ME
             enterBlock(createBlock());
             if (node.params)
             {
+                size_t irIndex = tensorReturn ? 1 : 0;
                 for (size_t i = 0; i < node.params->size(); ++i)
                 {
                     FE::AST::ParamDeclarator* param     = (*node.params)[i];
                     const DataType paramType = convert(param->attr.val.value.type);
+                    Operand* incoming = irParams[irIndex++].second;
                     if (paramType == DataType::PTR)
                     {
                         // 数组形参已经是首个子对象的地址，无需再分配或复制数组。
-                        const size_t ptrReg = irParams[i].second->getRegNum();
+                        const size_t ptrReg = incoming->getRegNum();
                         name2reg.addSymbol(param->entry, ptrReg);
                         reg2attr[ptrReg] = FE::AST::VarAttr(param->type, false);
                         reg2attr[ptrReg].arrayDims = param->attr.arrayDims;
+                        if (param->type->getTypeGroup() == FE::AST::TypeGroup::TENSOR)
+                        {
+                            hasDynamicTensorParams = true;
+                            tensorExtents[incoming] = irParams[irIndex++].second;
+                        }
                         continue;
                     }
                     const size_t ptrReg = getNewRegId();
                     insert(createAllocaInst(paramType, ptrReg));
-                    insert(createStoreInst(paramType, irParams[i].second, getRegOperand(ptrReg)));
+                    insert(createStoreInst(paramType, incoming, getRegOperand(ptrReg)));
                     name2reg.addSymbol(param->entry, ptrReg);
                     reg2attr[ptrReg] = FE::AST::VarAttr(param->type, false);
                 }
@@ -75,7 +93,10 @@ namespace ME
             if (!isCurrentBlockTerminated())
             {
                 if (returnType == DataType::VOID)
+                {
+                    if (tensorReturn) insert(createCallInst(DataType::VOID, "llvm.trap"));
                     insert(createRetInst());
+                }
                 // 结构化控制流可能产生实际不可达的出口块；LLVM IR
                 // 仍要求其以 terminator 结尾。按返回类型补齐默认返回。
                 else if (returnType == DataType::I32)
@@ -134,6 +155,15 @@ namespace ME
             return;
         }
 
+        if (tensorReturnBuffer)
+        {
+            Operand* value = evaluateExprValue(*node.retExpr, m);
+            const auto& dims = node.retExpr->attr.arrayDims;
+            copyTensor(tensorElementType(node.retExpr->attr.val.value.type), dims, tensorReturnBuffer, value);
+            insert(createRetInst());
+            exprResult = nullptr;
+            return;
+        }
         ASSERT(returnType != DataType::VOID && "Void function cannot return a value");
         Operand* value = evaluateExprValue(*node.retExpr, m);
         Block*   block = curBlock;
@@ -269,7 +299,12 @@ namespace ME
                 if (!isCurrentBlockTerminated()) insert(createBranchInst(stepBlock->blockId));
 
                 enterBlock(stepBlock);
-                if (node.step) apply(*this, *node.step, m);
+                if (node.step)
+                {
+                    Operand* saved = saveTensorTemps();
+                    apply(*this, *node.step, m);
+                    releaseTensorTemps(saved);
+                }
                 if (!isCurrentBlockTerminated()) insert(createBranchInst(condBlock->blockId));
             } catch (...)
             {

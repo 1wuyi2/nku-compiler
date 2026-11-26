@@ -247,7 +247,7 @@ namespace FE::AST
                         result = false;
                     }
                     else if (node.init->attr.val.value.type != stored->type ||
-                             node.init->attr.arrayDims != dims)
+                              !tensorShapesCompatible(node.init->attr.arrayDims, dims))
                     {
                         reportError(node, "tensor initializer type or shape mismatch");
                         result = false;
@@ -443,6 +443,11 @@ namespace FE::AST
 
         VarAttr attr(node.type ? node.type : voidType, false, symTable.getScopeDepth());
         node.attr.arrayDims.clear();
+        if (isTensor(attr.type) && (!node.dims || node.dims->empty()))
+        {
+            reportError(node, "tensor parameter requires an omitted first dimension []");
+            return false;
+        }
         if (node.dims && !node.dims->empty())
         {
             if (!isValidVariableType(attr.type))
@@ -469,6 +474,11 @@ namespace FE::AST
                 auto* literal = dynamic_cast<LiteralExpr*>(dim);
                 const bool omitted = d == 0 && literal && literal->literal.type == intType &&
                     literal->literal.getInt() == -1;
+                if (isTensor(attr.type) && d == 0 && !omitted)
+                {
+                    reportError(*dim, "tensor parameter first dimension must be omitted []");
+                    return false;
+                }
                 if (!omitted && (extent <= 0 || extent > std::numeric_limits<int>::max()))
                 {
                     reportError(*dim, "array parameter dimension must be a positive integer");
@@ -493,7 +503,8 @@ namespace FE::AST
         symTable.addSymbol(node.entry, attr);
         rememberCurrentScope(node.entry);
         node.attr.arrayDims = attr.arrayDims;
-        node.attr.val.value.type = attr.arrayDims.empty() ? attr.type : TypeFactory::getPtrType(attr.type);
+        node.attr.val.value.type = isTensor(attr.type) || attr.arrayDims.empty()
+            ? attr.type : TypeFactory::getPtrType(attr.type);
         node.attr.val.isConstexpr = false;
         return true;
     }

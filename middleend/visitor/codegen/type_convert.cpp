@@ -105,10 +105,13 @@ namespace ME
 
     Operand* ASTCodeGen::evaluateCondition(FE::AST::ExprNode& node, Module* m)
     {
+        Operand* saved = saveTensorTemps();
         Operand* value = evaluateExprValue(node, m);
         ASSERT(
             curBlock != nullptr && !isCurrentBlockTerminated() && "Condition evaluation did not leave a usable block");
-        return convertOperand(convert(node.attr.val.value.type), DataType::I1, value, curBlock);
+        Operand* result = convertOperand(convert(node.attr.val.value.type), DataType::I1, value, curBlock);
+        releaseTensorTemps(saved);
+        return result;
     }
 
     Operand* ASTCodeGen::convertOperand(DataType from, DataType to, Operand* src, Block* block)

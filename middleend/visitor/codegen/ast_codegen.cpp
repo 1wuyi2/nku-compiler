@@ -43,6 +43,10 @@ namespace ME
         // void stoptime(int lineno);
         decls.emplace_back(new FuncDeclInst(DataType::VOID, "_sysy_stoptime", {DataType::I32}));
 
+        // 未知首维参与整体运算时，形状不一致必须停止执行，避免越界。
+        decls.emplace_back(new FuncDeclInst(DataType::VOID, "llvm.trap", {}));
+        decls.emplace_back(new FuncDeclInst(DataType::PTR, "llvm.stacksave", {}));
+        decls.emplace_back(new FuncDeclInst(DataType::VOID, "llvm.stackrestore", {DataType::PTR}));
         // llvm memset
         decls.emplace_back(new FuncDeclInst(
             DataType::VOID, "llvm.memset.p0.i32", {DataType::PTR, DataType::I8, DataType::I32, DataType::I1}));

@@ -48,6 +48,7 @@ namespace FE::AST
 
         bool  funcHasReturn;
         Type* curFuncRetType;
+        FuncDeclStmt* curFuncDecl = nullptr;
         bool  inFunction;
 
         size_t loopDepth;
@@ -114,6 +115,7 @@ namespace FE::AST
       private:
         // Basic AST nodes
         bool visit(Root& node) override;
+        bool checkRootPass(Root& node);
 
         // Declaration nodes
         bool visit(Initializer& node) override;

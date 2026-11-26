@@ -14,6 +14,8 @@ namespace FE::AST
 
         bool isValidReturnType(Type* type)
         {
+            if (type && type->getTypeGroup() == TypeGroup::TENSOR)
+                return type->getBaseType() == Type_t::INT || type->getBaseType() == Type_t::FLOAT;
             if (!type || type->getTypeGroup() != TypeGroup::BASIC) return false;
             const Type_t kind = type->getBaseType();
             return kind == Type_t::VOID || kind == Type_t::INT || kind == Type_t::FLOAT;
@@ -22,7 +24,7 @@ namespace FE::AST
         bool isValidParameterType(Type* type)
         {
             if (!type) return false;
-            if (type->getTypeGroup() == TypeGroup::POINTER)
+            if (type->getTypeGroup() == TypeGroup::POINTER || type->getTypeGroup() == TypeGroup::TENSOR)
                 return type->getBaseType() == Type_t::INT || type->getBaseType() == Type_t::FLOAT;
             return type->getTypeGroup() == TypeGroup::BASIC &&
                    (type->getBaseType() == Type_t::INT || type->getBaseType() == Type_t::FLOAT);
@@ -70,6 +72,8 @@ namespace FE::AST
         bool   oldHasReturn  = funcHasReturn;
         bool   oldInFunction = inFunction;
         size_t oldLoopDepth  = loopDepth;
+        FuncDeclStmt* oldFuncDecl = curFuncDecl;
+        curFuncDecl = &node;
         curFuncRetType       = node.retType;
         funcHasReturn        = false;
         inFunction           = true;
@@ -104,6 +108,7 @@ namespace FE::AST
         } catch (...)
         {
             exitScope();
+            curFuncDecl = oldFuncDecl;
             curFuncRetType = oldRetType;
             funcHasReturn  = oldHasReturn;
             inFunction     = oldInFunction;
@@ -122,6 +127,7 @@ namespace FE::AST
             result = false;
         }
 
+        curFuncDecl = oldFuncDecl;
         curFuncRetType = oldRetType;
         funcHasReturn  = oldHasReturn;
         inFunction     = oldInFunction;
@@ -210,6 +216,28 @@ namespace FE::AST
         }
         if (!exprOk) return false;
         Type* exprType = node.retExpr->attr.val.value.type;
+        if (curFuncRetType && curFuncRetType->getTypeGroup() == TypeGroup::TENSOR)
+        {
+            const auto& dims = node.retExpr->attr.arrayDims;
+            if (exprType != curFuncRetType || dims.empty())
+            {
+                reportError(node, "tensor return element type mismatch");
+                return false;
+            }
+            for (int d : dims) if (d <= 0)
+            {
+                reportError(node, "tensor return shape must be known at compile time");
+                return false;
+            }
+            auto& shape = curFuncDecl->attr.arrayDims;
+            if (shape.empty()) shape = dims;
+            else if (shape != dims)
+            {
+                reportError(node, "inconsistent tensor return shapes");
+                return false;
+            }
+            return true;
+        }
         if (!isScalar(curFuncRetType) || !isScalar(exprType))
         {
             reportError(node,

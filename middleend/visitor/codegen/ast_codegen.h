@@ -112,6 +112,12 @@ namespace ME
         std::map<size_t, bool>                    paramPtrTab;  // if the i-th param is a pointer or not
         std::map<FE::AST::LeftValExpr*, Operand*> lval2ptr;
         Operand*                                  exprResult;
+        // 动态张量地址对应运行期首维；函数返回缓冲区由调用方分配。
+        std::map<Operand*, Operand*> tensorExtents;
+        Operand* tensorReturnBuffer = nullptr;
+        bool hasDynamicTensorParams = false;
+        Operand* saveTensorTemps();
+        void releaseTensorTemps(Operand* saved);
         // (continue target, break target), one entry for each enclosing loop.
         std::vector<std::pair<size_t, size_t>> loopTargets;
 
@@ -164,11 +170,17 @@ namespace ME
         // 统一计算标量/数组元素/子数组的地址，赋值时无需额外 load。
         Operand* resolveLValueAddress(FE::AST::LeftValExpr& node, Module* m, bool forWrite);
         DataType tensorElementType(FE::AST::Type* type);
-        Operand* allocateTensor(DataType type, const std::vector<int>& dims);
+        Operand* allocateTensor(DataType type, const std::vector<int>& dims, Operand* first = nullptr);
+        Operand* tensorFirstExtent(const std::vector<int>& dims, Operand* base);
+        Operand* tensorElementCount(const std::vector<int>& dims, Operand* first);
+        void requireEqualExtent(Operand* lhs, Operand* rhs);
+        void forTensorCount(Operand* count, const std::function<void(Operand*)>& emit);
         Operand* tensorElementAddress(DataType type, Operand* base, Operand* index);
         Operand* tensorElementLoad(DataType type, Operand* base, Operand* index);
-        void forTensorElements(const std::vector<int>& dims, const std::function<void(Operand*)>& emit);
-        void copyTensor(DataType type, const std::vector<int>& dims, Operand* dst, Operand* src);
+        void forTensorElements(const std::vector<int>& dims, const std::function<void(Operand*)>& emit,
+            Operand* first = nullptr);
+        void copyTensor(DataType type, const std::vector<int>& dims, Operand* dst, Operand* src,
+            const std::vector<int>& sourceDims = {});
         Operand* handleTensorUnary(FE::AST::UnaryExpr& node, Module* m);
         Operand* handleTensorBinary(FE::AST::BinaryExpr& node, Module* m);
         Operand* handleTensorMatmul(FE::AST::BinaryExpr& node, Module* m);
@@ -188,6 +200,9 @@ namespace ME
             reg2attr.clear();
             lval2ptr.clear();
             loopTargets.clear();
+            tensorExtents.clear();
+            tensorReturnBuffer = nullptr;
+            hasDynamicTensorParams = false;
             curFunc    = func;
             curBlock   = nullptr;
             exprResult = nullptr;
@@ -198,6 +213,9 @@ namespace ME
             reg2attr.clear();
             lval2ptr.clear();
             loopTargets.clear();
+            tensorExtents.clear();
+            tensorReturnBuffer = nullptr;
+            hasDynamicTensorParams = false;
             curFunc    = nullptr;
             curBlock   = nullptr;
             exprResult = nullptr;

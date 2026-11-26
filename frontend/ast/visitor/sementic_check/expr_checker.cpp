@@ -280,7 +280,7 @@ namespace FE::AST
             }
             if (leftTensor || rightTensor)
             {
-                if (!leftTensor || !rightTensor || lhsType != rhsType || leftShape != rightShape)
+                if (!leftTensor || !rightTensor || lhsType != rhsType || !tensorShapesCompatible(leftShape, rightShape))
                 {
                     reportError(node, "tensor assignment type or shape mismatch");
                     return false;
@@ -304,7 +304,7 @@ namespace FE::AST
         {
             if (!leftTensor || !rightTensor || lhsType != rhsType ||
                 leftShape.size() != 2 || rightShape.size() != 2 ||
-                leftShape[1] != rightShape[0])
+                (rightShape[0] != -1 && leftShape[1] != rightShape[0]))
             {
                 reportError(node, "matrix multiplication requires matching rank-2 tensors and inner dimension");
                 return false;
@@ -328,7 +328,7 @@ namespace FE::AST
                 reportError(node, "tensor arithmetic element type mismatch");
                 return false;
             }
-            if (leftTensor && rightTensor && leftShape != rightShape)
+            if (leftTensor && rightTensor && !tensorShapesCompatible(leftShape, rightShape))
             {
                 reportError(node, "tensor arithmetic shape mismatch");
                 return false;
@@ -346,6 +346,8 @@ namespace FE::AST
             }
             node.attr.val.value.type = tensorType;
             node.attr.arrayDims = leftTensor ? leftShape : rightShape;
+            if (leftTensor && rightTensor && node.attr.arrayDims[0] == -1)
+                node.attr.arrayDims[0] = rightShape[0];
             return true;
         }
         if (!isBinaryOperator(node.op))
@@ -438,13 +440,18 @@ namespace FE::AST
             Type*      argumentType  = argument->attr.val.value.type;
             Type*      parameterType = parameter->type;
             // 前向调用也能根据语法中的 dims 确定形参是指针类型。
-            if (parameterType && parameter->dims && !parameter->dims->empty())
+            if (parameterType && !isTensor(parameterType) && parameter->dims && !parameter->dims->empty())
                 parameterType = TypeFactory::getPtrType(parameterType);
             const bool bothScalar    = isScalar(argumentType) && isScalar(parameterType);
             const bool exactType     = argumentType && parameterType &&
                                    argumentType->getTypeGroup() == parameterType->getTypeGroup() &&
                                    argumentType->getBaseType() == parameterType->getBaseType();
-            if (!bothScalar && !exactType)
+            // 数组 I/O 库函数的参数是连续元素缓冲区，允许同基类型的张量。
+            const bool tensorIO = isTensor(argumentType) && parameterType &&
+                parameterType->getTypeGroup() == TypeGroup::POINTER &&
+                argumentType->getBaseType() == parameterType->getBaseType() &&
+                (name == "getarray" || name == "getfarray" || name == "putarray" || name == "putfarray");
+            if (!bothScalar && !exactType && !tensorIO)
             {
                 reportError(node,
                     "argument " + std::to_string(i + 1) + " of function '" + name + "' has type '" +
@@ -456,9 +463,20 @@ namespace FE::AST
         }
 
         node.attr.val.value.type = function->retType ? function->retType : voidType;
+        node.attr.arrayDims.clear();
+        if (isTensor(node.attr.val.value.type))
+        {
+            if (function->attr.arrayDims.empty())
+            {
+                reportError(node, "tensor return shape not yet known for function '" + name + "'");
+                result = false;
+            }
+            else node.attr.arrayDims = function->attr.arrayDims;
+        }
         if (result && node.args)
             for (auto* arg : *node.args)
-                if (arg->attr.val.value.type && arg->attr.val.value.type->getTypeGroup() == TypeGroup::POINTER)
+                if (arg->attr.val.value.type && (arg->attr.val.value.type->getTypeGroup() == TypeGroup::POINTER ||
+                    isTensor(arg->attr.val.value.type)))
                 {
                     arrayCalls.push_back(&node);
                     break;

@@ -261,6 +261,15 @@ namespace FE::AST
         {}
     };
 
+    // -1 只用于张量形参的未知首维；其余维度仍必须在编译期匹配。
+    inline bool tensorShapesCompatible(const std::vector<int>& a, const std::vector<int>& b)
+    {
+        if (a.empty() || a.size() != b.size()) return false;
+        for (size_t i = 0; i < a.size(); ++i)
+            if (a[i] != b[i] && !(i == 0 && (a[i] == -1 || b[i] == -1))) return false;
+        return true;
+    }
+
     struct NodeAttr
     {
         Operator  op;

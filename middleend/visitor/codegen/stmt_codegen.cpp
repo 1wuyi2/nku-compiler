@@ -26,9 +26,8 @@ namespace ME
                 {
                     ASSERT(param != nullptr && param->entry != nullptr && param->type != nullptr &&
                            "Invalid function parameter");
-                    const DataType paramType = convert(param->type);
-                    ASSERT((paramType == DataType::I32 || paramType == DataType::F32) &&
-                           "Array parameters belong to Advanced");
+                    const DataType paramType = convert(param->attr.val.value.type);
+                    ASSERT(paramType == DataType::I32 || paramType == DataType::F32 || paramType == DataType::PTR);
                     const size_t argumentReg = getNewRegId();
                     irParams.emplace_back(paramType, getRegOperand(argumentReg));
                 }
@@ -41,8 +40,17 @@ namespace ME
                 for (size_t i = 0; i < node.params->size(); ++i)
                 {
                     FE::AST::ParamDeclarator* param     = (*node.params)[i];
-                    const DataType            paramType = convert(param->type);
-                    const size_t              ptrReg    = getNewRegId();
+                    const DataType paramType = convert(param->attr.val.value.type);
+                    if (paramType == DataType::PTR)
+                    {
+                        // 数组形参已经是首个子对象的地址，无需再分配或复制数组。
+                        const size_t ptrReg = irParams[i].second->getRegNum();
+                        name2reg.addSymbol(param->entry, ptrReg);
+                        reg2attr[ptrReg] = FE::AST::VarAttr(param->type, false);
+                        reg2attr[ptrReg].arrayDims = param->attr.arrayDims;
+                        continue;
+                    }
+                    const size_t ptrReg = getNewRegId();
                     insert(createAllocaInst(paramType, ptrReg));
                     insert(createStoreInst(paramType, irParams[i].second, getRegOperand(ptrReg)));
                     name2reg.addSymbol(param->entry, ptrReg);

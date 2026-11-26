@@ -34,10 +34,15 @@ namespace ME
             ASSERT(!attr->isConstDecl && "Assignment target is not modifiable");
             ASSERT(count == dims.size() && "An array or subarray cannot be assigned as a scalar");
         }
-        if (!dims.empty())
+        const bool isArrayParam = !dims.empty() && dims.front() == -1;
+        if (!dims.empty() && !(isArrayParam && count == 0))
         {
-            // 普通数组的基址指向整个聚合对象；首个 0 选择该对象。
-            std::vector<Operand*> indices{getImmeI32Operand(0)};
+            // 普通数组指向整个聚合对象；形参已退化为首个子对象的地址。
+            // 因此普通数组需要前导 0，形参不需要，并去掉未知的首维。
+            std::vector<Operand*> indices;
+            if (!isArrayParam) indices.push_back(getImmeI32Operand(0));
+            const std::vector<int> gepDims = isArrayParam
+                ? std::vector<int>(dims.begin() + 1, dims.end()) : dims;
             if (node.indices)
                 for (auto* index : *node.indices)
                 {
@@ -50,7 +55,7 @@ namespace ME
             // 部分下标访问产生子数组首元素地址，不对聚合类型执行 load。
             if (count < dims.size()) indices.push_back(getImmeI32Operand(0));
             const size_t addrReg = getNewRegId();
-            insert(createGEP_I32Inst(elementType, base, dims, indices, addrReg));
+            insert(createGEP_I32Inst(elementType, base, gepDims, indices, addrReg));
             base = getRegOperand(addrReg);
         }
         lval2ptr[&node] = base;
@@ -206,7 +211,7 @@ namespace ME
             Block*   block = curBlock;
             ASSERT(block != nullptr && !isCurrentBlockTerminated() && "Argument evaluation terminated its block");
             const DataType argumentType  = convert(argument->attr.val.value.type);
-            const DataType parameterType = convert(parameter->type);
+            const DataType parameterType = convert(parameter->attr.val.value.type);
             ASSERT(
                 parameterType != DataType::VOID && parameterType != DataType::UNK && "Invalid function parameter type");
             if (parameterType != DataType::PTR)

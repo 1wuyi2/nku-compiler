@@ -248,6 +248,8 @@ namespace FE::AST
     {
         Operator  op;
         ExprValue val;
+        // 数组表达式的剩余形状；数组形参首维用 -1 表示未知长度。
+        std::vector<int> arrayDims;
 
         NodeAttr(Operator o = Operator::UNK, const ExprValue& v = ExprValue()) : op(o), val(v) {}
     };

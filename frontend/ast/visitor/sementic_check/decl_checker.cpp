@@ -413,9 +413,58 @@ namespace FE::AST
         }
 
         VarAttr attr(node.type ? node.type : voidType, false, symTable.getScopeDepth());
+        node.attr.arrayDims.clear();
+        if (node.dims && !node.dims->empty())
+        {
+            if (!isValidVariableType(attr.type))
+            {
+                reportError(node, "array parameter requires int or float element type");
+                return false;
+            }
+            size_t stride = 1;
+            for (size_t d = 0; d < node.dims->size(); ++d)
+            {
+                auto* dim = (*node.dims)[d];
+                if (!dim || !apply(*this, *dim)) return false;
+                const auto& value = dim->attr.val;
+                Type* dimType = value.value.type;
+                if (!dimType || dimType->getTypeGroup() != TypeGroup::BASIC ||
+                    (dimType->getBaseType() != Type_t::INT && dimType->getBaseType() != Type_t::LL) ||
+                    !value.isConstexpr)
+                {
+                    reportError(*dim, "array parameter dimension must be an integer constant expression");
+                    return false;
+                }
+                const long long extent = value.getLL();
+                // Lab2 用 LiteralExpr(-1) 表示首维省略的 []。
+                auto* literal = dynamic_cast<LiteralExpr*>(dim);
+                const bool omitted = d == 0 && literal && literal->literal.type == intType &&
+                    literal->literal.getInt() == -1;
+                if (!omitted && (extent <= 0 || extent > std::numeric_limits<int>::max()))
+                {
+                    reportError(*dim, "array parameter dimension must be a positive integer");
+                    return false;
+                }
+                if (d == 0)
+                {
+                    // 数组退化：首维不参与指针步长或实参形状匹配。
+                    attr.arrayDims.push_back(-1);
+                    continue;
+                }
+                const size_t n = static_cast<size_t>(extent);
+                if (stride > std::numeric_limits<size_t>::max() / 4 / n)
+                {
+                    reportError(*dim, "array parameter stride overflows addressable storage");
+                    return false;
+                }
+                stride *= n;
+                attr.arrayDims.push_back(static_cast<int>(extent));
+            }
+        }
         symTable.addSymbol(node.entry, attr);
         rememberCurrentScope(node.entry);
-        node.attr.val.value.type  = attr.type;
+        node.attr.arrayDims = attr.arrayDims;
+        node.attr.val.value.type = attr.arrayDims.empty() ? attr.type : TypeFactory::getPtrType(attr.type);
         node.attr.val.isConstexpr = false;
         return true;
     }

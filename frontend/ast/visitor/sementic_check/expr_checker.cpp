@@ -47,6 +47,7 @@ namespace FE::AST
     {
         // TODO(Lab3-1): 实现左值表达式的语义检查
         // 检查变量是否存在，处理数组下标访问，进行类型检查和常量折叠
+        node.attr.arrayDims.clear();
         VarAttr* attr = symTable.getSymbol(node.entry);
         if (!attr)
         {
@@ -97,8 +98,8 @@ namespace FE::AST
             return false;
         }
         // 完整下标得到标量；无下标或部分下标得到数组/子数组地址类型。
-        // 形参退化与剩余形状匹配留到后续模块。
         node.attr.val.value.type = indexCount < rank ? TypeFactory::getPtrType(attr->type) : attr->type;
+        node.attr.arrayDims.assign(attr->arrayDims.begin() + indexCount, attr->arrayDims.end());
         if (rank == 0 && attr->isConstDecl && !attr->initList.empty())
         {
             node.attr.val.value       = attr->initList.front();
@@ -338,6 +339,9 @@ namespace FE::AST
 
             Type*      argumentType  = argument->attr.val.value.type;
             Type*      parameterType = parameter->type;
+            // 前向调用也能根据语法中的 dims 确定形参是指针类型。
+            if (parameterType && parameter->dims && !parameter->dims->empty())
+                parameterType = TypeFactory::getPtrType(parameterType);
             const bool bothScalar    = isScalar(argumentType) && isScalar(parameterType);
             const bool exactType     = argumentType && parameterType &&
                                    argumentType->getTypeGroup() == parameterType->getTypeGroup() &&
@@ -354,6 +358,13 @@ namespace FE::AST
         }
 
         node.attr.val.value.type = function->retType ? function->retType : voidType;
+        if (result && node.args)
+            for (auto* arg : *node.args)
+                if (arg->attr.val.value.type && arg->attr.val.value.type->getTypeGroup() == TypeGroup::POINTER)
+                {
+                    arrayCalls.push_back(&node);
+                    break;
+                }
         return result;
     }
 

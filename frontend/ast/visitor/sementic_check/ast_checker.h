@@ -60,6 +60,8 @@ namespace FE::AST
         Type* currentDeclType;
         bool  currentDeclIsConst;
         bool  evaluateConstants;
+        // 等所有函数形参的维度检查完毕后，再核对调用的形状。
+        std::vector<CallExpr*> arrayCalls;
 
       public:
         std::vector<std::string> errors;

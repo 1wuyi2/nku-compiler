@@ -32,6 +32,7 @@ namespace FE::AST
         symTable.reset();
         glbSymbols.clear();
         errors.clear();
+        arrayCalls.clear();
         mainExists     = false;
         funcHasReturn  = false;
         curFuncRetType = voidType;
@@ -97,6 +98,35 @@ namespace FE::AST
         {
             errors.push_back("main function is not defined");
             result = false;
+        }
+        // 前向调用时，被调用函数的维度表达式可能尚未求值。
+        // 在整棵 AST 检查完成后统一匹配秩及除首维外的各维大小。
+        if (result && errors.empty())
+        {
+            for (auto* call : arrayCalls)
+            {
+                auto* function = funcDecls.at(call->func);
+                for (size_t i = 0; i < call->args->size(); ++i)
+                {
+                    auto* arg = (*call->args)[i];
+                    auto* param = (*function->params)[i];
+                    if (param->attr.val.value.type->getTypeGroup() != TypeGroup::POINTER) continue;
+                    const auto& actual = arg->attr.arrayDims;
+                    // 运行库的数组形参没有 dims AST，均为一维指针。
+                    const std::vector<int> expected = param->attr.arrayDims.empty()
+                        ? std::vector<int>{-1} : param->attr.arrayDims;
+                    bool matches = actual.size() == expected.size();
+                    if (matches)
+                        for (size_t d = 1; d < expected.size(); ++d)
+                            if (actual[d] != expected[d]) matches = false;
+                    if (!matches)
+                    {
+                        reportError(*arg, "array shape mismatch for argument " + std::to_string(i + 1) +
+                            " of function '" + call->func->getName() + "'");
+                        result = false;
+                    }
+                }
+            }
         }
         return result && errors.empty();
     }

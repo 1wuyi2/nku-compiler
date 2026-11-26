@@ -28,22 +28,6 @@ namespace FE::AST
                    (type->getBaseType() == Type_t::INT || type->getBaseType() == Type_t::FLOAT);
         }
 
-        bool alwaysReturns(const StmtNode* stmt)
-        {
-            if (!stmt) return false;
-            if (dynamic_cast<const ReturnStmt*>(stmt)) return true;
-            if (auto* block = dynamic_cast<const BlockStmt*>(stmt))
-            {
-                if (!block->stmts) return false;
-                for (auto* child : *block->stmts)
-                    if (alwaysReturns(child)) return true;
-                return false;
-            }
-            if (auto* branch = dynamic_cast<const IfStmt*>(stmt))
-                return branch->elseStmt && alwaysReturns(branch->thenStmt) && alwaysReturns(branch->elseStmt);
-            return false;
-        }
-
         bool isConditionType(Type* type) { return isScalar(type); }
     }  // namespace
 
@@ -129,9 +113,12 @@ namespace FE::AST
         exitScope();
 
         const bool isMain = node.entry->getName() == "main";
-        if (node.retType && node.retType != voidType && !isMain && !alwaysReturns(node.body))
+        // 本实验不要求完整的控制流路径证明。循环与完备条件分支可能
+        // 无法由简单的 AST 结构判断；保留显式 return 的类型检查，
+        // 并检查普通非 void 函数是否至少含有一条 return。
+        if (node.retType && node.retType != voidType && !isMain && !funcHasReturn)
         {
-            reportError(node, "non-void function '" + node.entry->getName() + "' does not return on every path");
+            reportError(node, "non-void function '" + node.entry->getName() + "' has no return statement");
             result = false;
         }
 

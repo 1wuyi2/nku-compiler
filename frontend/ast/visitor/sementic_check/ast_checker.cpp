@@ -112,7 +112,11 @@ namespace FE::AST
                     auto* param = (*function->params)[i];
                     if (param->attr.val.value.type->getTypeGroup() != TypeGroup::POINTER) continue;
                     const auto& actual = arg->attr.arrayDims;
-                    // 运行库的数组形参没有 dims AST，均为一维指针。
+                    // 数组 I/O 运行库按连续标量内存读写，不关心原数组的秩。
+                    // 元素类型已在 CallExpr 检查，普通函数仍严格匹配形状。
+                    const std::string& name = call->func->getName();
+                    if (!actual.empty() && (name == "getarray" || name == "getfarray" ||
+                        name == "putarray" || name == "putfarray")) continue;
                     const std::vector<int> expected = param->attr.arrayDims.empty()
                         ? std::vector<int>{-1} : param->attr.arrayDims;
                     bool matches = actual.size() == expected.size();

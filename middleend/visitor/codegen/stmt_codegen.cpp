@@ -76,8 +76,12 @@ namespace ME
             {
                 if (returnType == DataType::VOID)
                     insert(createRetInst());
-                else if (node.entry->getName() == "main" && returnType == DataType::I32)
+                // 结构化控制流可能产生实际不可达的出口块；LLVM IR
+                // 仍要求其以 terminator 结尾。按返回类型补齐默认返回。
+                else if (returnType == DataType::I32)
                     insert(createRetInst(0));
+                else if (returnType == DataType::F32)
+                    insert(createRetInst(0.0f));
             }
             ASSERT(isCurrentBlockTerminated() && "Non-void function ended without a return terminator");
         } catch (...)

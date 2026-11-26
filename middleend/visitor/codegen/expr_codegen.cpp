@@ -108,10 +108,92 @@ namespace ME
         return result;
     }
 
+    // 矩阵乘法：A[M][N] @ B[N][P] -> C[M][P]。
+    // 结果使用独立的临时张量，避免覆盖仍在参与计算的操作数。
+    Operand* ASTCodeGen::handleTensorMatmul(FE::AST::BinaryExpr& node, Module* m)
+    {
+        const auto& aDims = node.lhs->attr.arrayDims;
+        const auto& bDims = node.rhs->attr.arrayDims;
+        const auto& cDims = node.attr.arrayDims;
+        ASSERT(aDims.size() == 2 && bDims.size() == 2 && cDims.size() == 2);
+        const int rows = aDims[0];
+        const int inner = aDims[1];
+        const int cols = bDims[1];
+        ASSERT(rows > 0 && inner > 0 && cols > 0 && bDims[0] == inner);
+        ASSERT(cDims[0] == rows && cDims[1] == cols);
+        const DataType type = tensorElementType(node.attr.val.value.type);
+        ASSERT(type == DataType::I32 || type == DataType::F32);
+
+        // 两个操作数各求值一次，嵌套张量表达式也先计算完毕。
+        Operand* a = evaluateExprValue(*node.lhs, m);
+        Operand* b = evaluateExprValue(*node.rhs, m);
+        Operand* c = allocateTensor(type, cDims);
+        const Operator mulOp = type == DataType::F32 ? Operator::FMUL : Operator::MUL;
+        const Operator addOp = type == DataType::F32 ? Operator::FADD : Operator::ADD;
+        Operand* zero = type == DataType::F32
+            ? static_cast<Operand*>(getImmeF32Operand(0.0f))
+            : static_cast<Operand*>(getImmeI32Operand(0));
+
+        // 行主序偏移统一用 i64，防止 i32 乘法计算偏移时溢出。
+        auto indexOp = [&](Operator op, Operand* lhs, Operand* rhs) -> Operand* {
+            Operand* result = getRegOperand(getNewRegId());
+            insert(new ArithmeticInst(op, DataType::I64, lhs, rhs, result));
+            return result;
+        };
+
+        forTensorElements({rows}, [&](Operand* i) {
+            Operand* aRow = indexOp(Operator::MUL, i, getImmeI32Operand(inner));
+            Operand* cRow = indexOp(Operator::MUL, i, getImmeI32Operand(cols));
+            forTensorElements({cols}, [&](Operand* j) {
+                // 每一个 C[i][j] 都独立从 0 开始累加。
+                Block* pre = curBlock;
+                Block* cond = createBlock();
+                Block* body = createBlock();
+                Block* end = createBlock();
+                insert(createBranchInst(cond->blockId));
+
+                enterBlock(cond);
+                Operand* k = getRegOperand(getNewRegId());
+                Operand* sum = getRegOperand(getNewRegId());
+                auto* kPhi = new PhiInst(DataType::I64, k);
+                auto* sumPhi = new PhiInst(type, sum);
+                kPhi->addIncoming(getImmeI32Operand(0), getLabelOperand(pre->blockId));
+                sumPhi->addIncoming(zero, getLabelOperand(pre->blockId));
+                insert(kPhi);
+                insert(sumPhi);
+                Operand* test = getRegOperand(getNewRegId());
+                insert(new IcmpInst(DataType::I64, ICmpOp::SLT, k, getImmeI32Operand(inner), test));
+                insert(new BrCondInst(test, getLabelOperand(body->blockId), getLabelOperand(end->blockId)));
+
+                enterBlock(body);
+                Operand* aIndex = indexOp(Operator::ADD, aRow, k);
+                Operand* bRow = indexOp(Operator::MUL, k, getImmeI32Operand(cols));
+                Operand* bIndex = indexOp(Operator::ADD, bRow, j);
+                Operand* av = tensorElementLoad(type, a, aIndex);
+                Operand* bv = tensorElementLoad(type, b, bIndex);
+                Operand* product = getRegOperand(getNewRegId());
+                Operand* nextSum = getRegOperand(getNewRegId());
+                insert(new ArithmeticInst(mulOp, type, av, bv, product));
+                insert(new ArithmeticInst(addOp, type, sum, product, nextSum));
+                Operand* nextK = indexOp(Operator::ADD, k, getImmeI32Operand(1));
+                kPhi->addIncoming(nextK, getLabelOperand(curBlock->blockId));
+                sumPhi->addIncoming(nextSum, getLabelOperand(curBlock->blockId));
+                insert(createBranchInst(cond->blockId));
+
+                // 循环结束时 sum 即完整的点积结果。
+                enterBlock(end);
+                Operand* cIndex = indexOp(Operator::ADD, cRow, j);
+                Operand* addr = tensorElementAddress(type, c, cIndex);
+                insert(createStoreInst(type, sum, addr));
+            });
+        });
+        return c;
+    }
+
     Operand* ASTCodeGen::handleTensorBinary(FE::AST::BinaryExpr& node, Module* m)
     {
         using AOp = FE::AST::Operator;
-        if (node.op == AOp::MATMUL) ERROR("Tensor matrix multiplication is not implemented in stage 9");
+        if (node.op == AOp::MATMUL) return handleTensorMatmul(node, m);
         const DataType type = tensorElementType(node.attr.val.value.type);
         const auto& dims = node.attr.arrayDims;
         const bool lt = node.lhs->attr.val.value.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR;

@@ -171,6 +171,7 @@ namespace ME
         void copyTensor(DataType type, const std::vector<int>& dims, Operand* dst, Operand* src);
         Operand* handleTensorUnary(FE::AST::UnaryExpr& node, Module* m);
         Operand* handleTensorBinary(FE::AST::BinaryExpr& node, Module* m);
+        Operand* handleTensorMatmul(FE::AST::BinaryExpr& node, Module* m);
         void handleAssign(FE::AST::LeftValExpr& lhs, FE::AST::ExprNode& rhs, Module* m);
         void handleLogicalAnd(FE::AST::BinaryExpr& node, FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, Module* m);
         void handleLogicalOr(FE::AST::BinaryExpr& node, FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, Module* m);

@@ -1,6 +1,7 @@
 #ifndef __MIDDLEEND_VISITOR_CODEGEN_AST_CODEGEN_H__
 #define __MIDDLEEND_VISITOR_CODEGEN_AST_CODEGEN_H__
 
+#include <functional>
 #include <frontend/ast/ast_visitor.h>
 #include <frontend/ast/ast.h>
 #include <frontend/ast/decl.h>
@@ -162,6 +163,14 @@ namespace ME
 
         // 统一计算标量/数组元素/子数组的地址，赋值时无需额外 load。
         Operand* resolveLValueAddress(FE::AST::LeftValExpr& node, Module* m, bool forWrite);
+        DataType tensorElementType(FE::AST::Type* type);
+        Operand* allocateTensor(DataType type, const std::vector<int>& dims);
+        Operand* tensorElementAddress(DataType type, Operand* base, Operand* index);
+        Operand* tensorElementLoad(DataType type, Operand* base, Operand* index);
+        void forTensorElements(const std::vector<int>& dims, const std::function<void(Operand*)>& emit);
+        void copyTensor(DataType type, const std::vector<int>& dims, Operand* dst, Operand* src);
+        Operand* handleTensorUnary(FE::AST::UnaryExpr& node, Module* m);
+        Operand* handleTensorBinary(FE::AST::BinaryExpr& node, Module* m);
         void handleAssign(FE::AST::LeftValExpr& lhs, FE::AST::ExprNode& rhs, Module* m);
         void handleLogicalAnd(FE::AST::BinaryExpr& node, FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, Module* m);
         void handleLogicalOr(FE::AST::BinaryExpr& node, FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, Module* m);

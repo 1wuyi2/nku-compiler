@@ -90,7 +90,8 @@ namespace ME
     DataType ASTCodeGen::convert(FE::AST::Type* at)
     {
         if (!at) return DataType::UNK;
-        if (at->getTypeGroup() == FE::AST::TypeGroup::POINTER) return DataType::PTR;
+        if (at->getTypeGroup() == FE::AST::TypeGroup::POINTER ||
+            at->getTypeGroup() == FE::AST::TypeGroup::TENSOR) return DataType::PTR;
         return at2dt[static_cast<size_t>(at->getBaseType())];
     }
 

@@ -30,7 +30,7 @@ namespace ME
         ASSERT(curFunc != nullptr && curBlock != nullptr && "Local declaration requires a current function/block");
         if (!node.decls) return;
 
-        const DataType type = convert(node.type);
+        const DataType type = tensorElementType(node.type);
         ASSERT((type == DataType::I32 || type == DataType::F32) && "Unsupported local scalar type");
 
         for (FE::AST::VarDeclarator* declarator : *node.decls)
@@ -66,6 +66,14 @@ namespace ME
             if (!declarator->init) continue;
             if (!dims.empty())
             {
+                if (node.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR && declarator->init->singleInit)
+                {
+                    auto* initializer = dynamic_cast<FE::AST::Initializer*>(declarator->init);
+                    ASSERT(initializer && initializer->init_val);
+                    Operand* source = evaluateExprValue(*initializer->init_val, m);
+                    copyTensor(type, dims, getRegOperand(ptrReg), source);
+                    continue;
+                }
                 // 将行主序偏移还原成各维下标，首个 0 表示同一个数组对象。
                 auto addressAt = [&](size_t offset) -> Operand* {
                     std::vector<Operand*> indices(dims.size() + 1, getImmeI32Operand(0));

@@ -2,6 +2,147 @@
 
 namespace ME
 {
+
+    // 张量值在 IR 中统一表示为连续元素存储的地址，元素类型与形状由 AST 提供。
+    DataType ASTCodeGen::tensorElementType(FE::AST::Type* type)
+    {
+        ASSERT(type != nullptr);
+        if (type->getTypeGroup() == FE::AST::TypeGroup::TENSOR)
+            return convert(FE::AST::TypeFactory::getBasicType(type->getBaseType()));
+        return convert(type);
+    }
+
+    Operand* ASTCodeGen::allocateTensor(DataType type, const std::vector<int>& dims)
+    {
+        ASSERT(!dims.empty());
+        const size_t reg = getNewRegId();
+        curFunc->getBlock(0)->insertFront(createAllocaInst(type, reg, dims));
+        return getRegOperand(reg);
+    }
+
+    Operand* ASTCodeGen::tensorElementAddress(DataType type, Operand* base, Operand* index)
+    {
+        // opaque ptr：按元素类型进行线性 GEP，无需重新构造多维下标。
+        const size_t reg = getNewRegId();
+        insert(new GEPInst(type, DataType::I64, base, getRegOperand(reg), {}, {index}));
+        return getRegOperand(reg);
+    }
+
+    Operand* ASTCodeGen::tensorElementLoad(DataType type, Operand* base, Operand* index)
+    {
+        Operand* addr = tensorElementAddress(type, base, index);
+        const size_t reg = getNewRegId();
+        insert(createLoadInst(type, addr, reg));
+        return getRegOperand(reg);
+    }
+
+    void ASTCodeGen::forTensorElements(const std::vector<int>& dims,
+        const std::function<void(Operand*)>& emit)
+    {
+        ASSERT(!dims.empty());
+        // i64 计数，避免多维元素个数超出 i32 时发生溢出。
+        Operand* count = getImmeI32Operand(1);
+        for (int extent : dims)
+        {
+            ASSERT(extent > 0 && "Tensor operation needs a fixed shape");
+            Operand* product = getRegOperand(getNewRegId());
+            insert(new ArithmeticInst(Operator::MUL, DataType::I64, count, getImmeI32Operand(extent), product));
+            count = product;
+        }
+        Block* pre = curBlock;
+        Block* cond = createBlock();
+        Block* body = createBlock();
+        Block* end = createBlock();
+        insert(createBranchInst(cond->blockId));
+
+        enterBlock(cond);
+        Operand* index = getRegOperand(getNewRegId());
+        auto* phi = new PhiInst(DataType::I64, index);
+        phi->addIncoming(getImmeI32Operand(0), getLabelOperand(pre->blockId));
+        insert(phi);
+        Operand* test = getRegOperand(getNewRegId());
+        insert(new IcmpInst(DataType::I64, ICmpOp::SLT, index, count, test));
+        insert(new BrCondInst(test, getLabelOperand(body->blockId), getLabelOperand(end->blockId)));
+
+        enterBlock(body);
+        emit(index);
+        Operand* next = getRegOperand(getNewRegId());
+        insert(new ArithmeticInst(Operator::ADD, DataType::I64, index, getImmeI32Operand(1), next));
+        phi->addIncoming(next, getLabelOperand(curBlock->blockId));
+        insert(createBranchInst(cond->blockId));
+        enterBlock(end);
+    }
+
+    void ASTCodeGen::copyTensor(DataType type, const std::vector<int>& dims, Operand* dst, Operand* src)
+    {
+        if (dst == src) return;
+        forTensorElements(dims, [&](Operand* index) {
+            Operand* val = tensorElementLoad(type, src, index);
+            Operand* addr = tensorElementAddress(type, dst, index);
+            insert(createStoreInst(type, val, addr));
+        });
+    }
+
+    Operand* ASTCodeGen::handleTensorUnary(FE::AST::UnaryExpr& node, Module* m)
+    {
+        ASSERT(node.op == FE::AST::Operator::ADD || node.op == FE::AST::Operator::SUB);
+        Operand* source = evaluateExprValue(*node.expr, m);
+        const DataType type = tensorElementType(node.attr.val.value.type);
+        const auto& dims = node.attr.arrayDims;
+        Operand* result = allocateTensor(type, dims);
+        if (node.op == FE::AST::Operator::ADD)
+        {
+            copyTensor(type, dims, result, source);
+            return result;
+        }
+        forTensorElements(dims, [&](Operand* index) {
+            Operand* value = tensorElementLoad(type, source, index);
+            Operand* neg = getRegOperand(getNewRegId());
+            if (type == DataType::F32)
+                insert(new ArithmeticInst(Operator::FMUL, type, getImmeF32Operand(-1.0f), value, neg));
+            else
+                insert(new ArithmeticInst(Operator::SUB, type, getImmeI32Operand(0), value, neg));
+            Operand* addr = tensorElementAddress(type, result, index);
+            insert(createStoreInst(type, neg, addr));
+        });
+        return result;
+    }
+
+    Operand* ASTCodeGen::handleTensorBinary(FE::AST::BinaryExpr& node, Module* m)
+    {
+        using AOp = FE::AST::Operator;
+        if (node.op == AOp::MATMUL) ERROR("Tensor matrix multiplication is not implemented in stage 9");
+        const DataType type = tensorElementType(node.attr.val.value.type);
+        const auto& dims = node.attr.arrayDims;
+        const bool lt = node.lhs->attr.val.value.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR;
+        const bool rt = node.rhs->attr.val.value.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR;
+        // 表达式（尤其是标量函数调用）各求值一次，不能放入元素循环中重复求值。
+        Operand* left = evaluateExprValue(*node.lhs, m);
+        Operand* right = evaluateExprValue(*node.rhs, m);
+        if (!lt) left = convertOperand(convert(node.lhs->attr.val.value.type), type, left, curBlock);
+        if (!rt) right = convertOperand(convert(node.rhs->attr.val.value.type), type, right, curBlock);
+        Operand* result = allocateTensor(type, dims);
+        Operator op = Operator::ADD;
+        switch (node.op)
+        {
+            case AOp::ADD: op = type == DataType::F32 ? Operator::FADD : Operator::ADD; break;
+            case AOp::SUB: op = type == DataType::F32 ? Operator::FSUB : Operator::SUB; break;
+            case AOp::MUL: op = type == DataType::F32 ? Operator::FMUL : Operator::MUL; break;
+            case AOp::DIV: op = type == DataType::F32 ? Operator::FDIV : Operator::DIV; break;
+            case AOp::MOD: ASSERT(type == DataType::I32); op = Operator::MOD; break;
+            default: ERROR("Unsupported tensor arithmetic operator");
+        }
+        forTensorElements(dims, [&](Operand* index) {
+            Operand* a = lt ? tensorElementLoad(type, left, index) : left;
+            Operand* b = rt ? tensorElementLoad(type, right, index) : right;
+            Operand* value = getRegOperand(getNewRegId());
+            insert(new ArithmeticInst(op, type, a, b, value));
+            Operand* addr = tensorElementAddress(type, result, index);
+            insert(createStoreInst(type, value, addr));
+        });
+        return result;
+    }
+
     Operand* ASTCodeGen::resolveLValueAddress(FE::AST::LeftValExpr& node, Module* m, bool forWrite)
     {
         ASSERT(curFunc != nullptr && curBlock != nullptr && "Left value requires a current function/block");
@@ -24,18 +165,19 @@ namespace ME
             attr = &it->second;
             base = getGlobalOperand(node.entry->getName());
         }
-        const DataType elementType = convert(attr->type);
+        const DataType elementType = tensorElementType(attr->type);
         ASSERT(elementType == DataType::I32 || elementType == DataType::F32);
         const auto& dims = attr->arrayDims;
         const size_t count = node.indices ? node.indices->size() : 0;
         ASSERT(count <= dims.size() && "Too many array subscripts");
+        const bool wholeTensor = attr->type->getTypeGroup() == FE::AST::TypeGroup::TENSOR && count == 0;
         if (forWrite)
         {
             ASSERT(!attr->isConstDecl && "Assignment target is not modifiable");
-            ASSERT(count == dims.size() && "An array or subarray cannot be assigned as a scalar");
+            ASSERT((wholeTensor || count == dims.size()) && "An array or subarray cannot be assigned as a scalar");
         }
         const bool isArrayParam = !dims.empty() && dims.front() == -1;
-        if (!dims.empty() && !(isArrayParam && count == 0))
+        if (!wholeTensor && !dims.empty() && !(isArrayParam && count == 0))
         {
             // 普通数组指向整个聚合对象；形参已退化为首个子对象的地址。
             // 因此普通数组需要前导 0，形参不需要，并去掉未知的首维。
@@ -100,7 +242,10 @@ namespace ME
         ASSERT(curFunc != nullptr && curBlock != nullptr && "Unary expression requires a current function/block");
         ASSERT(node.expr != nullptr && "Unary expression has no operand");
         exprResult = nullptr;
-        exprResult = handleUnaryCalc(node, m);
+        if (node.attr.val.value.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR)
+            exprResult = handleTensorUnary(node, m);
+        else
+            exprResult = handleUnaryCalc(node, m);
     }
 
     void ASTCodeGen::handleAssign(FE::AST::LeftValExpr& lhs, FE::AST::ExprNode& rhs, Module* m)
@@ -108,6 +253,12 @@ namespace ME
         Operand* ptr = resolveLValueAddress(lhs, m, true);
 
         Operand* value = evaluateExprValue(rhs, m);
+        if (lhs.attr.val.value.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR)
+        {
+            copyTensor(tensorElementType(lhs.attr.val.value.type), lhs.attr.arrayDims, ptr, value);
+            exprResult = ptr;
+            return;
+        }
         Block*   block = curBlock;
         ASSERT(block != nullptr && "Assignment RHS did not leave a current block");
         const DataType rhsType = convert(rhs.attr.val.value.type);
@@ -183,7 +334,10 @@ namespace ME
             default: break;
         }
 
-        exprResult = handleBinaryCalc(*node.lhs, *node.rhs, node.op, m);
+        if (node.attr.val.value.type->getTypeGroup() == FE::AST::TypeGroup::TENSOR)
+            exprResult = handleTensorBinary(node, m);
+        else
+            exprResult = handleBinaryCalc(*node.lhs, *node.rhs, node.op, m);
     }
 
     void ASTCodeGen::visit(FE::AST::CallExpr& node, Module* m)

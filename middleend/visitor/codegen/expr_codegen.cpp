@@ -2,34 +2,72 @@
 
 namespace ME
 {
-    void ASTCodeGen::visit(FE::AST::LeftValExpr& node, Module* m)
+    Operand* ASTCodeGen::resolveLValueAddress(FE::AST::LeftValExpr& node, Module* m, bool forWrite)
     {
-        (void)m;
-        exprResult = nullptr;
-        ASSERT(curFunc != nullptr && curBlock != nullptr && "Left-value read requires a current function/block");
-        ASSERT(node.entry != nullptr && node.isLval && "Invalid left-value expression");
-        ASSERT((!node.indices || node.indices->empty()) && "Array code generation belongs to Advanced");
+        ASSERT(curFunc != nullptr && curBlock != nullptr && "Left value requires a current function/block");
+        ASSERT(node.entry != nullptr && node.isLval && "Invalid left value");
 
-        Operand*     ptr      = nullptr;
-        DataType     valType  = DataType::UNK;
+        Operand* base = nullptr;
+        const FE::AST::VarAttr* attr = nullptr;
         const size_t localReg = name2reg.getReg(node.entry);
         if (localReg != static_cast<size_t>(-1))
         {
-            ptr         = getRegOperand(localReg);
-            auto attrIt = reg2attr.find(localReg);
-            ASSERT(attrIt != reg2attr.end() && "Local variable is missing IR attributes");
-            valType = convert(attrIt->second.type);
+            auto it = reg2attr.find(localReg);
+            ASSERT(it != reg2attr.end() && "Local variable is missing IR attributes");
+            attr = &it->second;
+            base = getRegOperand(localReg);
         }
         else
         {
-            auto attrIt = glbSymbols.find(node.entry);
-            ASSERT(attrIt != glbSymbols.end() && "Variable has no local or global storage");
-            ptr     = getGlobalOperand(node.entry->getName());
-            valType = convert(attrIt->second.type);
+            auto it = glbSymbols.find(node.entry);
+            ASSERT(it != glbSymbols.end() && "Variable has no local or global storage");
+            attr = &it->second;
+            base = getGlobalOperand(node.entry->getName());
         }
-        ASSERT((valType == DataType::I32 || valType == DataType::F32) && "Unsupported scalar load type");
+        const DataType elementType = convert(attr->type);
+        ASSERT(elementType == DataType::I32 || elementType == DataType::F32);
+        const auto& dims = attr->arrayDims;
+        const size_t count = node.indices ? node.indices->size() : 0;
+        ASSERT(count <= dims.size() && "Too many array subscripts");
+        if (forWrite)
+        {
+            ASSERT(!attr->isConstDecl && "Assignment target is not modifiable");
+            ASSERT(count == dims.size() && "An array or subarray cannot be assigned as a scalar");
+        }
+        if (!dims.empty())
+        {
+            // 普通数组的基址指向整个聚合对象；首个 0 选择该对象。
+            std::vector<Operand*> indices{getImmeI32Operand(0)};
+            if (node.indices)
+                for (auto* index : *node.indices)
+                {
+                    ASSERT(index != nullptr);
+                    // 下标只求值一次，并使用求值后的当前块进行转换。
+                    Operand* value = evaluateExprValue(*index, m);
+                    value = convertOperand(convert(index->attr.val.value.type), DataType::I32, value, curBlock);
+                    indices.push_back(value);
+                }
+            // 部分下标访问产生子数组首元素地址，不对聚合类型执行 load。
+            if (count < dims.size()) indices.push_back(getImmeI32Operand(0));
+            const size_t addrReg = getNewRegId();
+            insert(createGEP_I32Inst(elementType, base, dims, indices, addrReg));
+            base = getRegOperand(addrReg);
+        }
+        lval2ptr[&node] = base;
+        return base;
+    }
 
-        lval2ptr[&node]       = ptr;
+    void ASTCodeGen::visit(FE::AST::LeftValExpr& node, Module* m)
+    {
+        exprResult = nullptr;
+        Operand* ptr = resolveLValueAddress(node, m, false);
+        const DataType valType = convert(node.attr.val.value.type);
+        if (valType == DataType::PTR)
+        {
+            exprResult = ptr;
+            return;
+        }
+        ASSERT(valType == DataType::I32 || valType == DataType::F32);
         const size_t valueReg = getNewRegId();
         insert(createLoadInst(valType, ptr, valueReg));
         exprResult = getRegOperand(valueReg);
@@ -62,25 +100,7 @@ namespace ME
 
     void ASTCodeGen::handleAssign(FE::AST::LeftValExpr& lhs, FE::AST::ExprNode& rhs, Module* m)
     {
-        ASSERT(lhs.entry != nullptr && lhs.isLval && "Assignment requires a modifiable left value");
-        ASSERT((!lhs.indices || lhs.indices->empty()) && "Array assignment belongs to Advanced");
-
-        Operand*     ptr      = nullptr;
-        const size_t localReg = name2reg.getReg(lhs.entry);
-        if (localReg != static_cast<size_t>(-1))
-        {
-            ptr         = getRegOperand(localReg);
-            auto attrIt = reg2attr.find(localReg);
-            ASSERT(attrIt != reg2attr.end() && !attrIt->second.isConstDecl && "Assignment target is not modifiable");
-        }
-        else
-        {
-            auto attrIt = glbSymbols.find(lhs.entry);
-            ASSERT(attrIt != glbSymbols.end() && "Assignment target has no storage");
-            ASSERT(!attrIt->second.isConstDecl && "Assignment target is not modifiable");
-            ptr = getGlobalOperand(lhs.entry->getName());
-        }
-        lval2ptr[&lhs] = ptr;
+        Operand* ptr = resolveLValueAddress(lhs, m, true);
 
         Operand* value = evaluateExprValue(rhs, m);
         Block*   block = curBlock;

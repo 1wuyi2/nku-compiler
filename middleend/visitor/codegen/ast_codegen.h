@@ -160,6 +160,8 @@ namespace ME
         void visit(FE::AST::ContinueStmt& node, Module* m) override;
         void visit(FE::AST::ForStmt& node, Module* m) override;
 
+        // 统一计算标量/数组元素/子数组的地址，赋值时无需额外 load。
+        Operand* resolveLValueAddress(FE::AST::LeftValExpr& node, Module* m, bool forWrite);
         void handleAssign(FE::AST::LeftValExpr& lhs, FE::AST::ExprNode& rhs, Module* m);
         void handleLogicalAnd(FE::AST::BinaryExpr& node, FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, Module* m);
         void handleLogicalOr(FE::AST::BinaryExpr& node, FE::AST::ExprNode& lhs, FE::AST::ExprNode& rhs, Module* m);
